@@ -236,6 +236,16 @@ namespace ClientCore
             return gameOptions_ini.GetStringValue(GENERAL, "Sides", "GDI,Nod,Allies,Soviet");
         }
 
+        public string GetInternalSideIds()
+        {
+            return gameOptions_ini.GetStringValue(GENERAL, "InternalSideIds", string.Empty);
+        }
+
+        public string GetSpectatorInternalSideId()
+        {
+            return gameOptions_ini.GetStringValue(GENERAL, "SpectatorInternalSideId", string.Empty);
+        }
+
         public int ThemeCount
         {
             get
@@ -374,6 +384,8 @@ namespace ClientCore
         public string ExtraExeCommandLineParameters => clientDefinitionsIni.GetStringValue(SETTINGS, "ExtraCommandLineParams", string.Empty);
 
         public string MPMapsIniPath => clientDefinitionsIni.GetStringValue(SETTINGS, "MPMapsPath", "INI\\MPMaps.ini");
+
+        public string MPModesIniPath => clientDefinitionsIni.GetStringValue(SETTINGS, "MPModesPath", "INI\\MPModes.ini");
 
         public string KeyboardINI => clientDefinitionsIni.GetStringValue(SETTINGS, "KeyboardINI", "Keyboard.ini");
 
