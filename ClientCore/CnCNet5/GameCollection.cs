@@ -97,6 +97,39 @@ namespace ClientCore.CnCNet5
                     RegistryInstallPath = "HKML\\Software\\ProjectPhantom",
                     UIName = "Project Phantom",
                     Texture = AssetLoader.TextureFromImage(Resources.ppicon)
+                },
+
+                new CnCNetGame()
+                {
+                    ChatChannel = "#hydracorps-rb",
+                    ClientExecutableName = "Reborn.exe",
+                    GameBroadcastChannel = "#hydracorps-rb-games",
+                    InternalName = "rb",
+                    RegistryInstallPath = "HKCU\\Software\\Reborn",
+                    UIName = "Reborn",
+                    Texture = AssetLoader.TextureFromImage(Resources.rbicon)
+                },
+
+                new CnCNetGame()
+                {
+                    ChatChannel = "#hydracorps-ec",
+                    ClientExecutableName = "EmerCon.exe",
+                    GameBroadcastChannel = "#hydracorps-ec-games",
+                    InternalName = "ec",
+                    RegistryInstallPath = "HKCU\\Software\\EmerCon",
+                    UIName = "Emergency Condition",
+                    Texture = AssetLoader.TextureFromImage(Resources.ecicon)
+                },
+
+                new CnCNetGame()
+                {
+                    ChatChannel = "#hydracorps-mm",
+                    ClientExecutableName = "Metamorphosis.exe",
+                    GameBroadcastChannel = "#hydracorps-mm-games",
+                    InternalName = "mm",
+                    RegistryInstallPath = "HKCU\\Software\\Metamorphosis",
+                    UIName = "Metamorphosis",
+                    Texture = AssetLoader.TextureFromImage(Resources.mmicon)
                 }
             };
 
