@@ -235,9 +235,12 @@ namespace DTAClient.DXGUI.Generic
             base.Initialize(); // Read control attributes from INI
 
             lblVersion.Text = CUpdater.GameVersion;
+            lblUpdateStatus.Text = "No update download mirrors available.";
+            lblUpdateStatus.DrawUnderline = false;
 
             innerPanel.UpdateQueryWindow.UpdateDeclined += UpdateQueryWindow_UpdateDeclined;
             innerPanel.UpdateQueryWindow.UpdateAccepted += UpdateQueryWindow_UpdateAccepted;
+            innerPanel.ManualUpdateQueryWindow.Closed += ManualUpdateQueryWindow_Closed;
 
             innerPanel.UpdateWindow.UpdateCompleted += UpdateWindow_UpdateCompleted;
             innerPanel.UpdateWindow.UpdateCancelled += UpdateWindow_UpdateCancelled;
@@ -498,7 +501,8 @@ namespace DTAClient.DXGUI.Generic
             if (CUpdater.DTAVersionState == VersionState.OUTDATED ||
                 CUpdater.DTAVersionState == VersionState.MISMATCHED ||
                 CUpdater.DTAVersionState == VersionState.UNKNOWN ||
-                CUpdater.DTAVersionState == VersionState.UPTODATE)
+                CUpdater.DTAVersionState == VersionState.UPTODATE ||
+                CUpdater.DTAVersionState == VersionState.MANUALDOWNLOADREQUIRED)
             {
                 CheckForUpdates();
             }
@@ -514,6 +518,8 @@ namespace DTAClient.DXGUI.Generic
         /// </summary>
         private void CheckForUpdates()
         {
+            if (CUpdater.UPDATEMIRRORS.Count < 1)
+                return;
             CUpdater.CheckForUpdates();
             lblUpdateStatus.Enabled = false;
             lblUpdateStatus.Text = "Checking for updates...";
@@ -551,6 +557,16 @@ namespace DTAClient.DXGUI.Generic
                 lblUpdateStatus.Text = "An update is available.";
                 innerPanel.UpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, CUpdater.UpdateSizeInKb);
                 innerPanel.Show(innerPanel.UpdateQueryWindow);
+            }
+            else if (CUpdater.DTAVersionState == VersionState.MANUALDOWNLOADREQUIRED)
+            {
+                lblUpdateStatus.Text = "An update is available. Manual download & installation required.";
+                lblUpdateStatus.Enabled = true;
+                lblUpdateStatus.DrawUnderline = false;
+                string manualDownloadURL = ClientConfiguration.Instance.ManualDownloadURL;
+                innerPanel.ManualUpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, manualDownloadURL);
+                if (!string.IsNullOrEmpty(manualDownloadURL))
+                    innerPanel.Show(innerPanel.ManualUpdateQueryWindow);
             }
             else if (CUpdater.DTAVersionState == VersionState.UNKNOWN)
             {
@@ -619,6 +635,11 @@ namespace DTAClient.DXGUI.Generic
             lblUpdateStatus.Text = "Updating...";
             updateInProgress = true;
             CUpdater.StartAsyncUpdate();
+        }
+
+        private void ManualUpdateQueryWindow_Closed(object sender, EventArgs e)
+        {
+            innerPanel.Hide();
         }
 
         #endregion

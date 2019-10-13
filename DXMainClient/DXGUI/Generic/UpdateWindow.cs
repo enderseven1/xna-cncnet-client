@@ -24,6 +24,7 @@ namespace DTAClient.DXGUI.Generic
         public event UpdateFailureEventHandler UpdateFailed;
 
         delegate void UpdateProgressChangedDelegate(string fileName, int filePercentage, int totalPercentage);
+        delegate void FileDownloadCompletedDelegate(string archiveName);
 
         public UpdateWindow(WindowManager windowManager) : base(windowManager)
         {
@@ -121,6 +122,7 @@ namespace DTAClient.DXGUI.Generic
             CUpdater.OnUpdateFailed += Updater_OnUpdateFailed;
             CUpdater.UpdateProgressChanged += Updater_UpdateProgressChanged;
             CUpdater.LocalFileCheckProgressChanged += CUpdater_LocalFileCheckProgressChanged;
+            CUpdater.OnFileDownloadCompleted += CUpdater_OnFileDownloadCompleted;
 
             if (IsTaskbarSupported())
                 tbp = new TaskbarProgress();
@@ -183,6 +185,16 @@ namespace DTAClient.DXGUI.Generic
             {
 
             }
+        }
+
+        private void CUpdater_OnFileDownloadCompleted(string archiveName)
+        {
+            AddCallback(new FileDownloadCompletedDelegate(HandleFileDownloadCompleted), archiveName);
+        }
+
+        private void HandleFileDownloadCompleted(string archiveName)
+        {
+            lblUpdaterStatus.Text = "Unpacking archive...";
         }
 
         private void Updater_OnUpdateCompleted()

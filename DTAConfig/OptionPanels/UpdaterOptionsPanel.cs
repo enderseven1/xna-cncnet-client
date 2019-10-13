@@ -108,7 +108,8 @@ namespace DTAConfig.OptionPanels
             lbUpdateServerList.Clear();
 
             foreach (var updaterMirror in CUpdater.UPDATEMIRRORS)
-                lbUpdateServerList.AddItem(updaterMirror.Name + " (" + updaterMirror.Location + ")");
+                lbUpdateServerList.AddItem(updaterMirror.Name + (!string.IsNullOrEmpty(updaterMirror.Location) ? 
+                    " (" + updaterMirror.Location + ")" : ""));
 
             chkAutoCheck.Checked = IniSettings.CheckForUpdates;
         }

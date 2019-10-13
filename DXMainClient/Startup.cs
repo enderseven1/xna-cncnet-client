@@ -41,7 +41,7 @@ namespace DTAClient
 
             File.Delete(ProgramConstants.GamePath + "version_u");
 
-            CUpdater.Initialize(ClientConfiguration.Instance.LocalGame);
+            CUpdater.Initialize(ClientConfiguration.Instance.LocalGame, ClientConfiguration.Instance.LauncherExe);
 
             Logger.Log("Operating system: " + Environment.OSVersion.VersionString);
             Logger.Log("Selected OS profile: " + MainClientConstants.OSId.ToString());
