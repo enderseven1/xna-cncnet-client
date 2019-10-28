@@ -235,8 +235,6 @@ namespace DTAClient.DXGUI.Generic
             base.Initialize(); // Read control attributes from INI
 
             lblVersion.Text = CUpdater.GameVersion;
-            lblUpdateStatus.Text = "No update download mirrors available.";
-            lblUpdateStatus.DrawUnderline = false;
 
             innerPanel.UpdateQueryWindow.UpdateDeclined += UpdateQueryWindow_UpdateDeclined;
             innerPanel.UpdateQueryWindow.UpdateAccepted += UpdateQueryWindow_UpdateAccepted;
@@ -435,7 +433,12 @@ namespace DTAClient.DXGUI.Generic
 
             if (!ClientConfiguration.Instance.ModMode)
             {
-                if (UserINISettings.Instance.CheckForUpdates)
+                if (CUpdater.UPDATEMIRRORS.Count < 1)
+                {
+                    lblUpdateStatus.Text = "No update download mirrors available.";
+                    lblUpdateStatus.DrawUnderline = false;
+                }
+                else if (UserINISettings.Instance.CheckForUpdates)
                 {
                     CheckForUpdates();
                 }
