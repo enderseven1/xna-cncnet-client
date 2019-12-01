@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
 using DTAClient.Domain;
@@ -375,7 +375,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                     "*** Modified DTA CnCNet Client, based on version " +
                     System.Windows.Forms.Application.ProductVersion + " ***", lbChatMessages.FontIndex)));
             connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, Renderer.GetSafeString(
-                    "Client fork made by Kerbiter, a dev of VoidDataPhoenix's HydraCorps modding team. View changes and report bugs at https://github.com/Metadorius/xna-cncnet-client/tree/hydra-client-v2", lbChatMessages.FontIndex)));
+                    "Client fork made by Kerbiter. View changes and report bugs at https://github.com/Metadorius/xna-cncnet-client/tree/hydra-client-v2", lbChatMessages.FontIndex)));
 
             connectionManager.BannedFromChannel += ConnectionManager_BannedFromChannel;
 
