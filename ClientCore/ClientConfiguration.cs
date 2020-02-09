@@ -133,13 +133,7 @@ namespace ClientCore
 
         #region Client definitions
 
-        public string DiscordAppId
-        {
-            get
-            {
-                return clientDefinitionsIni.GetStringValue(SETTINGS, "DiscordAppId", string.Empty);
-            }
-        }
+        public string DiscordAppId => clientDefinitionsIni.GetStringValue(SETTINGS, "DiscordAppId", string.Empty);
 
         public int LoadingScreenCount => clientDefinitionsIni.GetIntValue(SETTINGS, "LoadingScreenCount", 2);
 
