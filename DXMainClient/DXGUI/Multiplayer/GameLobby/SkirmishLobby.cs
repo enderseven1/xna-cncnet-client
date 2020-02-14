@@ -249,7 +249,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 {
                     foreach (GameLobbyDropDown dd in DropDowns)
                     {
-                        skirmishSettingsIni.SetStringValue("GameOptions", dd.Name, dd.LastUserSelectedIndex + "");
+                        skirmishSettingsIni.SetStringValue("GameOptions", dd.Name, dd.UserSelectedIndex + "");
                     }
 
                     foreach (GameLobbyCheckBox cb in CheckBoxes)
@@ -374,10 +374,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         }
                     }
 
-                    dd.LastUserSelectedIndex = skirmishSettingsIni.GetIntValue("GameOptions", dd.Name, dd.LastUserSelectedIndex);
+                    dd.UserSelectedIndex = skirmishSettingsIni.GetIntValue("GameOptions", dd.Name, dd.UserSelectedIndex);
 
-                    if (dd.LastUserSelectedIndex > -1 && dd.LastUserSelectedIndex < dd.Items.Count)
-                        dd.SelectedIndex = dd.LastUserSelectedIndex;
+                    if (dd.UserSelectedIndex > -1 && dd.UserSelectedIndex < dd.Items.Count)
+                        dd.SelectedIndex = dd.UserSelectedIndex;
                 }
 
                 foreach (GameLobbyCheckBox cb in CheckBoxes)
