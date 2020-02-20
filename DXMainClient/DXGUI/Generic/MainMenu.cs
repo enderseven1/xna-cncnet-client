@@ -42,8 +42,8 @@ namespace DTAClient.DXGUI.Generic
             this.topBar = topBar;
             this.connectionManager = connectionManager;
             this.optionsWindow = optionsWindow;
-            this.discordHandler = discordHandler;
             this.cncnetLobby = cncnetLobby;
+            this.discordHandler = discordHandler;
             cncnetLobby.UpdateCheck += CncnetLobby_UpdateCheck;
             isMediaPlayerAvailable = IsMediaPlayerAvailable();
         }
@@ -264,6 +264,8 @@ namespace DTAClient.DXGUI.Generic
             skirmishLobby.Exited += SkirmishLobby_Exited;
             lanLobby.Exited += LanLobby_Exited;
             optionsWindow.EnabledChanged += OptionsWindow_EnabledChanged;
+
+            optionsWindow.OnForceUpdate += (s, e) => ForceUpdate();
 
             GameProcessLogic.GameProcessStarted += SharedUILogic_GameProcessStarted;
             GameProcessLogic.GameProcessStarting += SharedUILogic_GameProcessStarting;
@@ -551,6 +553,15 @@ namespace DTAClient.DXGUI.Generic
         private void LblVersion_LeftClick(object sender, EventArgs e)
         {
             Process.Start(ClientConfiguration.Instance.ChangelogURL);
+        }
+
+        private void ForceUpdate()
+        {
+            updateInProgress = true;
+            innerPanel.Hide();
+            innerPanel.UpdateWindow.ForceUpdate();
+            innerPanel.Show(innerPanel.UpdateWindow);
+            lblUpdateStatus.Text = "Force updating...";
         }
 
         /// <summary>
