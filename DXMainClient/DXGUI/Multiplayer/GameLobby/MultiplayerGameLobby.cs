@@ -12,6 +12,7 @@ using DTAClient.DXGUI.Generic;
 using DTAClient.Domain.Multiplayer;
 using ClientGUI;
 using System.Text;
+using DTAClient.Domain;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -24,8 +25,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private const int MAX_DIE_SIDES = 100;
 
         public MultiplayerGameLobby(WindowManager windowManager, string iniName, 
-            TopBar topBar, List<GameMode> GameModes, MapLoader mapLoader)
-            : base(windowManager, iniName, GameModes, true)
+            TopBar topBar, List<GameMode> GameModes, MapLoader mapLoader, DiscordHandler discordHandler)
+            : base(windowManager, iniName, GameModes, true, discordHandler)
         {
             TopBar = topBar;
             MapLoader = mapLoader;
@@ -56,12 +57,22 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected ChatListBox lbChatMessages;
         protected XNAChatTextBox tbChatInput;
         protected XNAClientButton btnLockGame;
+        protected XNAClientCheckBox chkAutoReady;
 
         protected bool IsHost = false;
 
-        protected bool Locked = false;
-
-        protected bool DisplayRandomMapButton = false;
+        private bool locked = false;
+        protected bool Locked
+        {
+            get => locked;
+            set
+            {
+                bool oldLocked = locked;
+                locked = value;
+                if (oldLocked != value)
+                    UpdateDiscordPresence();
+            }
+        }
 
         protected EnhancedSoundEffect sndJoinSound;
         protected EnhancedSoundEffect sndLeaveSound;
@@ -172,16 +183,23 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnLockGame.Text = "Lock Game";
             btnLockGame.LeftClick += BtnLockGame_LeftClick;
 
+            chkAutoReady = new XNAClientCheckBox(WindowManager);
+            chkAutoReady.Name = "chkAutoReady";
+            chkAutoReady.ClientRectangle = new Rectangle(btnLaunchGame.Right + 12,
+                btnLaunchGame.Y + 2, 133, 23);
+            chkAutoReady.Text = "Auto-Ready";
+            chkAutoReady.CheckedChanged += ChkAutoReady_CheckedChanged;
+            chkAutoReady.Disable();
+
             AddChild(lbChatMessages);
             AddChild(tbChatInput);
             AddChild(btnLockGame);
+            AddChild(chkAutoReady);
 
             MapPreviewBox.LocalStartingLocationSelected += MapPreviewBox_LocalStartingLocationSelected;
             MapPreviewBox.StartingLocationApplied += MapPreviewBox_StartingLocationApplied;
 
             InitializeWindow();
-
-            DisplayRandomMapButton = btnPickRandomMap.Enabled && btnPickRandomMap.Visible;
 
             sndJoinSound = new EnhancedSoundEffect("joingame.wav");
             sndLeaveSound = new EnhancedSoundEffect("leavegame.wav");
@@ -345,6 +363,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             SendChatMessage(tbChatInput.Text);
             tbChatInput.Text = string.Empty;
+        }
+
+        private void ChkAutoReady_CheckedChanged(object sender, EventArgs e)
+        {
+            btnLaunchGame.Enabled = !chkAutoReady.Checked;
+            RequestReadyStatus();
+        }
+
+        protected void ResetAutoReadyCheckbox()
+        {
+            chkAutoReady.CheckedChanged -= ChkAutoReady_CheckedChanged;
+            chkAutoReady.Checked = false;
+            chkAutoReady.CheckedChanged += ChkAutoReady_CheckedChanged;
+            btnLaunchGame.Enabled = true;
         }
 
         private void SetFrameSendRate(string value)
@@ -579,17 +611,18 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 btnLockGame.Text = "Lock Game";
                 btnLockGame.Enabled = true;
                 btnLockGame.Visible = true;
+                chkAutoReady.Disable();
 
                 foreach (GameLobbyDropDown dd in DropDowns)
                 {
                     dd.InputEnabled = true;
-                    dd.SelectedIndex = dd.UserDefinedIndex;
+                    dd.SelectedIndex = dd.UserSelectedIndex;
                 }
 
                 foreach (GameLobbyCheckBox checkBox in CheckBoxes)
                 {
                     checkBox.AllowChanges = true;
-                    checkBox.Checked = checkBox.UserDefinedValue;
+                    checkBox.Checked = checkBox.UserChecked;
                 }
 
                 GenerateGameID();
@@ -600,6 +633,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 btnLockGame.Enabled = false;
                 btnLockGame.Visible = false;
+                chkAutoReady.GetAttributes(ThemeIni);
 
                 foreach (GameLobbyDropDown dd in DropDowns)
                     dd.InputEnabled = false;
@@ -612,6 +646,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             lbChatMessages.Clear();
             lbChatMessages.TopIndex = 0;
+
+            lbChatMessages.AddItem("Type / to view a list of available chat commands.", Color.Silver, true);
 
             if (SavedGameManager.GetSaveGameCount() > 0)
             {
@@ -638,8 +674,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lblGameModeSelect.Disable();
             lbMapList.Disable();
             tbMapSearch.Disable();
-            if (DisplayRandomMapButton)
-                btnPickRandomMap.Disable();
+            btnPickRandomMap.Disable();
 
             lbChatMessages.GetAttributes(ThemeIni);
             tbChatInput.GetAttributes(ThemeIni);
@@ -667,8 +702,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lblGameModeSelect.Enable();
             lbMapList.Enable();
             tbMapSearch.Enable();
-            if (DisplayRandomMapButton)
-                btnPickRandomMap.Enable();
+            btnPickRandomMap.GetAttributes(ThemeIni);
 
             lbChatMessages.GetAttributes(ThemeIni);
             tbChatInput.GetAttributes(ThemeIni);

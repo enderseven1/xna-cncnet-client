@@ -19,6 +19,8 @@ namespace DTAConfig
             this.topBar = topBar;
         }
 
+        public event EventHandler OnForceUpdate;
+
         private XNAClientTabControl tabControl;
 
         private XNAOptionsPanel[] optionsPanels;
@@ -44,11 +46,8 @@ namespace DTAConfig
             tabControl.AddTab("Audio", 92);
             tabControl.AddTab("Game", 92);
             tabControl.AddTab("CnCNet", 92);
-            if (!ClientConfiguration.Instance.DisableUpdaterOptions)
-            {
-                tabControl.AddTab("Updater", 92);
-                if (!ClientConfiguration.Instance.DisableComponentOptions) tabControl.AddTab("Components", 92);
-            }
+            tabControl.AddTab("Updater", 92);
+            tabControl.AddTab("Components", 92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             var btnCancel = new XNAClientButton(WindowManager);
@@ -66,6 +65,8 @@ namespace DTAConfig
 
             displayOptionsPanel = new DisplayOptionsPanel(WindowManager, UserINISettings.Instance);
             componentsPanel = new ComponentsPanel(WindowManager, UserINISettings.Instance);
+            var updaterOptionsPanel = new UpdaterOptionsPanel(WindowManager, UserINISettings.Instance);
+            updaterOptionsPanel.OnForceUpdate += (s, e) => { Disable(); OnForceUpdate?.Invoke(this, EventArgs.Empty); };
 
             optionsPanels = new XNAOptionsPanel[]
             {
@@ -73,9 +74,17 @@ namespace DTAConfig
                 new AudioOptionsPanel(WindowManager, UserINISettings.Instance),
                 new GameOptionsPanel(WindowManager, UserINISettings.Instance, topBar),
                 new CnCNetOptionsPanel(WindowManager, UserINISettings.Instance, gameCollection),
-                new UpdaterOptionsPanel(WindowManager, UserINISettings.Instance),
+                updaterOptionsPanel,
                 componentsPanel
             };
+
+            if (ClientConfiguration.Instance.ModMode || CUpdater.UPDATEMIRRORS == null || CUpdater.UPDATEMIRRORS.Count < 1)
+            {
+                tabControl.MakeUnselectable(4);
+                tabControl.MakeUnselectable(5);
+            }
+            else if (CUpdater.CustomComponents == null || CUpdater.CustomComponents.Length < 1)
+                tabControl.MakeUnselectable(5);
 
             foreach (var panel in optionsPanels)
             {

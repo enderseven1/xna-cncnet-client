@@ -54,12 +54,12 @@ namespace DTAClient
             Thread idThread = new Thread(GenerateOnlineId);
             idThread.Start();
 
-            if (Directory.Exists(MainClientConstants.gamepath + "Updater"))
+            if (Directory.Exists(ProgramConstants.GamePath + "Updater"))
             {
                 Logger.Log("Attempting to delete temporary updater directory.");
                 try
                 {
-                    Directory.Delete(MainClientConstants.gamepath + "Updater", true);
+                    Directory.Delete(ProgramConstants.GamePath + "Updater", true);
                 }
                 catch
                 {
@@ -68,12 +68,12 @@ namespace DTAClient
 
             if (ClientConfiguration.Instance.CreateSavedGamesDirectory)
             {
-                if (!Directory.Exists(MainClientConstants.gamepath + "Saved Games"))
+                if (!Directory.Exists(ProgramConstants.GamePath + "Saved Games"))
                 {
                     Logger.Log("Saved Games directory does not exist - attempting to create one.");
                     try
                     {
-                        Directory.CreateDirectory(MainClientConstants.gamepath + "Saved Games");
+                        Directory.CreateDirectory(ProgramConstants.GamePath + "Saved Games");
                     }
                     catch
                     {
@@ -88,7 +88,7 @@ namespace DTAClient
                 {
                     try
                     {
-                        File.Delete(MainClientConstants.gamepath + component.LocalPath + "_u");
+                        File.Delete(ProgramConstants.GamePath + component.LocalPath + "_u");
                     }
                     catch
                     {
@@ -114,8 +114,9 @@ namespace DTAClient
         {
             try
             {
-                string cpu = String.Empty;
-                string videoController = String.Empty;
+                string cpu = string.Empty;
+                string videoController = string.Empty;
+                string memory = string.Empty;
 
                 ManagementObjectSearcher searcher =
                     new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
@@ -138,7 +139,19 @@ namespace DTAClient
                     }
                 }
 
-                Logger.Log("Hardware info: {0} {1}", cpu, videoController);
+                searcher = new ManagementObjectSearcher("Select * From Win32_PhysicalMemory");
+                ulong total = 0;
+
+                foreach (ManagementObject ram in searcher.Get())
+                {
+                    total += Convert.ToUInt64(ram.GetPropertyValue("Capacity"));
+                }
+
+                if (total != 0)
+                    memory = "Total physical memory: " + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
+
+                Logger.Log(string.Format("Hardware info: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
+
             }
             catch (Exception ex)
             {
@@ -214,7 +227,7 @@ namespace DTAClient
             {
                 RegistryKey key;
                 key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\" + ClientConfiguration.Instance.InstallationPathRegKey);
-                key.SetValue("InstallPath", MainClientConstants.gamepath);
+                key.SetValue("InstallPath", ProgramConstants.GamePath);
                 key.Close();
             }
             catch
