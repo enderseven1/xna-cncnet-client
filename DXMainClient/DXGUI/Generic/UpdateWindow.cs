@@ -235,7 +235,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void HandleFileDownloadCompleted(string archiveName)
         {
-            lblUpdaterStatus.Text = "Unpacking archive...";
+            lblUpdaterStatus.Text = "Unpacking archive";
         }
 
         private void Updater_OnUpdateCompleted()

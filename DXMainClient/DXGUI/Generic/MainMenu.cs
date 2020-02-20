@@ -513,8 +513,7 @@ namespace DTAClient.DXGUI.Generic
             if (CUpdater.DTAVersionState == VersionState.OUTDATED ||
                 CUpdater.DTAVersionState == VersionState.MISMATCHED ||
                 CUpdater.DTAVersionState == VersionState.UNKNOWN ||
-                CUpdater.DTAVersionState == VersionState.UPTODATE ||
-                CUpdater.DTAVersionState == VersionState.MANUALDOWNLOADREQUIRED)
+                CUpdater.DTAVersionState == VersionState.UPTODATE)
             {
                 CheckForUpdates();
             }
@@ -573,13 +572,7 @@ namespace DTAClient.DXGUI.Generic
                 lblUpdateStatus.Enabled = true;
                 lblUpdateStatus.DrawUnderline = false;
             }
-            else if (CUpdater.DTAVersionState == VersionState.OUTDATED)
-            {
-                lblUpdateStatus.Text = "An update is available.";
-                innerPanel.UpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, CUpdater.UpdateSizeInKb);
-                innerPanel.Show(innerPanel.UpdateQueryWindow);
-            }
-            else if (CUpdater.DTAVersionState == VersionState.MANUALDOWNLOADREQUIRED)
+            else if (CUpdater.DTAVersionState == VersionState.OUTDATED && CUpdater.ManualUpdateRequired)
             {
                 lblUpdateStatus.Text = "An update is available. Manual download & installation required.";
                 lblUpdateStatus.Enabled = true;
@@ -588,6 +581,12 @@ namespace DTAClient.DXGUI.Generic
                 innerPanel.ManualUpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, manualDownloadURL);
                 if (!string.IsNullOrEmpty(manualDownloadURL))
                     innerPanel.Show(innerPanel.ManualUpdateQueryWindow);
+            }
+            else if (CUpdater.DTAVersionState == VersionState.OUTDATED)
+            {
+                lblUpdateStatus.Text = "An update is available.";
+                innerPanel.UpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, CUpdater.UpdateSizeInKb);
+                innerPanel.Show(innerPanel.UpdateQueryWindow);
             }
             else if (CUpdater.DTAVersionState == VersionState.UNKNOWN)
             {
