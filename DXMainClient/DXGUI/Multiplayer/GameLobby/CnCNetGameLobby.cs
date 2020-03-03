@@ -123,6 +123,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private List<string> hostUploadedMaps = new List<string>();
 
+        private MapSharingConfirmationPanel mapSharingConfirmationPanel;
+
         /// <summary>
         /// The SHA1 of the latest selected map.
         /// Used for map sharing.
@@ -139,6 +141,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             base.Initialize();
 
+            btnChangeTunnel = new XNAClientButton(WindowManager);
+            btnChangeTunnel.Name = "btnChangeTunnel";
+            btnChangeTunnel.ClientRectangle = new Rectangle(btnLeaveGame.Right - btnLeaveGame.Width - 145,
+                btnLeaveGame.Y, 133, 23);
+            btnChangeTunnel.Text = "Change Tunnel";
+            btnChangeTunnel.LeftClick += BtnChangeTunnel_LeftClick;
+            AddChild(btnChangeTunnel);
+
             gameBroadcastTimer = new XNATimerControl(WindowManager);
             gameBroadcastTimer.AutoReset = true;
             gameBroadcastTimer.Interval = TimeSpan.FromSeconds(GAME_BROADCAST_INTERVAL);
@@ -153,29 +163,18 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             tunnelSelectionWindow.CenterOnParent();
             tunnelSelectionWindow.Disable();
 
-            btnChangeTunnel = new XNAClientButton(WindowManager);
-            btnChangeTunnel.Name = "btnChangeTunnel";
-            btnChangeTunnel.ClientRectangle = new Rectangle(btnLeaveGame.Right - btnLeaveGame.Width - 145,
-                btnLeaveGame.Y, 133, 23);
-            btnChangeTunnel.Text = "Change Tunnel";
-            btnChangeTunnel.LeftClick += BtnChangeTunnel_LeftClick;
+            mapSharingConfirmationPanel = new MapSharingConfirmationPanel(WindowManager);
+            MapPreviewBox.AddChild(mapSharingConfirmationPanel);
+            mapSharingConfirmationPanel.MapDownloadConfirmed += MapSharingConfirmationPanel_MapDownloadConfirmed;
 
-            btnChangeTunnel.Enabled = false;
-            btnChangeTunnel.Visible = false;
-
-            AddChild(btnChangeTunnel);
             WindowManager.AddAndInitializeControl(gameBroadcastTimer);
+
+            PostInitialize();
         }
 
-        private void BtnChangeTunnel_LeftClick(object sender, EventArgs e)
-        {
-            ShowTunnelSelectionWindow("Select tunnel server:");
-        }
+        private void BtnChangeTunnel_LeftClick(object sender, EventArgs e) => ShowTunnelSelectionWindow("Select tunnel server:");
 
-        private void GameBroadcastTimer_TimeElapsed(object sender, EventArgs e)
-        {
-            BroadcastGame();
-        }
+        private void GameBroadcastTimer_TimeElapsed(object sender, EventArgs e) => BroadcastGame();
 
         public void SetUp(Channel channel, bool isHost, int playerLimit, 
             CnCNetTunnel tunnel, string hostName, bool isCustomPassword)
@@ -197,15 +196,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 RandomSeed = new Random().Next();
                 RefreshMapSelectionUI();
-                btnChangeTunnel.Enabled = true;
-                btnChangeTunnel.Visible = true;
+                btnChangeTunnel.Enable();
             }
             else
             {
                 channel.ChannelModesChanged += Channel_ChannelModesChanged;
                 AIPlayers.Clear();
-                btnChangeTunnel.Enabled = false;
-                btnChangeTunnel.Visible = false;
+                btnChangeTunnel.Disable();
             }
 
             this.tunnel = tunnel;
@@ -322,15 +319,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             ResetDiscordPresence();
         }
 
-        private void ConnectionManager_Disconnected(object sender, EventArgs e)
-        {
-            HandleConnectionLoss();
-        }
+        private void ConnectionManager_Disconnected(object sender, EventArgs e) => HandleConnectionLoss();
 
-        private void ConnectionManager_ConnectionLost(object sender, ConnectionLostEventArgs e)
-        {
-            HandleConnectionLoss();
-        }
+        private void ConnectionManager_ConnectionLost(object sender, ConnectionLostEventArgs e) => HandleConnectionLoss();
 
         private void HandleConnectionLoss()
         {
@@ -619,10 +610,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 channel.SendCTCPMessage("R 1", QueuedMessageType.GAME_PLAYERS_READY_STATUS_MESSAGE, 5);
         }
 
-        protected override void AddNotice(string message, Color color)
-        {
-            channel.AddMessage(new ChatMessage(color, message));
-        }
+        protected override void AddNotice(string message, Color color) => channel.AddMessage(new ChatMessage(color, message));
 
         /// <summary>
         /// Handles player option requests received from non-host players.
@@ -963,10 +951,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             GameMode = GameModes.Find(gm => gm.Name == gameMode);
             if (GameMode == null)
             {
+                ChangeMap(null, null);
+
                 if (!isMapOfficial)
                     RequestMap(mapSHA1);
                 else
-                    AddOfficialMapMissingMessage(mapSHA1);
+                    ShowOfficialMapMissingMessage(mapSHA1);
             }
             else
             {
@@ -974,15 +964,16 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 if (Map == null)
                 {
+                    ChangeMap(null, null);
+
                     if (!isMapOfficial)
                         RequestMap(mapSHA1);
                     else
-                        AddOfficialMapMissingMessage(mapSHA1);
+                        ShowOfficialMapMissingMessage(mapSHA1);
                 }
+                else if (GameMode != currentGameMode || Map != currentMap)
+                    ChangeMap(GameMode, Map);
             }
-
-            if (GameMode != currentGameMode || Map != currentMap)
-                ChangeMap(GameMode, Map);
 
             // By changing the game options after changing the map, we know which
             // game options were changed by the map and which were changed by the game host
@@ -1006,7 +997,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                         "The game host's game version might be different from yours.", Color.Red);
                     return;
                 }
-                    
 
                 byte[] byteArray = BitConverter.GetBytes(checkBoxStatusInt);
                 bool[] boolArray = Conversions.BytesIntoBoolArray(byteArray);
@@ -1036,7 +1026,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 if (parts.Length <= i)
                 {
-                    AddNotice("The game host has sent an valid game options message! " +
+                    AddNotice("The game host has sent an invalid game options message! " +
                         "The game host's game version might be different from yours.", Color.Red);
                     return;
                 }
@@ -1086,12 +1076,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void RequestMap(string mapSHA1)
         {
-            ChangeMap(null, null);
             if (UserINISettings.Instance.EnableMapSharing)
             {
-                AddNotice("The game host has selected a map that doesn't exist on your installation. " +
-                    "Attempting to download it from the CnCNet map database.");
-                MapSharer.DownloadMap(mapSHA1, localGame);
+                AddNotice("The game host has selected a map that doesn't exist on your installation.");
+                mapSharingConfirmationPanel.ShowForMapDownload();
             }
             else
             {
@@ -1102,12 +1090,26 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
         }
 
-        private void AddOfficialMapMissingMessage(string sha1)
+        private void ShowOfficialMapMissingMessage(string sha1)
         {
-            AddNotice("The game host has selected an official map that doesn't exist on your installation." +
-                "This could mean that the game host has modified game files, or is running a different game version." +
+            AddNotice("The game host has selected an official map that doesn't exist on your installation. " +
+                "This could mean that the game host has modified game files, or is running a different game version. " +
                 "They need to change the map or you will be unable to participate in the match.");
             channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + sha1, QueuedMessageType.SYSTEM_MESSAGE, 9);
+        }
+
+        private void MapSharingConfirmationPanel_MapDownloadConfirmed(object sender, EventArgs e)
+        {
+            Logger.Log("Map sharing confirmed.");
+            AddNotice("Attempting to download map.");
+            mapSharingConfirmationPanel.SetDownloadingStatus();
+            MapSharer.DownloadMap(lastMapSHA1, localGame);
+        }
+
+        protected override void ChangeMap(GameMode gameMode, Map map)
+        {
+            mapSharingConfirmationPanel.Disable();
+            base.ChangeMap(gameMode, map);
         }
 
         /// <summary>
@@ -1216,10 +1218,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             iniFile.SetIntValue("Settings", "Port", localPlayer.Port);
         }
 
-        protected override void SendChatMessage(string message)
-        {
-            channel.SendChatMessage(message, chatColor);
-        }
+        protected override void SendChatMessage(string message) => channel.SendChatMessage(message, chatColor);
 
         #region Notifications
 
@@ -1479,10 +1478,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         #region CnCNet map sharing
 
-        private void MapSharer_MapDownloadFailed(object sender, SHA1EventArgs e)
-        {
-            WindowManager.AddCallback(new Action<SHA1EventArgs>(MapSharer_HandleMapDownloadFailed), e);
-        }
+        private void MapSharer_MapDownloadFailed(object sender, SHA1EventArgs e) 
+            => WindowManager.AddCallback(new Action<SHA1EventArgs>(MapSharer_HandleMapDownloadFailed), e);
 
         private void MapSharer_HandleMapDownloadFailed(SHA1EventArgs e)
         {
@@ -1490,6 +1487,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (hostUploadedMaps.Contains(e.SHA1))
             {
                 AddNotice("Download of the custom map failed. The host needs to change the map or you will be unable to participate in this match.");
+                mapSharingConfirmationPanel.SetFailedStatus();
 
                 channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
                 return;
@@ -1501,9 +1499,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         private void MapSharer_MapDownloadComplete(object sender, SHA1EventArgs e)
-        {
-            WindowManager.AddCallback(new Action<SHA1EventArgs>(MapSharer_HandleMapDownloadComplete), e);
-        }
+            => WindowManager.AddCallback(new Action<SHA1EventArgs>(MapSharer_HandleMapDownloadComplete), e);
 
         private void MapSharer_HandleMapDownloadComplete(SHA1EventArgs e)
         {
@@ -1524,14 +1520,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 AddNotice(returnMessage, Color.Red);
                 AddNotice("Transfer of the custom map failed. The host needs to change the map or you will be unable to participate in this match.");
+                mapSharingConfirmationPanel.SetFailedStatus();
                 channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
             }
         }
 
         private void MapSharer_MapUploadFailed(object sender, MapEventArgs e)
-        {
-            WindowManager.AddCallback(new Action<MapEventArgs>(MapSharer_HandleMapUploadFailed), e);
-        }
+            => WindowManager.AddCallback(new Action<MapEventArgs>(MapSharer_HandleMapUploadFailed), e);
 
         private void MapSharer_HandleMapUploadFailed(MapEventArgs e)
         {
@@ -1548,9 +1543,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         private void MapSharer_MapUploadComplete(object sender, MapEventArgs e)
-        {
-            WindowManager.AddCallback(new Action<MapEventArgs>(MapSharer_HandleMapUploadComplete), e);
-        }
+            => WindowManager.AddCallback(new Action<MapEventArgs>(MapSharer_HandleMapUploadComplete), e);
 
         private void MapSharer_HandleMapUploadComplete(MapEventArgs e)
         {
@@ -1676,9 +1669,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         /// Lowers the time until the next game broadcasting message.
         /// </summary>
         private void AccelerateGameBroadcasting()
-        {
-            gameBroadcastTimer.Accelerate(TimeSpan.FromSeconds(GAME_BROADCAST_ACCELERATION));
-        }
+            => gameBroadcastTimer.Accelerate(TimeSpan.FromSeconds(GAME_BROADCAST_ACCELERATION));
 
         private void BroadcastGame()
         {
@@ -1731,9 +1722,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         #endregion
 
-        public override string GetSwitchName()
-        {
-            return "Game Lobby";
-        }
+        public override string GetSwitchName() => "Game Lobby";
     }
 }

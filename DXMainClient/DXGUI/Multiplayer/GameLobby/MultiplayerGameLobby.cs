@@ -200,8 +200,6 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             MapPreviewBox.LocalStartingLocationSelected += MapPreviewBox_LocalStartingLocationSelected;
             MapPreviewBox.StartingLocationApplied += MapPreviewBox_StartingLocationApplied;
 
-            InitializeWindow();
-
             sndJoinSound = new EnhancedSoundEffect("joingame.wav", 0.0, 0.0, ClientConfiguration.Instance.SoundGameLobbyJoinCooldown);
             sndLeaveSound = new EnhancedSoundEffect("leavegame.wav", 0.0, 0.0, ClientConfiguration.Instance.SoundGameLobbyLeaveCooldown);
             sndMessageSound = new EnhancedSoundEffect("message.wav", 0.0, 0.0, ClientConfiguration.Instance.SoundMessageCooldown);
@@ -217,11 +215,16 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             else
                 Logger.Log("MultiplayerGameLobby: Saved games are not available!");
+        }
 
+        /// <summary>
+        /// Performs initialization that is necessary after derived 
+        /// classes have performed their own initialization.
+        /// </summary>
+        protected void PostInitialize()
+        {
+            InitializeWindow();
             CenterOnParent();
-
-            // To move the lblMapAuthor label into its correct position
-            // if it was moved in the theme description INI file
             LoadDefaultMap();
         }
 
