@@ -1,4 +1,4 @@
-﻿using ClientCore;
+using ClientCore;
 using ClientGUI;
 using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
@@ -148,7 +148,7 @@ namespace DTAConfig.OptionPanels
 
         public override bool Save()
         {
-            bool restartRequired = base.Save() || isForceUpdateActivated;
+            bool restartRequired = base.Save();
 
             IniSettings.CheckForUpdates.Value = chkAutoCheck.Checked;
 
