@@ -173,8 +173,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (player == null || Map == null || GameMode == null)
                 return;
             string side = "";
-            if (ddPlayerSides.Length > Players.IndexOf(player) &&
-                ddPlayerSides[Players.IndexOf(player)].SelectedItem != null)
+            if (ddPlayerSides.Length > Players.IndexOf(player))
                 side = ddPlayerSides[Players.IndexOf(player)].SelectedItem.Text;
             string currentState = ProgramConstants.IsInGame ? "In Game" : "Setting Up";
 
