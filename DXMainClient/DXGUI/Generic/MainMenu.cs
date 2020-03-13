@@ -577,9 +577,8 @@ namespace DTAClient.DXGUI.Generic
                 lblUpdateStatus.Text = "An update is available. Manual download & installation required.";
                 lblUpdateStatus.Enabled = true;
                 lblUpdateStatus.DrawUnderline = false;
-                string manualDownloadURL = ClientConfiguration.Instance.ManualDownloadURL;
-                innerPanel.ManualUpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, manualDownloadURL);
-                if (!string.IsNullOrEmpty(manualDownloadURL))
+                innerPanel.ManualUpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, CUpdater.ManualDownloadURL);
+                if (!string.IsNullOrEmpty(CUpdater.ManualDownloadURL))
                     innerPanel.Show(innerPanel.ManualUpdateQueryWindow);
             }
             else if (CUpdater.DTAVersionState == VersionState.OUTDATED)
