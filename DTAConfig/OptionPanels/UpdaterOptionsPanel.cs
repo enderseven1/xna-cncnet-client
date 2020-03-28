@@ -164,5 +164,10 @@ namespace DTAConfig.OptionPanels
 
             return restartRequired;
         }
+
+        public override void ToggleMainMenuOnlyOptions(bool enable)
+        {
+            btnForceUpdate.AllowClick = enable;
+        }
     }
 }
