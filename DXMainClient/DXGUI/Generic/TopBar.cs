@@ -97,12 +97,19 @@ namespace DTAClient.DXGUI.Generic
 
         private void OptionsWindow_EnabledChanged(object sender, EventArgs e)
         {
-            if (!lanMode) SetSwitchButtonsClickable(!optionsWindow.Enabled);
+            if (!lanMode) 
+                SetSwitchButtonsClickable(!optionsWindow.Enabled);
+
+            SetOptionsButtonClickable(!optionsWindow.Enabled);
+
+            if (optionsWindow != null)
+                optionsWindow.ToggleMainMenuOnlyOptions(primarySwitches.Count == 1 && !lanMode);
         }
 
         public void Clean()
         {
-            if (cncnetPlayerCountCancellationSource != null) cncnetPlayerCountCancellationSource.Cancel();
+            if (cncnetPlayerCountCancellationSource != null) 
+                cncnetPlayerCountCancellationSource.Cancel();
         }
 
         public override void Initialize()
@@ -220,10 +227,16 @@ namespace DTAClient.DXGUI.Generic
         }
 
         private void ConnectionManager_ConnectionLost(object sender, Online.EventArguments.ConnectionLostEventArgs e)
-            => ConnectionEvent("OFFLINE");
+        {
+            if (!lanMode)
+                ConnectionEvent("OFFLINE");
+        }
 
         private void ConnectionManager_ConnectAttemptFailed(object sender, EventArgs e)
-            => ConnectionEvent("OFFLINE");
+        {
+            if (!lanMode)
+                ConnectionEvent("OFFLINE");
+        }
 
         private void ConnectionManager_AttemptedServerChanged(object sender, Online.EventArguments.AttemptedServerEventArgs e)
         {
@@ -237,7 +250,8 @@ namespace DTAClient.DXGUI.Generic
         private void ConnectionManager_Disconnected(object sender, EventArgs e)
         {
             btnLogout.AllowClick = false;
-            ConnectionEvent("OFFLINE");
+            if (!lanMode)
+                ConnectionEvent("OFFLINE");
         }
 
         private void ConnectionEvent(string text)
@@ -272,6 +286,10 @@ namespace DTAClient.DXGUI.Generic
             primarySwitches[primarySwitches.Count - 1].SwitchOff();
             cncnetLobbySwitch.SwitchOn();
             privateMessageSwitch.SwitchOff();
+
+            // HACK warning
+            // TODO: add a way for DarkeningPanel to skip transitions
+            ((DarkeningPanel)((XNAControl)cncnetLobbySwitch).Parent).Alpha = 1.0f;
         }
 
         private void BtnMainButton_LeftClick(object sender, EventArgs e)
@@ -280,6 +298,11 @@ namespace DTAClient.DXGUI.Generic
             cncnetLobbySwitch.SwitchOff();
             privateMessageSwitch.SwitchOff();
             primarySwitches[primarySwitches.Count - 1].SwitchOn();
+
+            // HACK warning
+            // TODO: add a way for DarkeningPanel to skip transitions
+            if (((XNAControl)primarySwitches[primarySwitches.Count - 1]).Parent is DarkeningPanel darkeningPanel)
+                darkeningPanel.Alpha = 1.0f;
         }
 
         private void BtnPrivateMessages_LeftClick(object sender, EventArgs e)
@@ -343,12 +366,20 @@ namespace DTAClient.DXGUI.Generic
                 btnPrivateMessages.AllowClick = allowClick;
         }
 
+        public void SetOptionsButtonClickable(bool allowClick)
+        {
+            if (btnOptions != null)
+                btnOptions.AllowClick = allowClick;
+        }
+
         public void SetLanMode(bool lanMode)
         {
             this.lanMode = lanMode;
             SetSwitchButtonsClickable(!lanMode);
             if (lanMode)
                 ConnectionEvent("LAN MODE");
+            else
+                ConnectionEvent("OFFLINE");
         }
 
         public override void Update(GameTime gameTime)
