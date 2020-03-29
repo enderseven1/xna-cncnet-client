@@ -98,6 +98,7 @@ namespace ClientCore
 
             CheckForUpdates = new BoolSetting(iniFile, OPTIONS, "CheckforUpdates", true);
 
+            PrivacyPolicyAccepted = new BoolSetting(iniFile, OPTIONS, "PrivacyPolicyAccepted", false);
             IsFirstRun = new BoolSetting(iniFile, OPTIONS, "IsFirstRun", true);
             DiscordPrivacyNoticeShown = new BoolSetting(iniFile, OPTIONS, "DiscordPrivacyNoticeShown", false);
             CustomComponentsDenied = new BoolSetting(iniFile, OPTIONS, "CustomComponentsDenied", false);
@@ -187,6 +188,7 @@ namespace ClientCore
 
         public BoolSetting CheckForUpdates { get; private set; }
 
+        public BoolSetting PrivacyPolicyAccepted { get; private set; }
         public BoolSetting IsFirstRun { get; private set; }
 
         public BoolSetting DiscordPrivacyNoticeShown { get; private set; }
