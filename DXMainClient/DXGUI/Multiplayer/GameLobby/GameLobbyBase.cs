@@ -311,7 +311,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             tbMapSearch.Name = "tbMapSearch";
             tbMapSearch.ClientRectangle = new Rectangle(lbMapList.X,
                 lbMapList.Bottom + 3, lbMapList.Width, 21);
-            tbMapSearch.Suggestion = "Search map..";
+            tbMapSearch.Suggestion = "Search map...";
             tbMapSearch.MaximumTextLength = 64;
             tbMapSearch.InputReceived += TbMapSearch_InputReceived;
 
@@ -801,10 +801,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         /// <summary>
         /// Resets Discord Rich Presence to default state.
         /// </summary>
-        protected void ResetDiscordPresence()
-        {
-            discordHandler?.UpdatePresence();
-        }
+        protected void ResetDiscordPresence() => discordHandler?.UpdatePresence();
 
         protected void LoadDefaultMap()
         {
