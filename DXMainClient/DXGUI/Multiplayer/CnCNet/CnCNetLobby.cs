@@ -968,7 +968,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             Channel cncnetChannel = connectionManager.FindChannel("#cncnet");
             cncnetChannel.Join();
-            cncnetChannel.RequestUserInfo();
 
             string localGameChatChannelName = gameCollection.GetGameChatChannelNameFromIdentifier(localGameID);
             bool chatChannelMissing = false;
@@ -981,7 +980,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             {
                 Channel localGameChatChannel = connectionManager.FindChannel(localGameChatChannelName);
                 localGameChatChannel.Join();
-                localGameChatChannel.RequestUserInfo();
             }
 
             string localGameBroadcastChannel = gameCollection.GetGameBroadcastingChannelNameFromIdentifier(localGameID);
@@ -1071,7 +1069,6 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 currentChatChannel.ChannelName != gameCollection.GetGameChatChannelNameFromIdentifier(localGameID))
             {
                 currentChatChannel.Join();
-                currentChatChannel.RequestUserInfo();
             }
         }
 
