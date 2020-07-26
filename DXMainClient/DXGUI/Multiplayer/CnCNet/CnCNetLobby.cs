@@ -9,15 +9,12 @@ using DTAClient.DXGUI.Multiplayer.GameLobby;
 using DTAClient.Online;
 using DTAClient.Online.EventArguments;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -113,7 +110,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             ClientRectangle = new Rectangle(0, 0, WindowManager.RenderResolutionX - 64,
                 WindowManager.RenderResolutionY - 64);
 
-            Name = "CnCNetLobby";
+            Name = nameof(CnCNetLobby);
             BackgroundTexture = AssetLoader.LoadTexture("cncnetlobbybg.png");
             localGameID = ClientConfiguration.Instance.LocalGame;
             localGame = gameCollection.GameList.Find(g => g.InternalName.ToUpper() == localGameID.ToUpper());
@@ -170,9 +167,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             playerContextMenu.AddItem("Private Message", () => 
                 PerformUserListContextMenuAction(iu => pmWindow.InitPM(iu.Name)));
             playerContextMenu.AddItem("Add Friend", () => 
-                PerformUserListContextMenuAction(iu => ToggleFriend(iu.Name)));
+                PerformUserListContextMenuAction(iu => cncnetUserData.ToggleFriend(iu.Name)));
             playerContextMenu.AddItem("Ignore User", () => 
-                PerformUserListContextMenuAction(iu => ToggleIgnoreUser(iu)));
+                PerformUserListContextMenuAction(iu => cncnetUserData.ToggleIgnoreUser(iu.Ident)));
 
             lbChatMessages = new ChatListBox(WindowManager);
             lbChatMessages.Name = nameof(lbChatMessages);
@@ -305,7 +302,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             hg.Map.ToUpper().Contains(tbGameSearch.Text.ToUpper()) ||
             hg.Players.Where(pl => pl.ToUpper().Equals(tbGameSearch.Text.ToUpper())).Any();
 
-        private void OnCnCNetGameCountUpdated(object sender, PlayerCountEventArgs e) => UpdateOnlineCount(e.PlayerCount);
+        private void OnCnCNetGameCountUpdated(object sender, PlayerCountEventArgs e) =>
+            UpdateOnlineCount(e.PlayerCount);
 
         private void UpdateOnlineCount(int playerCount) => lblOnlineCount.Text = playerCount.ToString();
 
@@ -380,6 +378,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             connectionManager.WelcomeMessageReceived += ConnectionManager_WelcomeMessageReceived;
             connectionManager.Disconnected += ConnectionManager_Disconnected;
+
+            cncnetUserData.UserFriendToggled += RefreshPlayerList;
+            cncnetUserData.UserIgnoreToggled += RefreshPlayerList;
 
             gameCreationPanel = new DarkeningPanel(WindowManager);
             AddChild(gameCreationPanel);
@@ -539,39 +540,11 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private void LbPlayerList_DoubleLeftClick(object sender, EventArgs e)
         {
             if (lbPlayerList.SelectedItem == null)
-            {
                 return;
-            }
 
             var channelUser = (ChannelUser)lbPlayerList.SelectedItem.Tag;
 
             pmWindow.InitPM(channelUser.IRCUser.Name);
-        }
-
-        /// <summary>
-        /// Adds or removes a specified user to from the chat ignore list depending on whether
-        /// they already are on the ignore list.
-        /// </summary>
-        /// <param name="ident">The ident of the IRCUser.</param>
-        private void ToggleIgnoreUser(IRCUser ircUser)
-        {
-            cncnetUserData.ToggleIgnoreUser(ircUser.Ident);
-            ChannelUser user = (ChannelUser)lbPlayerList.SelectedItem.Tag;
-            if (user != null)
-                RefreshPlayerListUser(user);
-        }
-
-        /// <summary>
-        /// Adds or removes an user from the friend list depending on whether
-        /// they already are on the friend list.
-        /// </summary>
-        /// <param name="name">The name of the user.</param>
-        private void ToggleFriend(string name)
-        {
-            cncnetUserData.ToggleFriend(name);
-            ChannelUser user = currentChatChannel.Users.Find(name);
-            if (user != null)
-                RefreshPlayerListUser(user);
         }
 
         /// <summary>
@@ -627,7 +600,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnLogout.Text = "Log Out";
         }
 
-        private void BtnJoinGame_LeftClick(object sender, EventArgs e) => LbGameList_DoubleLeftClick(this, EventArgs.Empty);
+        private void BtnJoinGame_LeftClick(object sender, EventArgs e) =>
+            LbGameList_DoubleLeftClick(this, EventArgs.Empty);
 
         private void LbGameList_DoubleLeftClick(object sender, EventArgs e)
         {
@@ -672,10 +646,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 }
             }
 
-            if (hg.GameVersion != ProgramConstants.GAME_VERSION)
-            {
-                // TODO Show warning
-            }
+            // if (hg.GameVersion != ProgramConstants.GAME_VERSION)
+            // TODO Show warning
 
             string password = string.Empty;
 
@@ -703,7 +675,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             JoinGame(hg, password);
         }
 
-        private void PasswordRequestWindow_PasswordEntered(object sender, PasswordEventArgs e) => JoinGame(e.HostedGame, e.Password);
+        private void PasswordRequestWindow_PasswordEntered(object sender, PasswordEventArgs e) =>
+            JoinGame(e.HostedGame, e.Password);
 
         private void JoinGame(HostedCnCNetGame hg, string password)
         {
@@ -1120,7 +1093,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private void AddMessageToChat(ChatMessage message)
         {
-            if (!string.IsNullOrEmpty(message.SenderIdent) && cncnetUserData.IsIgnored(message.SenderIdent) && !message.SenderIsAdmin)
+            if (!string.IsNullOrEmpty(message.SenderIdent) &&
+                cncnetUserData.IsIgnored(message.SenderIdent) &&
+                !message.SenderIsAdmin)
             {
                 lbChatMessages.AddMessage(new ChatMessage(Color.Silver, "Message blocked from - " + message.SenderName));
             }
@@ -1130,7 +1105,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
         }
 
-        private void CurrentChatChannel_MessageAdded(object sender, IRCMessageEventArgs e) => AddMessageToChat(e.Message);
+        private void CurrentChatChannel_MessageAdded(object sender, IRCMessageEventArgs e) =>
+            AddMessageToChat(e.Message);
 
         /// <summary>
         /// Removes a game from the list when the host quits CnCNet or
@@ -1270,7 +1246,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
         }
 
-        private void UpdateMessageBox_YesClicked(XNAMessageBox messageBox) => UpdateCheck?.Invoke(this, EventArgs.Empty);
+        private void UpdateMessageBox_YesClicked(XNAMessageBox messageBox) =>
+            UpdateCheck?.Invoke(this, EventArgs.Empty);
 
         private void UpdateMessageBox_NoClicked(XNAMessageBox messageBox) => updateDenied = true;
 
