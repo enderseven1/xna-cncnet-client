@@ -108,7 +108,8 @@ namespace ClientCore.CnCNet5
                     RegistryInstallPath = "HKCU\\Software\\Reborn",
                     UIName = "Reborn",
                     Texture = AssetLoader.TextureFromImage(Resources.rbicon)
-/*                },
+                /*
+                },
 
                 new CnCNetGame()
                 {
@@ -129,7 +130,8 @@ namespace ClientCore.CnCNet5
                     InternalName = "mm",
                     RegistryInstallPath = "HKCU\\Software\\Metamorphosis",
                     UIName = "Metamorphosis",
-                    Texture = AssetLoader.TextureFromImage(Resources.mmicon) */
+                    Texture = AssetLoader.TextureFromImage(Resources.mmicon)
+                */
                 }
             };
 
