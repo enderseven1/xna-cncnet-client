@@ -27,6 +27,7 @@ namespace DTAClient.DXGUI.Generic
         public GameLoadingWindow GameLoadingWindow;
         public StatisticsWindow StatisticsWindow;
         public UpdateQueryWindow UpdateQueryWindow;
+        public ManualUpdateQueryWindow ManualUpdateQueryWindow;
         public UpdateWindow UpdateWindow;
         public ExtrasWindow ExtrasWindow;
 
@@ -60,6 +61,9 @@ namespace DTAClient.DXGUI.Generic
 
             UpdateQueryWindow = new UpdateQueryWindow(WindowManager);
             AddChild(UpdateQueryWindow);
+
+            ManualUpdateQueryWindow = new ManualUpdateQueryWindow(WindowManager);
+            AddChild(ManualUpdateQueryWindow);
 
             UpdateWindow = new UpdateWindow(WindowManager);
             AddChild(UpdateWindow);
