@@ -150,7 +150,13 @@ namespace DTAClient.DXGUI.Generic
             if (CUpdater.DTAVersionState == VersionState.UNKNOWN)
             {
                 XNAMessageBox.Show(WindowManager, "Force Update Failure", "Checking for updates failed.");
-                CloseWindow();
+                AddCallback(new Action(CloseWindow), null);
+                return;
+            }
+            else if (CUpdater.DTAVersionState == VersionState.OUTDATED && CUpdater.ManualUpdateRequired)
+            {
+                UpdateCancelled?.Invoke(this, EventArgs.Empty);
+                AddCallback(new Action(CloseWindow), null);
                 return;
             }
 
