@@ -80,7 +80,6 @@ namespace DTAConfig.OptionPanels
             base.Load();
 
             int componentIndex = 0;
-            bool buttonEnabled = false;
 
             if (CUpdater.CustomComponents == null)
                 return;
@@ -88,6 +87,7 @@ namespace DTAConfig.OptionPanels
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
                 string buttonText = "Not Available";
+                bool buttonEnabled = false;
 
                 if (File.Exists(ProgramConstants.GamePath + c.LocalPath))
                 {
