@@ -80,7 +80,6 @@ namespace DTAConfig.OptionPanels
             base.Load();
 
             int componentIndex = 0;
-            bool buttonEnabled = false;
 
             if (CUpdater.CustomComponents == null)
                 return;
@@ -88,6 +87,7 @@ namespace DTAConfig.OptionPanels
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
                 string buttonText = "Not Available";
+                bool buttonEnabled = false;
 
                 if (File.Exists(ProgramConstants.GamePath + c.LocalPath))
                 {
@@ -132,7 +132,7 @@ namespace DTAConfig.OptionPanels
                 if (cc.LocalIdentifier == cc.RemoteIdentifier)
                 {
                     File.Delete(ProgramConstants.GamePath + cc.LocalPath);
-                    btn.Text = "Install";
+                    btn.Text = "Install (" + GetSizeString(cc.RemoteSize) + ")";
                     return;
                 }
 
@@ -145,10 +145,13 @@ namespace DTAConfig.OptionPanels
             }
             else
             {
+                string archiveSizeMsg = "";
+                if (cc.Archived && cc.RemoteArchiveSize != cc.RemoteSize)
+                    archiveSizeMsg = " (size of the download is " + GetSizeString(cc.RemoteArchiveSize) + ")";
                 var msgBox = new XNAMessageBox(WindowManager, "Confirmation Required",
                     "To enable " + cc.GUIName + " the Client will download the necessary files to your game directory." +
                     Environment.NewLine + Environment.NewLine +
-                    "This will take an additional " + GetSizeString(cc.RemoteSize) + " of disk space, and the download may last" +
+                    "This will take an additional " + GetSizeString(cc.RemoteSize) + " of disk space" + archiveSizeMsg + ", and the download may last" +
                     Environment.NewLine +
                     "from a few minutes to multiple hours depending on your Internet connection speed." +
                     Environment.NewLine + Environment.NewLine +
@@ -201,7 +204,11 @@ namespace DTAConfig.OptionPanels
             percentage = Math.Min(percentage, 100);
 
             var btn = installationButtons.Find(b => object.ReferenceEquals(b.Tag, cc));
-            btn.Text = "Downloading.. " + percentage + "%";
+            
+            if (cc.Archived && percentage == 100)
+                btn.Text = "Unpacking...";
+            else
+                btn.Text = "Downloading.. " + percentage + "%";
         }
 
         /// <summary>
