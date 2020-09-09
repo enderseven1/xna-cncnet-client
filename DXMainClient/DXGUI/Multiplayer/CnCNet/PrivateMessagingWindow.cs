@@ -31,50 +31,56 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             this.cncnetUserData = cncnetUserData;
         }
 
-        XNALabel lblPrivateMessaging;
+        private XNALabel lblPrivateMessaging;
 
-        XNAClientTabControl tabControl;
+        private XNAClientTabControl tabControl;
 
-        XNALabel lblPlayers;
-        XNAListBox lbUserList;
+        private XNALabel lblPlayers;
+        private XNAListBox lbUserList;
 
-        XNALabel lblMessages;
-        ChatListBox lbMessages;
+        private XNALabel lblMessages;
+        private ChatListBox lbMessages;
 
-        XNATextBox tbMessageInput;
+        private XNATextBox tbMessageInput;
 
-        XNAContextMenu playerContextMenu;
+        private XNAContextMenu playerContextMenu;
 
-        CnCNetManager connectionManager;
+        private CnCNetManager connectionManager;
 
-        GameCollection gameCollection;
+        private GameCollection gameCollection;
 
-        Texture2D unknownGameIcon;
-        Texture2D adminGameIcon;
+        private Texture2D unknownGameIcon;
+        private Texture2D adminGameIcon;
 
-        Color personalMessageColor;
-        Color otherUserMessageColor;
+        private Color personalMessageColor;
+        private Color otherUserMessageColor;
 
-        string lastReceivedPMSender;
-        string lastConversationPartner;
+        private string lastReceivedPMSender;
+        private string lastConversationPartner;
 
         /// <summary>
         /// Holds the users that the local user has had conversations with
         /// during this client session.
         /// </summary>
-        List<PrivateMessageUser> privateMessageUsers = new List<PrivateMessageUser>();
+        private List<PrivateMessageUser> privateMessageUsers = new List<PrivateMessageUser>();
 
-        PrivateMessageNotificationBox notificationBox;
+        private PrivateMessageNotificationBox notificationBox;
 
-        EnhancedSoundEffect sndPrivateMessageSound;
-        EnhancedSoundEffect sndMessageSound;
+        private EnhancedSoundEffect sndPrivateMessageSound;
+        private EnhancedSoundEffect sndMessageSound;
 
         /// <summary>
         /// Because the user cannot view PMs during a game, we store the latest
         /// PM received during a game in this variable and display it when the
         /// user has returned from the game.
         /// </summary>
-        PrivateMessage pmReceivedDuringGame;
+        private PrivateMessage pmReceivedDuringGame;
+
+        // These are used by the "invite to game" feature in the
+        // context menu and are kept up-to-date by the lobby
+        private string inviteChannelName;
+        private string inviteGameName;
+        private string inviteChannelPassword;
 
         public override void Initialize()
         {
@@ -153,11 +159,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             playerContextMenu = new XNAContextMenu(WindowManager);
             playerContextMenu.Name = nameof(playerContextMenu);
             playerContextMenu.ClientRectangle = new Rectangle(0, 0, 150, 2);
-            playerContextMenu.Enabled = false;
-            playerContextMenu.Visible = false;
+            playerContextMenu.Disable();
             playerContextMenu.AddItem("Add Friend", PlayerContextMenu_ToggleFriend);
-            playerContextMenu.AddItem("Toggle Block", PlayerContextMenu_ToggleIgnore);
-            playerContextMenu.Items[1].Selectable = false;
+            playerContextMenu.AddItem("Toggle Block", PlayerContextMenu_ToggleIgnore, null, () => (bool)lbUserList.SelectedItem.Tag, null);
 
             notificationBox = new PrivateMessageNotificationBox(WindowManager);
             notificationBox.Enabled = false;
@@ -322,6 +326,15 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lbUserList.SelectedIndexChanged += LbUserList_SelectedIndexChanged;
         }
 
+        public void SetInviteChannelInfo(string channelName, string gameName, string channelPassword)
+        {
+            inviteChannelName = channelName;
+            inviteGameName = gameName;
+            inviteChannelPassword = channelPassword;
+        }
+
+        public void ClearInviteChannelInfo() => SetInviteChannelInfo(string.Empty, string.Empty, string.Empty);
+
         private void NotificationBox_LeftClick(object sender, EventArgs e) => SwitchOn();
 
         private void LbUserList_RightClick(object sender, EventArgs e)
@@ -335,16 +348,11 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
 
             playerContextMenu.Items[0].Text = cncnetUserData.IsFriend(lbUserList.SelectedItem.Text) ? "Remove Friend" : "Add Friend";
+            
             if ((bool)lbUserList.SelectedItem.Tag)
             {
                 IRCUser iu = connectionManager.UserList.Find(u => u.Name == lbUserList.SelectedItem.Text);
                 playerContextMenu.Items[1].Text = cncnetUserData.IsIgnored(iu.Ident) ? "Unblock" : "Block";
-                playerContextMenu.Items[1].Selectable = true;
-            }
-            else
-            {
-                playerContextMenu.Items[1].Text = "Toggle Block";
-                playerContextMenu.Items[1].Selectable = false;
             }
 
             playerContextMenu.Open(GetCursorPoint());
@@ -362,6 +370,33 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             // lazy solution, but friends are removed rarely so it shouldn't bother players too much
             if (tabControl.SelectedTab == FRIEND_LIST_VIEW_INDEX)
                 TabControl_SelectedIndexChanged(this, EventArgs.Empty); 
+        }
+
+        private void PlayerContextMenu_Invite()
+        {
+            var lbItem = lbUserList.SelectedItem;
+
+            if (lbItem == null)
+            {
+                return;
+            }
+
+            // note it's assumed that if the channel name is specified, the game name must be also
+            if (string.IsNullOrEmpty(inviteChannelName) || ProgramConstants.IsInGame)
+            {
+                return;
+            }
+
+            string messageBody = ProgramConstants.GAME_INVITE_CTCP_COMMAND + " " + inviteChannelName + ";" + inviteGameName;
+
+            if (!string.IsNullOrEmpty(inviteChannelPassword))
+            {
+                messageBody += ";" + inviteChannelPassword;
+            }
+
+            connectionManager.SendCustomMessage(new QueuedMessage("PRIVMSG " + lbItem.Text + " :\u0001" +
+                messageBody + "\u0001",
+                QueuedMessageType.CHAT_MESSAGE, 0));
         }
 
         private void PlayerContextMenu_ToggleIgnore()

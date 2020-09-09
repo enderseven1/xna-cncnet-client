@@ -879,7 +879,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected virtual void StillInGameNotification(int playerIndex)
         {
             if (playerIndex > -1 && playerIndex < Players.Count)
-                AddNotice("Unable to launch game; player " + Players[playerIndex].Name + " is still playing the game you started previously.");
+            {
+                AddNotice("Unable to launch game; player " + Players[playerIndex].Name +
+                    " is still playing the game you started previously.");
+            }
         }
 
         protected virtual void GetReadyNotification()
@@ -1016,6 +1019,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected abstract void RequestPlayerOptions(int side, int color, int start, int team);
 
         protected abstract void RequestReadyStatus();
+
+        // this public as it is used by the main lobby to notify the user of invitation failure
+        public void AddWarning(string message)
+        {
+            AddNotice(message, Color.Yellow);
+        }
 
         protected void AddNotice(string message) => AddNotice(message, Color.White);
 

@@ -270,10 +270,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private void PrintTunnelServerInformation(string s)
         {
             if (tunnelHandler.CurrentTunnel == null)
+            {
                 AddNotice("Tunnel server unavailable!");
+            }
             else
+            {
                 AddNotice($"Current tunnel server: {tunnelHandler.CurrentTunnel.Name} ({tunnelHandler.CurrentTunnel.Country}) " +
                     $"(Players: {tunnelHandler.CurrentTunnel.Clients}/{tunnelHandler.CurrentTunnel.MaxClients}) (Official: {tunnelHandler.CurrentTunnel.Official})");
+            }
         }
 
         private void ShowTunnelSelectionWindow(string description)
@@ -338,6 +342,18 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             ResetDiscordPresence();
         }
 
+        public void LeaveGameLobby()
+        {
+            if (IsHost)
+            {
+                closed = true;
+                BroadcastGame();
+            }
+
+            Clear();
+            channel.Leave();
+        }
+
         private void ConnectionManager_Disconnected(object sender, EventArgs e) => HandleConnectionLoss();
 
         private void ConnectionManager_ConnectionLost(object sender, ConnectionLostEventArgs e) => HandleConnectionLoss();
@@ -361,17 +377,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
         }
 
-        protected override void BtnLeaveGame_LeftClick(object sender, EventArgs e)
-        {
-            if (IsHost)
-            {
-                closed = true;
-                BroadcastGame();
-            }
-
-            Clear();
-            channel.Leave();
-        }
+        protected override void BtnLeaveGame_LeftClick(object sender, EventArgs e) => LeaveGameLobby();
 
         protected override void UpdateDiscordPresence(bool resetTimer = false)
         {
