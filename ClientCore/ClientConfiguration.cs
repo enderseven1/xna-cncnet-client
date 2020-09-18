@@ -7,6 +7,7 @@ namespace ClientCore
     public class ClientConfiguration
     {
         private const string GENERAL = "General";
+        private const string AUDIO = "Audio";
         private const string SETTINGS = "Settings";
         private const string LINKS = "Links";
 
@@ -119,19 +120,19 @@ namespace ClientCore
 
         #endregion
 
-        #region Sound options
+        #region Audio options
 
-        public float SoundGameLobbyJoinCooldown => DTACnCNetClient_ini.GetSingleValue(GENERAL, "SoundGameLobbyJoinCooldown", 0.25f);
+        public float SoundGameLobbyJoinCooldown => DTACnCNetClient_ini.GetSingleValue(AUDIO, "SoundGameLobbyJoinCooldown", 0.25f);
 
-        public float SoundGameLobbyLeaveCooldown => DTACnCNetClient_ini.GetSingleValue(GENERAL, "SoundGameLobbyLeaveCooldown", 0.25f);
+        public float SoundGameLobbyLeaveCooldown => DTACnCNetClient_ini.GetSingleValue(AUDIO, "SoundGameLobbyLeaveCooldown", 0.25f);
 
-        public float SoundMessageCooldown => DTACnCNetClient_ini.GetSingleValue(GENERAL, "SoundMessageCooldown", 0.25f);
+        public float SoundMessageCooldown => DTACnCNetClient_ini.GetSingleValue(AUDIO, "SoundMessageCooldown", 0.25f);
 
-        public float SoundPrivateMessageCooldown => DTACnCNetClient_ini.GetSingleValue(GENERAL, "SoundPrivateMessageCooldown", 0.25f);
+        public float SoundPrivateMessageCooldown => DTACnCNetClient_ini.GetSingleValue(AUDIO, "SoundPrivateMessageCooldown", 0.25f);
 
-        public float SoundGameLobbyGetReadyCooldown => DTACnCNetClient_ini.GetSingleValue(GENERAL, "SoundGameLobbyGetReadyCooldown", 5.0f);
+        public float SoundGameLobbyGetReadyCooldown => DTACnCNetClient_ini.GetSingleValue(AUDIO, "SoundGameLobbyGetReadyCooldown", 5.0f);
 
-        public float SoundGameLobbyReturnCooldown => DTACnCNetClient_ini.GetSingleValue(GENERAL, "SoundGameLobbyReturnCooldown", 1.0f);
+        public float SoundGameLobbyReturnCooldown => DTACnCNetClient_ini.GetSingleValue(AUDIO, "SoundGameLobbyReturnCooldown", 1.0f);
 
         #endregion
 
