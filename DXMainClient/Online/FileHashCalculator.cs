@@ -17,18 +17,24 @@ namespace DTAClient.Online
 
         string[] fileNamesToCheck = new string[]
         {
-#if MO
+#if ARES
             "Ares.dll",
             "Ares.dll.inj",
-            "expandmo97.mix",
-            "expandmo99.mix",
+            "Ares.mix",
+            "Syringe.exe",
             "cncnet5.dll",
-            "rulesmo.ini",
-            "artmo.ini",
-            "soundmo.ini",
+            "rulesmd.ini",
+            "artmd.ini",
+            "soundmd.ini",
+            "aimd.ini",
+            "shroud.shp",
 #elif YR
             "spawner.xdp",
             "spawner2.xdp",
+            "artmd.ini",
+            "soundmd.ini",
+            "aimd.ini",
+            "shroud.shp",
             "INI/Map Code/Cooperative.ini",
             "INI/Map Code/Free For All.ini",
             "INI/Map Code/Land Rush.ini",
@@ -47,11 +53,9 @@ namespace DTAClient.Online
 #else
             "spawner.xdp",
             "rules.ini",
-            "rulesmd.ini",
             "ai.ini",
             "art.ini",
-            "artmd.ini",
-            "aimd.ini",
+            "shroud.shp",
             "INI/Rules.ini",
             "INI/Enhance.ini",
             "INI/Firestrm.ini",
@@ -64,11 +68,7 @@ namespace DTAClient.Online
 #endif
         };
 
-
-        public FileHashCalculator()
-        {
-            ParseConfigFile();
-        }
+        public FileHashCalculator() => ParseConfigFile();
 
         public void CalculateHashes(List<GameMode> gameModes)
         {
@@ -116,16 +116,16 @@ namespace DTAClient.Online
             {
                 if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                 {
-                    List<string> files = Directory.GetFiles(path,
-                        "*", SearchOption.AllDirectories).ToList();
+                    List<string> files = Directory.GetFiles(path, "*", SearchOption.AllDirectories).
+                        Select(s => s.Replace(ProgramConstants.GamePath, "").Replace("\\", "/")).ToList();
 
                     files.Sort();
 
-                    foreach (string fileName in files)
+                    foreach (string filename in files)
                     {
-                        fh.INIHashes += Utilities.CalculateSHA1ForFile(fileName);
-                        Logger.Log("Hash for " + fileName.Replace(ProgramConstants.GamePath, "") +
-                            ": " + Utilities.CalculateSHA1ForFile(fileName));
+                        string sha1 = Utilities.CalculateSHA1ForFile(ProgramConstants.GamePath + filename);
+                        fh.INIHashes += sha1;
+                        Logger.Log("Hash for " + filename + ": " + sha1);
                     }
                 }
             }
@@ -136,9 +136,7 @@ namespace DTAClient.Online
         string AddToStringIfFileExists(string str, string path)
         {
             if (File.Exists(path))
-            {
                 return str + Utilities.CalculateSHA1ForFile(ProgramConstants.GamePath + path);
-            }
 
             return str;
         }

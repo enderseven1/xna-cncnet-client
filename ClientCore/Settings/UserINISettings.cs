@@ -41,7 +41,7 @@ namespace ClientCore
         {
             SettingsIni = iniFile;
 
-#if YR || MO
+#if YR || ARES
             const string WINDOWED_MODE_KEY = "Video.Windowed";
             BackBufferInVRAM = new BoolSetting(iniFile, VIDEO, "VideoBackBuffer", false);
 #else
