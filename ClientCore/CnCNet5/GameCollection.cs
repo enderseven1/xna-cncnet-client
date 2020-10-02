@@ -143,6 +143,12 @@ namespace ClientCore.CnCNet5
             GameList.AddRange(defaultGames);
             GameList.AddRange(GetCustomGames(defaultGames.Concat(otherGames).ToList()));
             GameList.AddRange(otherGames);
+
+            if (GetGameIndexFromInternalName(ClientConfiguration.Instance.LocalGame) == -1)
+            {
+                throw new ClientConfigurationException("Could not find a game in the game collection matching LocalGame value of " +
+                    ClientConfiguration.Instance.LocalGame + ".");
+            }
         }
 
         private List<CnCNetGame> GetCustomGames(List<CnCNetGame> existingGames)
@@ -165,21 +171,24 @@ namespace ClientCore.CnCNet5
                 string ID = iniFile.GetStringValue(kvp.Value, "InternalName", string.Empty).ToLower();
 
                 if (string.IsNullOrEmpty(ID))
-                    throw new Exception("InternalName for game " + kvp.Value + " is not defined or set to an empty value.");
+                    throw new GameCollectionConfigurationException("InternalName for game " + kvp.Value + " is not defined or set to an empty value.");
 
                 if (ID.Length > ProgramConstants.GAME_ID_MAX_LENGTH)
-                    throw new Exception("InternalGame for game " + kvp.Value + " is set to a value that exceeds length limit of " + ProgramConstants.GAME_ID_MAX_LENGTH + " characters.");
+                {
+                    throw new GameCollectionConfigurationException("InternalGame for game " + kvp.Value + " is set to a value that exceeds length limit of " +
+                        ProgramConstants.GAME_ID_MAX_LENGTH + " characters.");
+                }
 
                 if (existingGames.Find(g => g.InternalName == ID) != null || customGameIDs.Contains(ID))
-                    throw new Exception("Game with InternalName " + ID.ToUpper() + " already exists in the game collection.");
+                    throw new GameCollectionConfigurationException("Game with InternalName " + ID.ToUpper() + " already exists in the game collection.");
 
                 string iconFilename = iniFile.GetStringValue(kvp.Value, "IconFilename", ID + "icon.png");
                 customGames.Add(new CnCNetGame
                 {
                     InternalName = ID,
                     UIName = iniFile.GetStringValue(kvp.Value, "UIName", ID.ToUpper()),
-                    ChatChannel = iniFile.GetStringValue(kvp.Value, "ChatChannel", string.Empty),
-                    GameBroadcastChannel = iniFile.GetStringValue(kvp.Value, "GameBroadcastChannel", string.Empty),
+                    ChatChannel = GetIRCChannelNameFromIniFile(iniFile, kvp.Value, "ChatChannel"),
+                    GameBroadcastChannel = GetIRCChannelNameFromIniFile(iniFile, kvp.Value, "GameBroadcastChannel"),
                     ClientExecutableName = iniFile.GetStringValue(kvp.Value, "ClientExecutableName", string.Empty),
                     RegistryInstallPath = iniFile.GetStringValue(kvp.Value, "RegistryInstallPath", "HKCU\\Software\\"
                     + ID.ToUpper()),
@@ -190,6 +199,22 @@ namespace ClientCore.CnCNet5
             }
 
             return customGames;
+        }
+
+        private string GetIRCChannelNameFromIniFile(IniFile iniFile, string section, string key)
+        {
+            string channel = iniFile.GetStringValue(section, key, string.Empty);
+
+            if (string.IsNullOrEmpty(channel))
+                throw new GameCollectionConfigurationException(key + " for game " + section + " is not defined or set to an empty value.");
+
+            if (channel.Contains(' ') || channel.Contains(',') || channel.Contains((char)7))
+                throw new GameCollectionConfigurationException(key + " for game " + section + " contains characters not allowed on IRC channel names.");
+
+            if (!channel.StartsWith("#"))
+                return "#" + channel;
+
+            return channel;
         }
 
         /// <summary>
@@ -261,6 +286,17 @@ namespace ClientCore.CnCNet5
             if (game == null)
                 return null;
             return game.ChatChannel;
+        }
+    }
+
+    /// <summary>
+    /// An exception that is thrown when configuration for a game to add to game collection
+    /// contains invalid or unexpected settings / data or required settings / data are missing.
+    /// </summary>
+    class GameCollectionConfigurationException : Exception
+    {
+        public GameCollectionConfigurationException(string message) : base(message)
+        {
         }
     }
 }
