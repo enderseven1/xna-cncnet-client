@@ -5,7 +5,6 @@ using System.IO;
 using DTAClient.Domain;
 using Rampastring.Tools;
 using ClientCore;
-using Rampastring.XNAUI;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Collections.Generic;
@@ -48,13 +47,13 @@ namespace DTAClient
 
             CheckPermissions();
 
-            Logger.Initialize(ProgramConstants.GamePath + "Client/", "client.log");
+            Logger.Initialize(ProgramConstants.ClientUserFilesPath, "client.log");
             Logger.WriteLogFile = true;
 
-            if (!Directory.Exists(ProgramConstants.GamePath + "Client"))
-                Directory.CreateDirectory(ProgramConstants.GamePath + "Client");
+            if (!Directory.Exists(ProgramConstants.ClientUserFilesPath))
+                Directory.CreateDirectory(ProgramConstants.ClientUserFilesPath);
 
-            File.Delete(ProgramConstants.GamePath + "Client/client.log");
+            File.Delete(ProgramConstants.ClientUserFilesPath + "client.log");
 
             MainClientConstants.Initialize();
 
@@ -113,22 +112,25 @@ namespace DTAClient
                 Logger.Log("Stacktrace: " + ex.InnerException.StackTrace);
             }
 
+            string errorLogPath = Environment.CurrentDirectory.Replace("\\", "/") + "/Client/ClientCrashLogs/ClientCrashLog" +
+                DateTime.Now.ToString("_yyyy_MM_dd_HH_mm") + ".txt";
+            bool crashLogCopied = false;
+
             try
             {
-                if (Directory.Exists(Environment.CurrentDirectory + "/Client/ErrorLogs"))
-                {
-                    DateTime dtn = DateTime.Now;
+                if (!Directory.Exists(Environment.CurrentDirectory + "/Client/ClientCrashLogs"))
+                    Directory.CreateDirectory(Environment.CurrentDirectory + "/Client/ClientCrashLogs");
 
-                    File.Copy(Environment.CurrentDirectory + "/Client/client.log",
-                        Environment.CurrentDirectory + string.Format("/Client/ErrorLogs/ClientCrashLog_{0}_{1}_{2}_{3}_{4}.txt",
-                        dtn.Day, dtn.Month, dtn.Year, dtn.Hour, dtn.Minute), true);
-                }
+                File.Copy(Environment.CurrentDirectory + "/Client/client.log", errorLogPath, true);
+                crashLogCopied = true;
             }
             catch { }
 
             MessageBox.Show(string.Format("{0} has crashed. Error message:" + Environment.NewLine + Environment.NewLine +
-                ex.Message + Environment.NewLine + Environment.NewLine +
-                "If the issue is repeatable, contact the {1} staff at {2}.",
+                ex.Message + Environment.NewLine + Environment.NewLine + (crashLogCopied ?
+                "A crash log has been saved to the following file: " + Environment.NewLine + Environment.NewLine +
+                errorLogPath + Environment.NewLine + Environment.NewLine : "") +
+                "If the issue is repeatable, contact the {1} staff at {2}" + (crashLogCopied ? "and provide the crash log file" : "") + ".",
                 MainClientConstants.GAME_NAME_LONG,
                 MainClientConstants.GAME_NAME_SHORT,
                 MainClientConstants.SUPPORT_URL_SHORT),

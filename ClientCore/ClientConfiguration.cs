@@ -269,13 +269,6 @@ namespace ClientCore
 
         public bool UseClientRandomStartLocations => clientDefinitionsIni.GetBooleanValue(SETTINGS, "UseClientRandomStartLocations", false);
 
-        public bool ProcessScreenshots
-#if ARES
-            => clientDefinitionsIni.GetBooleanValue(SETTINGS, "ProcessScreenshots", true);
-#else
-            => false;
-#endif
-
         /// <summary>
         /// Returns the name of the game executable file that is used on
         /// Linux and macOS.
@@ -316,6 +309,17 @@ namespace ClientCore
                 return OSVersion.UNIX;
 
             return OSVersion.UNKNOWN;
+        }
+    }
+
+    /// <summary>
+    /// An exception that is thrown when a client configuration file contains invalid or
+    /// unexpected settings / data or required settings / data are missing.
+    /// </summary>
+    public class ClientConfigurationException : Exception
+    {
+        public ClientConfigurationException(string message) : base(message)
+        {
         }
     }
 }

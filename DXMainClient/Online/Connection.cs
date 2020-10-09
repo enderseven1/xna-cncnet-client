@@ -121,8 +121,7 @@ namespace DTAClient.Online
         {
             lock (idLocker)
             {
-                // E.g "DTA". or "YR."
-                int maxLength = (ID_LENGTH - ClientConfiguration.Instance.LocalGame.Length + 1);
+                int maxLength = ID_LENGTH - (ClientConfiguration.Instance.LocalGame.Length + 1);
                 systemId = Utilities.CalculateSHA1ForString(id).Substring(0, maxLength);
                 idSet = true;
             }
@@ -142,7 +141,7 @@ namespace DTAClient.Online
         public void ConnectAsync()
         {
             if (_isConnected)
-                throw new Exception("The client is already connected!");
+                throw new InvalidOperationException("The client is already connected!");
 
             if (_attemptingConnection)
                 return; // Maybe we should throw in this case as well?
