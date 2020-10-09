@@ -22,6 +22,7 @@ namespace DTAConfig.OptionPanels
         List<XNAClientButton> installationButtons = new List<XNAClientButton>();
 
         bool downloadCancelled = false;
+        bool fileIdentifiersInitialized = false;
 
         public override void Initialize()
         {
@@ -73,12 +74,32 @@ namespace DTAConfig.OptionPanels
 
                 componentIndex++;
             }
+
+            CUpdater.FileIdentifiersUpdated += CUpdater_FileIdentifiersUpdated;
+        }
+
+        private void CUpdater_FileIdentifiersUpdated()
+        {
+            fileIdentifiersInitialized = CUpdater.DTAVersionState != VersionState.UNKNOWN;
+            UpdateInstallationButtons();
         }
 
         public override void Load()
         {
             base.Load();
 
+            UpdateInstallationButtons();
+        }
+
+        public override bool Save()
+        {
+            base.Save();
+
+            return false;
+        }
+
+        private void UpdateInstallationButtons()
+        {
             int componentIndex = 0;
 
             if (CUpdater.CustomComponents == null)
@@ -86,6 +107,13 @@ namespace DTAConfig.OptionPanels
 
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
+                if (!fileIdentifiersInitialized || c.IsBeingDownloaded)
+                {
+                    installationButtons[componentIndex].AllowClick = false;
+                    componentIndex++;
+                    continue;
+                }
+
                 string buttonText = "Not Available";
                 bool buttonEnabled = false;
 
@@ -111,13 +139,6 @@ namespace DTAConfig.OptionPanels
 
                 componentIndex++;
             }
-        }
-
-        public override bool Save()
-        {
-            base.Save();
-
-            return false;
         }
 
         private void Btn_LeftClick(object sender, EventArgs e)
@@ -206,7 +227,7 @@ namespace DTAConfig.OptionPanels
             percentage = Math.Min(percentage, 100);
 
             var btn = installationButtons.Find(b => object.ReferenceEquals(b.Tag, cc));
-            
+
             if (cc.Archived && percentage == 100)
                 btn.Text = "Unpacking...";
             else
