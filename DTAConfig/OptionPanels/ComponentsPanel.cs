@@ -22,7 +22,6 @@ namespace DTAConfig.OptionPanels
         List<XNAClientButton> installationButtons = new List<XNAClientButton>();
 
         bool downloadCancelled = false;
-        bool fileIdentifiersInitialized = false;
 
         public override void Initialize()
         {
@@ -80,7 +79,6 @@ namespace DTAConfig.OptionPanels
 
         private void CUpdater_FileIdentifiersUpdated()
         {
-            fileIdentifiersInitialized = CUpdater.DTAVersionState != VersionState.UNKNOWN;
             UpdateInstallationButtons();
         }
 
@@ -100,14 +98,14 @@ namespace DTAConfig.OptionPanels
 
         private void UpdateInstallationButtons()
         {
-            int componentIndex = 0;
-
             if (CUpdater.CustomComponents == null)
                 return;
 
+            int componentIndex = 0;
+
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
-                if (!fileIdentifiersInitialized || c.IsBeingDownloaded)
+                if (!c.Initialized || c.IsBeingDownloaded)
                 {
                     installationButtons[componentIndex].AllowClick = false;
                     componentIndex++;
