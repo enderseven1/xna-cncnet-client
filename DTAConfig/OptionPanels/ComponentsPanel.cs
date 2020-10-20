@@ -163,8 +163,7 @@ namespace DTAConfig.OptionPanels
 
                 cc.DownloadFinished += cc_DownloadFinished;
                 cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-                Thread thread = new Thread(cc.DownloadComponent);
-                thread.Start();
+                cc.DownloadComponent();
             }
             else
             {
@@ -195,8 +194,7 @@ namespace DTAConfig.OptionPanels
 
             cc.DownloadFinished += cc_DownloadFinished;
             cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-            Thread thread = new Thread(cc.DownloadComponent);
-            thread.Start();
+            cc.DownloadComponent();
         }
 
         public void InstallComponent(int id)
@@ -208,8 +206,7 @@ namespace DTAConfig.OptionPanels
 
             cc.DownloadFinished += cc_DownloadFinished;
             cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-            Thread thread = new Thread(cc.DownloadComponent);
-            thread.Start();
+            cc.DownloadComponent();
         }
 
         /// <summary>
