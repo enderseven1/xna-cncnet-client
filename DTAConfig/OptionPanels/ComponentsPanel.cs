@@ -73,19 +73,38 @@ namespace DTAConfig.OptionPanels
 
                 componentIndex++;
             }
+
+            CUpdater.FileIdentifiersUpdated += CUpdater_FileIdentifiersUpdated;
+        }
+
+        private void CUpdater_FileIdentifiersUpdated()
+        {
+            UpdateInstallationButtons();
         }
 
         public override void Load()
         {
             base.Load();
 
-            int componentIndex = 0;
+            UpdateInstallationButtons();
+        }
 
+        private void UpdateInstallationButtons()
+        {
             if (CUpdater.CustomComponents == null)
                 return;
 
+            int componentIndex = 0;
+
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
+                if (!c.Initialized || c.IsBeingDownloaded)
+                {
+                    installationButtons[componentIndex].AllowClick = false;
+                    componentIndex++;
+                    continue;
+                }
+
                 string buttonText = "Not Available";
                 bool buttonEnabled = false;
 
@@ -113,11 +132,6 @@ namespace DTAConfig.OptionPanels
             }
         }
 
-        public override bool Save()
-        {
-            return base.Save();
-        }
-
         private void Btn_LeftClick(object sender, EventArgs e)
         {
             var btn = (XNAClientButton)sender;
@@ -140,8 +154,7 @@ namespace DTAConfig.OptionPanels
 
                 cc.DownloadFinished += cc_DownloadFinished;
                 cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-                Thread thread = new Thread(cc.DownloadComponent);
-                thread.Start();
+                cc.DownloadComponent();
             }
             else
             {
@@ -172,8 +185,7 @@ namespace DTAConfig.OptionPanels
 
             cc.DownloadFinished += cc_DownloadFinished;
             cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-            Thread thread = new Thread(cc.DownloadComponent);
-            thread.Start();
+            cc.DownloadComponent();
         }
 
         public void InstallComponent(int id)
@@ -185,8 +197,7 @@ namespace DTAConfig.OptionPanels
 
             cc.DownloadFinished += cc_DownloadFinished;
             cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-            Thread thread = new Thread(cc.DownloadComponent);
-            thread.Start();
+            cc.DownloadComponent();
         }
 
         /// <summary>
@@ -204,7 +215,7 @@ namespace DTAConfig.OptionPanels
             percentage = Math.Min(percentage, 100);
 
             var btn = installationButtons.Find(b => object.ReferenceEquals(b.Tag, cc));
-            
+
             if (cc.Archived && percentage == 100)
                 btn.Text = "Unpacking...";
             else
