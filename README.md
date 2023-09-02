@@ -1,9 +1,9 @@
 # CnCNet Client modified by Metadorius and Shimada Mizuki #
 
 This client is modified by Metadorius and me. I translated it to Chinese and add a tag of my mod in it.
-Includes a setting item for Tooltip of phobos. And you can use ime in it.
+Includes a setting item for Tooltip of phobos. And you can use IME in it.
 
-Thanks for JunYue_OwO, he/she made ime for this client.
+Thanks for JunYue_OwO, he/she made IME for this client.
 
 # CnCNet Client #
 
