@@ -55,7 +55,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblHeader.FontIndex = 1;
             lblHeader.AnchorPoint = new Vector2(ClientRectangle.Width / 2, 12);
             lblHeader.TextAnchor = LabelTextAnchorInfo.CENTER;
-            lblHeader.Text = "MAKE A CHOICE";
+            lblHeader.Text = "做出选择";
             AddChild(lblHeader);
 
             gameIconPanel = new XNAPanel(WindowManager);
@@ -76,20 +76,20 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblChoiceText.Name = nameof(lblChoiceText);
             lblChoiceText.FontIndex = 1;
             lblChoiceText.ClientRectangle = new Rectangle(12, lblSender.Bottom + 6, 0, 0);
-            lblChoiceText.Text = "What do you want to do?";
+            lblChoiceText.Text = "你想做什么？";
             AddChild(lblChoiceText);
 
             affirmativeButton = new XNAClientButton(WindowManager);
             affirmativeButton.ClientRectangle = new Rectangle(ClientRectangle.Left + 8, lblChoiceText.Bottom + 6, 75, 23);
             affirmativeButton.Name = nameof(affirmativeButton);
-            affirmativeButton.Text = "Yes";
+            affirmativeButton.Text = "是";
             affirmativeButton.LeftClick += AffirmativeButton_LeftClick;
             AddChild(affirmativeButton);
 
             negativeButton = new XNAClientButton(WindowManager);
             negativeButton.ClientRectangle = new Rectangle(ClientRectangle.Width - (75 + 8), lblChoiceText.Bottom + 6, 75, 23);
             negativeButton.Name = nameof(negativeButton);
-            negativeButton.Text = "No";
+            negativeButton.Text = "否";
             negativeButton.LeftClick += NegativeButton_LeftClick;
             AddChild(negativeButton);
 

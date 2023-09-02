@@ -50,7 +50,7 @@ namespace DTAClient.Domain.Multiplayer
         /// </summary>
         public void LoadMaps()
         {
-            Logger.Log("Loading maps.");
+            Logger.Log("加载地图。");
 
             IniFile mpMapsIni = new IniFile(ProgramConstants.GamePath + ClientConfiguration.Instance.MPMapsIniPath);
 
@@ -84,7 +84,7 @@ namespace DTAClient.Domain.Multiplayer
 
             if (keys == null)
             {
-                Logger.Log("Loading multiplayer map list failed!!!");
+                Logger.Log("加载多人地图列表失败！！！");
                 return;
             }
 
@@ -96,7 +96,7 @@ namespace DTAClient.Domain.Multiplayer
 
                 if (!File.Exists(ProgramConstants.GamePath + mapFilePath + MAP_FILE_EXTENSION))
                 {
-                    Logger.Log("Map " + mapFilePath + " doesn't exist!");
+                    Logger.Log("地图" + mapFilePath + "不存在！");
                     continue;
                 }
 
@@ -117,7 +117,7 @@ namespace DTAClient.Domain.Multiplayer
 
             if (!Directory.Exists(ProgramConstants.GamePath + CUSTOM_MAPS_DIRECTORY))
             {
-                Logger.Log("Custom maps directory does not exist!");
+                Logger.Log("自定义地图文件夹不存在！");
             }
             else
             {
@@ -154,8 +154,8 @@ namespace DTAClient.Domain.Multiplayer
         {
             if (!File.Exists(ProgramConstants.GamePath + mapPath + MAP_FILE_EXTENSION))
             {
-                Logger.Log("LoadCustomMap: Map " + mapPath + " not found!");
-                resultMessage = $"Map file {mapPath}{MAP_FILE_EXTENSION} doesn't exist!";
+                Logger.Log("LoadCustomMap: Map " + mapPath + "找不到！");
+                resultMessage = $"Map file {mapPath}{MAP_FILE_EXTENSION}不存在！";
 
                 return null;
             }

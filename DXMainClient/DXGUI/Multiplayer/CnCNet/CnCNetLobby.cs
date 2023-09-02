@@ -135,7 +135,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnNewGame = new XNAClientButton(WindowManager);
             btnNewGame.Name = nameof(btnNewGame);
             btnNewGame.ClientRectangle = new Rectangle(12, Height - 29, 133, 23);
-            btnNewGame.Text = "Create Game";
+            btnNewGame.Text = "创建房间";
             btnNewGame.AllowClick = false;
             btnNewGame.LeftClick += BtnNewGame_LeftClick;
 
@@ -143,7 +143,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnJoinGame.Name = nameof(btnJoinGame);
             btnJoinGame.ClientRectangle = new Rectangle(btnNewGame.Right + 12,
                 btnNewGame.Y, 133, 23);
-            btnJoinGame.Text = "Join Game";
+            btnJoinGame.Text = "加入房间";
             btnJoinGame.AllowClick = false;
             btnJoinGame.LeftClick += BtnJoinGame_LeftClick;
 
@@ -151,7 +151,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnLogout.Name = nameof(btnLogout);
             btnLogout.ClientRectangle = new Rectangle(Width - 145, btnNewGame.Y,
                 133, 23);
-            btnLogout.Text = "Log Out";
+            btnLogout.Text = "登出";
             btnLogout.LeftClick += BtnLogout_LeftClick;
 
             lbGameList = new GameListBox(WindowManager, localGameID, HostedGameMatches);
@@ -180,11 +180,11 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             playerContextMenu.ClientRectangle = new Rectangle(0, 0, 150, 2);
             playerContextMenu.Enabled = false;
             playerContextMenu.Visible = false;
-            playerContextMenu.AddItem("Private Message", () => 
+            playerContextMenu.AddItem("私信", () => 
                 PerformUserListContextMenuAction(iu => pmWindow.InitPM(iu.Name)));
-            playerContextMenu.AddItem("Add Friend", () => 
+            playerContextMenu.AddItem("加好友", () => 
                 PerformUserListContextMenuAction(iu => cncnetUserData.ToggleFriend(iu.Name)));
-            playerContextMenu.AddItem("Ignore User", () => 
+            playerContextMenu.AddItem("忽略用户", () => 
                 PerformUserListContextMenuAction(iu => cncnetUserData.ToggleIgnoreUser(iu.Ident)));
 
             lbChatMessages = new ChatListBox(WindowManager);
@@ -200,7 +200,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             tbChatInput.ClientRectangle = new Rectangle(lbChatMessages.X,
                 btnNewGame.Y, lbChatMessages.Width,
                 btnNewGame.Height);
-            tbChatInput.Suggestion = "Type here to chat...";
+            tbChatInput.Suggestion = "在这里聊天...";
             tbChatInput.Enabled = false;
             tbChatInput.MaximumTextLength = 200;
             tbChatInput.EnterPressed += TbChatInput_EnterPressed;
@@ -209,7 +209,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblColor.Name = nameof(lblColor);
             lblColor.ClientRectangle = new Rectangle(lbChatMessages.X, 14, 0, 0);
             lblColor.FontIndex = 1;
-            lblColor.Text = "YOUR COLOR:";
+            lblColor.Text = "你的颜色：";
 
             ddColor = new XNAClientDropDown(WindowManager);
             ddColor.Name = nameof(ddColor);
@@ -253,12 +253,12 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 ddCurrentChannel.X - 150,
                 ddCurrentChannel.Y + 2, 0, 0);
             lblCurrentChannel.FontIndex = 1;
-            lblCurrentChannel.Text = "CURRENT CHANNEL:";
+            lblCurrentChannel.Text = "当前频道：";
 
             lblOnline = new XNALabel(WindowManager);
             lblOnline.Name = nameof(lblOnline);
             lblOnline.ClientRectangle = new Rectangle(310, 14, 0, 0);
-            lblOnline.Text = "Online:";
+            lblOnline.Text = "在线：";
             lblOnline.FontIndex = 1;
             lblOnline.Disable();
 
@@ -272,7 +272,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             tbGameSearch.Name = nameof(tbGameSearch);
             tbGameSearch.ClientRectangle = new Rectangle(lbGameList.X,
                 12, lbGameList.Width, 21);
-            tbGameSearch.Suggestion = "Filter by name, map, game mode, player...";
+            tbGameSearch.Suggestion = "按名称、地图、游戏模式、玩家筛选...";
             tbGameSearch.MaximumTextLength = 64;
             tbGameSearch.InputReceived += TbGameSearch_InputReceived;
             tbGameSearch.Disable();
@@ -358,7 +358,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
                     if (gameBroadcastChannel == null)
                     {
-                        gameBroadcastChannel = connectionManager.CreateChannel(game.UIName + " Broadcast Channel",
+                        gameBroadcastChannel = connectionManager.CreateChannel(game.UIName + "广播频道",
                             game.GameBroadcastChannel, true, false, null);
                         connectionManager.AddChannel(gameBroadcastChannel);
                     }
@@ -413,10 +413,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             gameCreationPanel.Hide();
 
             connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, Renderer.GetSafeString(
-                    "*** Modified DTA CnCNet Client, based on version " +
-                    System.Windows.Forms.Application.ProductVersion + " ***", lbChatMessages.FontIndex)));
+                    "*** 基于版本" +
+                    System.Windows.Forms.Application.ProductVersion + "的DTA CnCNet客户端 ***", lbChatMessages.FontIndex)));
             connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, Renderer.GetSafeString(
-                    "Client fork made by Kerbiter. View changes and report bugs at https://github.com/Metadorius/xna-cncnet-client", lbChatMessages.FontIndex)));
+                    "由Kerbiter制作，可在 https://github.com/Metadorius/xna-cncnet-client 查看更改和报告错误。", lbChatMessages.FontIndex)));
 
             connectionManager.BannedFromChannel += ConnectionManager_BannedFromChannel;
 
@@ -460,12 +460,12 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (game == null)
             {
                 connectionManager.MainChannel.AddMessage(new ChatMessage(
-                    Color.White, "Cannot join channel " + e.ChannelName + ", you're banned!"));
+                    Color.White, "不能加入频道" + e.ChannelName + "，你已进入黑名单。"));
             }
             else
             {
                 connectionManager.MainChannel.AddMessage(new ChatMessage(
-                    Color.White, "Cannot join game " + game.RoomName + ", you've been banned by the game host!"));
+                    Color.White, "不能加入房间" + game.RoomName + "，房主已将你列入黑名单。"));
             }
 
             isJoiningGame = false;
@@ -531,8 +531,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             var user = (ChannelUser)lbPlayerList.SelectedItem.Tag;
             bool isAdmin = user.IsAdmin;
 
-            playerContextMenu.Items[1].Text = cncnetUserData.IsFriend(user.IRCUser.Name) ? "Remove Friend" : "Add Friend";
-            playerContextMenu.Items[2].Text = cncnetUserData.IsIgnored(user.IRCUser.Ident) && !isAdmin ? "Unblock" : "Block";
+            playerContextMenu.Items[1].Text = cncnetUserData.IsFriend(user.IRCUser.Name) ? "删除好友" : "添加好友";
+            playerContextMenu.Items[2].Text = cncnetUserData.IsIgnored(user.IRCUser.Ident) && !isAdmin ? "解除屏蔽" : "屏蔽此人";
             playerContextMenu.Items[2].Selectable = !isAdmin;
 
             playerContextMenu.Open(GetCursorPoint());
@@ -611,17 +611,17 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         {
             if (isInGameRoom)
             {
-                btnLogout.Text = "Game Lobby";
+                btnLogout.Text = "游戏大厅";
                 return;
             }
 
             if (UserINISettings.Instance.PersistentMode)
             {
-                btnLogout.Text = "Main Menu";
+                btnLogout.Text = "主菜单";
                 return;
             }
 
-            btnLogout.Text = "Log Out";
+            btnLogout.Text = "登出";
         }
 
         private void BtnJoinGame_LeftClick(object sender, EventArgs e) => LbGameList_DoubleLeftClick(this, EventArgs.Empty);
@@ -639,24 +639,24 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private string CanJoinGameByIndex(int gameIndex)
         {
             if (gameIndex < 0 || gameIndex >= lbGameList.Items.Count)
-                return "Invalid game index";
+                return "房间无效";
 
             if (isJoiningGame)
-                return "Cannot join game - joining game in progress";
+                return "无法加入房间 - 正在加入房间";
 
             if (ProgramConstants.IsInGame)
-                return "Cannot join game while the main game executable is running.";
+                return "游戏主程序正在运行时无法加入房间。";
 
             HostedCnCNetGame hg = (HostedCnCNetGame)lbGameList.Items[gameIndex].Tag;
 
             if (hg.Game.InternalName.ToUpper() != localGameID.ToUpper())
-                return "The selected game is for " + gameCollection.GetGameNameFromInternalName(hg.Game.InternalName);
+                return "选择的房间是" + gameCollection.GetGameNameFromInternalName(hg.Game.InternalName);
 
             if (hg.Locked)
-                return "The selected game is locked!";
+                return "房间已锁定！";
 
             if (hg.IsLoadedGame && !hg.Players.Contains(ProgramConstants.PLAYERNAME))
-                return "You do not exist in the saved game!";
+                return "你不在存档内！";
 
             return null;
         }
@@ -714,7 +714,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private void JoinGame(HostedCnCNetGame hg, string password)
         {
             connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White,
-                "Attempting to join game " + hg.RoomName + "..."));
+                "加入房间" + hg.RoomName + "..."));
             isJoiningGame = true;
             gameOfLastJoinAttempt = hg;
 
@@ -754,7 +754,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private void GameChannel_InviteOnlyErrorOnJoin(object sender, EventArgs e)
         {
-            connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, "The selected game is locked!"));
+            connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, "房间已锁定！"));
             var channel = (Channel)sender;
 
             var game = FindGameByChannelName(channel.ChannelName);
@@ -778,7 +778,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private void GameChannel_InvalidPasswordEntered_NewGame(object sender, EventArgs e)
         {
-            connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, "Incorrect password!"));
+            connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White, "密码错误！"));
             ClearGameJoinAttempt((Channel)sender);
         }
 
@@ -848,7 +848,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             connectionManager.SendCustomMessage(new QueuedMessage("JOIN " + channelName + " " + password,
                 QueuedMessageType.INSTANT_MESSAGE, 0));
             connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White,
-                "Creating a game named " + e.GameRoomName + "..."));
+                "创建房间" + e.GameRoomName + "..."));
 
             gameCreationPanel.Hide();
 
@@ -870,7 +870,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             connectionManager.SendCustomMessage(new QueuedMessage("JOIN " + channelName + " " + e.Password,
                 QueuedMessageType.INSTANT_MESSAGE, 0));
             connectionManager.MainChannel.AddMessage(new ChatMessage(Color.White,
-                "Creating a game named " + e.GameRoomName + "..."));
+                "创建房间" + e.GameRoomName + "..."));
 
             gameCreationPanel.Hide();
 
@@ -1015,7 +1015,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                     return;
             }
 
-            Logger.Log("Unhandled private CTCP command: " + e.Message + " from " + e.Sender);
+            Logger.Log("专用 CTCP 命令未处理：来自" + e.Sender + "的" + e.Message);
         }
 
         private void HandleGameInviteCommand(string sender, string argumentsString)
@@ -1069,11 +1069,11 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             // show the invitation at top left; it will remain until it is acted upon or the target game is closed
             gameInviteChoiceBox.Show(
-                "GAME INVITATION",
+                "游戏邀请",
                 GetUserTexture(sender),
                 sender,
-                "Join " + gameName + "?",
-                "Yes", "No", 0);
+                "加入" + gameName + "？",
+                "是", "否", 0);
 
             // add the invitation to the index so we can remove it if the target game is closed
             // also lets us silently ignore new invitations from the same person while this one is still outstanding
@@ -1092,8 +1092,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 if (!JoinGameByIndex(lbGameList.HostedGames.FindIndex(hg => ((HostedCnCNetGame)hg).ChannelName == channelName), password))
                 {
                     XNAMessageBox.Show(WindowManager,
-                        "Failed to join",
-                        "Unable to join " + sender + "'s game. The game may be locked or closed.");
+                        "加入失败",
+                        "无法加入" + sender + "的房间。房间已锁定或关闭。");
                 }
 
                 // clean up the index as this invitation no longer exists
@@ -1117,9 +1117,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (isInGameRoom && !ProgramConstants.IsInGame)
             {
                 gameLobby.AddWarning(
-                    sender + " could not receive your invitation. They might be in game " +
-                    "or only accepting invitations from friends. Ensure your game is " +
-                    "unlocked and visible in the lobby before trying again.");
+                    sender + "无法收到你的邀请。他们可能在游戏中或只接受朋友的邀请。在重试之前，请确保你的房间已解锁并在大厅中可见。");
             }
         }
 
@@ -1225,7 +1223,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 cncnetUserData.IsIgnored(message.SenderIdent) &&
                 !message.SenderIsAdmin)
             {
-                lbChatMessages.AddMessage(new ChatMessage(Color.Silver, "Message blocked from - " + message.SenderName));
+                lbChatMessages.AddMessage(new ChatMessage(Color.Silver, "屏蔽消息 - " + message.SenderName));
             }
             else
             {
@@ -1273,8 +1271,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 string version = e.Message.Substring(7);
                 if (version != ProgramConstants.GAME_VERSION)
                 {
-                    var updateMessageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "Update available",
-                        "An update is available. Do you want to perform the update now?");
+                    var updateMessageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "有更新",
+                        "有更新，是否立即更新？");
                     updateMessageBox.NoClickedAction = UpdateMessageBox_NoClicked;
                     updateMessageBox.YesClickedAction = UpdateMessageBox_YesClicked;
                 }
@@ -1288,7 +1286,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (splitMessage.Length != 11) 
             {
-                Logger.Log("Ignoring CTCP game message because of an invalid amount of parameters.");
+                Logger.Log("由于参数数量无效而忽略CTCP游戏消息。");
                 return;
             }
 
@@ -1377,7 +1375,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Logger.Log("Game parsing error: " + ex.Message);
+                Logger.Log("游戏解析错误：" + ex.Message);
             }
         }
 
@@ -1418,7 +1416,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         public void SwitchOff() => Disable();
 
-        public string GetSwitchName() => "CnCNet Lobby";
+        public string GetSwitchName() => "CnCNet大厅";
 
         private bool CanReceiveInvitationMessagesFrom(string username)
         {

@@ -105,21 +105,21 @@ namespace DTAClient.DXGUI.Multiplayer
             btnNewGame = new XNAClientButton(WindowManager);
             btnNewGame.Name = "btnNewGame";
             btnNewGame.ClientRectangle = new Rectangle(12, Height - 35, 133, 23);
-            btnNewGame.Text = "Create Game";
+            btnNewGame.Text = "创建房间";
             btnNewGame.LeftClick += BtnNewGame_LeftClick;
 
             btnJoinGame = new XNAClientButton(WindowManager);
             btnJoinGame.Name = "btnJoinGame";
             btnJoinGame.ClientRectangle = new Rectangle(btnNewGame.Right + 12,
                 btnNewGame.Y, 133, 23);
-            btnJoinGame.Text = "Join Game";
+            btnJoinGame.Text = "加入房间";
             btnJoinGame.LeftClick += BtnJoinGame_LeftClick;
 
             btnMainMenu = new XNAClientButton(WindowManager);
             btnMainMenu.Name = "btnMainMenu";
             btnMainMenu.ClientRectangle = new Rectangle(Width - 145,
                 btnNewGame.Y, 133, 23);
-            btnMainMenu.Text = "Main Menu";
+            btnMainMenu.Text = "主菜单";
             btnMainMenu.LeftClick += BtnMainMenu_LeftClick;
 
             lbGameList = new GameListBox(WindowManager, localGame, null);
@@ -157,7 +157,7 @@ namespace DTAClient.DXGUI.Multiplayer
             tbChatInput.ClientRectangle = new Rectangle(lbChatMessages.X,
                 btnNewGame.Y, lbChatMessages.Width,
                 btnNewGame.Height);
-            tbChatInput.Suggestion = "Type here to chat...";
+            tbChatInput.Suggestion = "在这里聊天...";
             tbChatInput.MaximumTextLength = 200;
             tbChatInput.EnterPressed += TbChatInput_EnterPressed;
 
@@ -165,7 +165,7 @@ namespace DTAClient.DXGUI.Multiplayer
             lblColor.Name = "lblColor";
             lblColor.ClientRectangle = new Rectangle(lbChatMessages.X, 14, 0, 0);
             lblColor.FontIndex = 1;
-            lblColor.Text = "YOUR COLOR:";
+            lblColor.Text = "你的颜色：";
 
             ddColor = new XNAClientDropDown(WindowManager);
             ddColor.Name = "ddColor";
@@ -174,21 +174,21 @@ namespace DTAClient.DXGUI.Multiplayer
 
             chatColors = new LANColor[]
             {
-                new LANColor("Gray", Color.Gray),
-                new LANColor("Metalic", Color.LightGray),
-                new LANColor("Green", Color.Green),
-                new LANColor("Lime Green", Color.LimeGreen),
-                new LANColor("Green Yellow", Color.GreenYellow),
-                new LANColor("Goldenrod", Color.Goldenrod),
-                new LANColor("Yellow", Color.Yellow),
-                new LANColor("Orange", Color.Orange),
-                new LANColor("Red", Color.Red),
-                new LANColor("Pink", Color.DeepPink),
-                new LANColor("Purple", Color.MediumPurple),
-                new LANColor("Sky Blue", Color.SkyBlue),
-                new LANColor("Blue", Color.Blue),
-                new LANColor("Brown", Color.SaddleBrown),
-                new LANColor("Teal", Color.Teal)
+                new LANColor("灰色", Color.Gray),
+                new LANColor("银色", Color.LightGray),
+                new LANColor("绿色", Color.Green),
+                new LANColor("亮绿色", Color.LimeGreen),
+                new LANColor("黄绿色", Color.GreenYellow),
+                new LANColor("金色", Color.Goldenrod),
+                new LANColor("黄色", Color.Yellow),
+                new LANColor("橙色", Color.Orange),
+                new LANColor("红色", Color.Red),
+                new LANColor("芭比粉", Color.DeepPink),
+                new LANColor("紫色", Color.MediumPurple),
+                new LANColor("天蓝色", Color.SkyBlue),
+                new LANColor("蓝色", Color.Blue),
+                new LANColor("棕色", Color.SaddleBrown),
+                new LANColor("青色", Color.Teal)
             };
 
             foreach (LANColor color in chatColors)
@@ -344,9 +344,9 @@ namespace DTAClient.DXGUI.Multiplayer
             }
             catch (SocketException ex)
             {
-                Logger.Log("Creating LAN socket failed! Message: " + ex.Message);
+                Logger.Log("Creating LAN socket failed! 信息：" + ex.Message);
                 lbChatMessages.AddMessage(new ChatMessage(Color.Red,
-                    "Creating LAN socket failed! Message: " + ex.Message));
+                    "Creating LAN socket failed! 信息：" + ex.Message));
                 lbChatMessages.AddMessage(new ChatMessage(Color.Red,
                     "Please check your firewall settings."));
                 lbChatMessages.AddMessage(new ChatMessage(Color.Red,
@@ -601,7 +601,7 @@ namespace DTAClient.DXGUI.Multiplayer
             catch (Exception ex)
             {
                 lbChatMessages.AddMessage(null,
-                    "Connecting to the game failed! Message: " + ex.Message, Color.White);
+                    "连接到房间失败！信息：" + ex.Message, Color.White);
             }
         }
 

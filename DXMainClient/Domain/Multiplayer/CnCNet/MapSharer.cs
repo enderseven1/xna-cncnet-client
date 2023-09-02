@@ -392,7 +392,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
 
                 try
                 {
-                    Logger.Log("MapSharer: Downloading URL: " + "http://mapdb.cncnet.org/" + myGame + "/" + sha1 + ".zip");
+                    Logger.Log("MapSharer: 正在下载：" + "http://mapdb.cncnet.org/" + myGame + "/" + sha1 + ".zip");
                     webClient.DownloadFile("http://mapdb.cncnet.org/" + myGame + "/" + sha1 + ".zip", destinationFilePath);
                 }
                 catch (Exception ex)

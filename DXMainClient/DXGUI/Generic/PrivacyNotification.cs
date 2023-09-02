@@ -26,7 +26,7 @@ namespace DTAClient.DXGUI.Generic
             lblDescription.Name = nameof(lblDescription);
             lblDescription.X = UIDesignConstants.EMPTY_SPACE_SIDES;
             lblDescription.Y = UIDesignConstants.EMPTY_SPACE_TOP;
-            lblDescription.Text = Renderer.FixText("By using this application you agree to the CnCNet Terms & Conditions as well as the CnCNet Privacy Policy. Privacy-related options can be configured in the client settings.",
+            lblDescription.Text = Renderer.FixText("通过使用此应用程序，你同意CnCNet条款和条件以及CnCNet隐私政策。可以在客户端设置中配置与隐私相关的选项。",
                 lblDescription.FontIndex, WindowManager.RenderResolutionX - (UIDesignConstants.EMPTY_SPACE_SIDES * 2)).Text;
             AddChild(lblDescription);
 
@@ -34,7 +34,7 @@ namespace DTAClient.DXGUI.Generic
             lblMoreInformation.Name = nameof(lblMoreInformation);
             lblMoreInformation.X = lblDescription.X;
             lblMoreInformation.Y = lblDescription.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN;
-            lblMoreInformation.Text = "More information: ";
+            lblMoreInformation.Text = "更多信息：";
             AddChild(lblMoreInformation);
 
             var lblTermsAndConditions = new XNALinkLabel(WindowManager);
@@ -58,7 +58,7 @@ namespace DTAClient.DXGUI.Generic
             btnOK.Width = 75;
             btnOK.Y = lblMoreInformation.Y;
             btnOK.X = WindowManager.RenderResolutionX - btnOK.Width - UIDesignConstants.CONTROL_HORIZONTAL_MARGIN;
-            btnOK.Text = "Got it";
+            btnOK.Text = "知道了";
             AddChild(btnOK);
             btnOK.LeftClick += (s, e) => 
             {

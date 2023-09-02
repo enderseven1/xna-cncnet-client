@@ -34,22 +34,22 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             chatBoxCommands = new List<ChatBoxCommand>
             {
-                new ChatBoxCommand("HIDEMAPS", "Hide map list (game host only)", true,
+                new ChatBoxCommand("HIDEMAPS", "隐藏地图列表（仅房主）", true,
                     s => HideMapList()),
-                new ChatBoxCommand("SHOWMAPS", "Show map list (game host only)", true,
+                new ChatBoxCommand("SHOWMAPS", "显示地图列表（仅房主）", true,
                     s => ShowMapList()),
-                new ChatBoxCommand("FRAMESENDRATE", "Change order lag / FrameSendRate (default 7) (game host only)", true,
+                new ChatBoxCommand("FRAMESENDRATE", "更改命令延迟或FrameSendRate（默认为7）（仅房主）", true,
                     s => SetFrameSendRate(s)),
-                new ChatBoxCommand("MAXAHEAD", "Change MaxAhead (default 0) (game host only)", true,
+                new ChatBoxCommand("MAXAHEAD", "更改MaxAhead（默认为0）（仅房主）", true,
                     s => SetMaxAhead(s)),
-                new ChatBoxCommand("PROTOCOLVERSION", "Change ProtocolVersion (default 2) (game host only)", true,
+                new ChatBoxCommand("PROTOCOLVERSION", "更改ProtocolVersion（默认为2）（仅房主）", true,
                     s => SetProtocolVersion(s)),
-                new ChatBoxCommand("LOADMAP", "Load a custom map with given filename from /Maps/Custom/ folder.", true, LoadCustomMap),
-                new ChatBoxCommand("RANDOMSTARTS", "Enables completely random starting locations (Tiberian Sun based games only).", true,
+                new ChatBoxCommand("LOADMAP", "从/Maps/Custom/文件夹加载具有给定文件名的自定义地图。", true, LoadCustomMap),
+                new ChatBoxCommand("RANDOMSTARTS", "启用完全随机的起始位置（仅限基于泰伯利亚之日的游戏）。", true,
                     s => SetStartingLocationClearance(s)),
-                new ChatBoxCommand("ROLL", "Roll dice, for example /roll 3d6", false, RollDiceCommand),
-                new ChatBoxCommand("SAVEOPTIONS", "Save game option preset so it can be loaded later", false, HandleGameOptionPresetSaveCommand),
-                new ChatBoxCommand("LOADOPTIONS", "Load game option preset", true, HandleGameOptionPresetLoadCommand)
+                new ChatBoxCommand("ROLL", "掷骰子，例如/roll 3d6", false, RollDiceCommand),
+                new ChatBoxCommand("SAVEOPTIONS", "保存游戏选项预设，以便稍后加载", false, HandleGameOptionPresetSaveCommand),
+                new ChatBoxCommand("LOADOPTIONS", "加载游戏选项预设", true, HandleGameOptionPresetLoadCommand)
             };
         }
 
@@ -147,7 +147,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 chkPlayerReady.DisabledCheckedTexture = chkPlayerReady.CheckedTexture;
 
                 ReadyBoxes[i] = chkPlayerReady;
-                ddPlayerSides[i].AddItem("Spectator", AssetLoader.LoadTexture("spectatoricon.png"));
+                ddPlayerSides[i].AddItem("观察者", AssetLoader.LoadTexture("spectatoricon.png"));
             }
 
             ddGameMode.ClientRectangle = new Rectangle(
@@ -177,7 +177,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             tbChatInput = new XNAChatTextBox(WindowManager);
             tbChatInput.Name = "tbChatInput";
-            tbChatInput.Suggestion = "Type here to chat..";
+            tbChatInput.Suggestion = "在这里聊天..";
             tbChatInput.ClientRectangle = new Rectangle(lbChatMessages.X, 
                 lbChatMessages.Bottom + 3,
                 lbChatMessages.Width, 21);
@@ -190,14 +190,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             btnLockGame.Name = "btnLockGame";
             btnLockGame.ClientRectangle = new Rectangle(btnLaunchGame.Right + 12,
                 btnLaunchGame.Y, 133, 23);
-            btnLockGame.Text = "Lock Game";
+            btnLockGame.Text = "锁定房间";
             btnLockGame.LeftClick += BtnLockGame_LeftClick;
 
             chkAutoReady = new XNAClientCheckBox(WindowManager);
             chkAutoReady.Name = "chkAutoReady";
             chkAutoReady.ClientRectangle = new Rectangle(btnLaunchGame.Right + 12,
                 btnLaunchGame.Y + 2, 133, 23);
-            chkAutoReady.Text = "Auto-Ready";
+            chkAutoReady.Text = "自动准备";
             chkAutoReady.CheckedChanged += ChkAutoReady_CheckedChanged;
             chkAutoReady.Disable();
 
@@ -355,7 +355,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     {
                         if (!IsHost && chatBoxCommand.HostOnly)
                         {
-                            AddNotice(string.Format("/{0} is for game hosts only.", chatBoxCommand.Command));
+                            AddNotice(string.Format("/{0}仅房主可用。", chatBoxCommand.Command));
                             return;
                         }
 
@@ -364,14 +364,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     }
                 }
 
-                StringBuilder sb = new StringBuilder("To use a command, start your message with /<command>. Possible chat box commands: ");
+                StringBuilder sb = new StringBuilder("要使用命令，请使用 /<command> 开始你的消息。可能的聊天框命令：");
                 foreach (var chatBoxCommand in chatBoxCommands)
                 {
                     sb.Append(Environment.NewLine);
                     sb.Append(Environment.NewLine);
                     sb.Append($"{chatBoxCommand.Command}: {chatBoxCommand.Description}");
                 }
-                XNAMessageBox.Show(WindowManager, "Chat Box Command Help", sb.ToString());
+                XNAMessageBox.Show(WindowManager, "聊天框命令帮助", sb.ToString());
                 return;
             }
 
@@ -399,12 +399,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (!success)
             {
-                AddNotice("Command syntax: /FrameSendRate <number>");
+                AddNotice("命令语法：/FrameSendRate <number>");
                 return;
             }
 
             FrameSendRate = intValue;
-            AddNotice("FrameSendRate has been changed to " + intValue);
+            AddNotice("FrameSendRate已更改为" + intValue);
 
             OnGameOptionChanged();
             ClearReadyStatuses();
@@ -416,12 +416,12 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (!success)
             {
-                AddNotice("Command syntax: /MaxAhead <number>");
+                AddNotice("命令语法：/MaxAhead <number>");
                 return;
             }
 
             MaxAhead = intValue;
-            AddNotice("MaxAhead has been changed to " + intValue);
+            AddNotice("MaxAhead已更改为" + intValue);
 
             OnGameOptionChanged();
             ClearReadyStatuses();
@@ -433,18 +433,18 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (!success)
             {
-                AddNotice("Command syntax: /ProtocolVersion <number>.");
+                AddNotice("命令语法：/ProtocolVersion <number>.");
                 return;
             }
 
             if (!(intValue == 0 || intValue == 2))
             {
-                AddNotice("ProtocolVersion only allows values 0 and 2.");
+                AddNotice("ProtocolVersion只可以输入0和2。");
                 return;
             }
 
             ProtocolVersion = intValue;
-            AddNotice("ProtocolVersion has been changed to " + intValue);
+            AddNotice("ProtocolVersion已更改为" + intValue);
 
             OnGameOptionChanged();
             ClearReadyStatuses();
@@ -471,9 +471,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             {
                 RemoveStartingLocations = newValue;
                 if (RemoveStartingLocations)
-                    AddNotice("The game host has enabled completely random starting locations (only works for regular maps)..");
+                    AddNotice("房主已启用完全随机的起始位置（仅适用于常规地图）..");
                 else
-                    AddNotice("The game host has disabled completely random starting locations.");
+                    AddNotice("房主已禁用完全随机的起始位置。");
             }
         }
 
@@ -493,7 +493,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 {
                     if (!int.TryParse(parts[0], out dieCount) || !int.TryParse(parts[1], out dieSides))
                     {
-                        AddNotice("Invalid dice specified. Expected format: /roll <die count>d<die sides>");
+                        AddNotice("指定的骰子无效。格式：/roll <骰子数>d<骰子面数>");
                         return;
                     }
                 }
@@ -501,13 +501,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (dieCount > MAX_DICE || dieCount < 1)
             {
-                AddNotice("You can only between 1 to 10 dies at once.");
+                AddNotice("你一次只能投1到10个骰子。");
                 return;
             }
             
             if (dieSides > MAX_DIE_SIDES || dieSides < 2)
             {
-                AddNotice("You can only have between 2 and 100 sides in a die.");
+                AddNotice("一个骰子只能有2到100个面。");
                 return;
             }
 
@@ -584,7 +584,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         /// <param name="results">The results of the roll.</param>
         protected void PrintDiceRollResult(string senderName, int dieSides, int[] results)
         {
-            AddNotice($"{senderName} rolled {results.Length}d{dieSides} and got {string.Join(", ", results)}");
+            AddNotice($"{senderName}投了{results.Length}d{dieSides}并得到{string.Join("、", results)}");
         }
 
         private void HandleGameOptionPresetSaveCommand(string presetName)
@@ -597,9 +597,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private void HandleGameOptionPresetLoadCommand(string presetName)
         {
             if (LoadGameOptionPreset(presetName))
-                AddNotice("Game option preset loaded succesfully.");
+                AddNotice("游戏选项预设加载成功。");
             else
-                AddNotice($"Preset {presetName} not found!");
+                AddNotice($"预设{presetName}找不到！");
         }
 
         protected abstract void SendChatMessage(string message);
@@ -616,13 +616,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             UpdateMapPreviewBoxEnabledStatus();
             //MapPreviewBox.EnableContextMenu = IsHost;
 
-            btnLaunchGame.Text = IsHost ? "Launch Game" : "I'm Ready";
+            btnLaunchGame.Text = IsHost ? "启动游戏" : "准备好了";
 
             if (IsHost)
             {
                 ShowMapList();
 
-                btnLockGame.Text = "Lock Game";
+                btnLockGame.Text = "锁定房间";
                 btnLockGame.Enabled = true;
                 btnLockGame.Visible = true;
                 chkAutoReady.Disable();
@@ -661,12 +661,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lbChatMessages.Clear();
             lbChatMessages.TopIndex = 0;
 
-            lbChatMessages.AddItem("Type / to view a list of available chat commands.", Color.Silver, true);
+            lbChatMessages.AddItem("键入/以查看可用聊天命令的列表。", Color.Silver, true);
 
             if (SavedGameManager.GetSaveGameCount() > 0)
             {
-                lbChatMessages.AddItem("Multiplayer saved games from a previous match have been detected. " +
-                    "The saved games of the previous match will be deleted if you create new saves during this match.",
+                lbChatMessages.AddItem("已检测到上一场比赛的多人存档。如果你在本场比赛中创建新存档，上一场比赛的存档将被删除。",
                     Color.Yellow, true);
             }
         }
@@ -859,35 +858,35 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         }
 
         protected virtual void LockGameNotification() =>
-            AddNotice("You need to lock the game room before launching the game.");
+            AddNotice("你需要锁定房间才能开始游戏。");
 
         protected virtual void SharedColorsNotification() =>
-            AddNotice("Multiple human players cannot share the same color.");
+            AddNotice("多个人类玩家不能共享相同的颜色。");
 
         protected virtual void AISpectatorsNotification() =>
-            AddNotice("AI players don't enjoy spectating matches. They want some action!");
+            AddNotice("AI玩家不可以使用观察者。");
 
         protected virtual void SharedStartingLocationNotification() =>
-            AddNotice("Multiple players cannot share the same starting location on this map.");
+            AddNotice("多个玩家不能在此地图上共享相同的起始位置。");
 
         protected virtual void NotVerifiedNotification(int playerIndex)
         {
             if (playerIndex > -1 && playerIndex < Players.Count)
-                AddNotice(string.Format("Unable to launch game; player {0} hasn't been verified.", Players[playerIndex].Name));
+                AddNotice(string.Format("无法启动游戏；玩家{0}尚未经过验证。", Players[playerIndex].Name));
         }
 
         protected virtual void StillInGameNotification(int playerIndex)
         {
             if (playerIndex > -1 && playerIndex < Players.Count)
             {
-                AddNotice("Unable to launch game; player " + Players[playerIndex].Name +
-                    " is still playing the game you started previously.");
+                AddNotice("无法启动游戏；玩家" + Players[playerIndex].Name +
+                    "还在玩之前的游戏。");
             }
         }
 
         protected virtual void GetReadyNotification()
         {
-            AddNotice("The host wants to start the game but cannot because not all players are ready!");
+            AddNotice("房主无法开始游戏，因为有人还未准备。");
             if (!IsHost && !Players.Find(p => p.Name == ProgramConstants.PLAYERNAME).Ready)
                 sndGetReadySound.Play();
         }
@@ -895,13 +894,13 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         protected virtual void InsufficientPlayersNotification()
         {
             if (Map != null)
-                AddNotice("Unable to launch game: this map cannot be played with fewer than " + Map.MinPlayers + " players.");
+                AddNotice("无法启动游戏：该地图最少要" + Map.MinPlayers + "个玩家。");
         }
 
         protected virtual void TooManyPlayersNotification()
         {
             if (Map != null)
-                AddNotice("Unable to launch game: this map cannot be played with more than " + Map.MaxPlayers + " players.");
+                AddNotice("无法启动游戏：该地图最多只能" + Map.MaxPlayers + "个玩家。");
         }
 
         public virtual void Clear()

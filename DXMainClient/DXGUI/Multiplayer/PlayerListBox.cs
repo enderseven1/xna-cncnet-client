@@ -123,7 +123,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 */
 
                 // Player Name
-                string name = user.IsAdmin ? user.IRCUser.Name + " (Admin)" : user.IRCUser.Name;
+                string name = user.IsAdmin ? user.IRCUser.Name + "（管理员）" : user.IRCUser.Name;
                 x += lbItem.TextXPadding;
 
                 DrawStringWithShadow(name, FontIndex,
@@ -145,7 +145,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
             if (user.IsAdmin)
             {
-                item.Text = user.IRCUser.Name + " (Admin)";
+                item.Text = user.IRCUser.Name + "（管理员）";
                 item.TextColor = Color.Red;
                 item.Texture = adminGameIcon;
             }

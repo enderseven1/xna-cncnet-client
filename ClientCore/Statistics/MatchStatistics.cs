@@ -61,7 +61,7 @@ namespace ClientCore.Statistics
 
         public void ParseStatistics(string gamePath, string gameName, bool isLoadedGame)
         {
-            Logger.Log("Parsing game statistics.");
+            Logger.Log("解析游戏统计数据。");
 
             LengthInSeconds = (int)(DateTime.Now - DateAndTime).TotalSeconds;
 

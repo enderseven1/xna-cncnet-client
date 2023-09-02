@@ -31,19 +31,19 @@ namespace DTAClient.DXGUI.Generic
             lblDescription = new XNALabel(WindowManager);
             lblDescription.Name = "lblDescription";
             lblDescription.ClientRectangle = new Rectangle(12, 9, 0, 0);
-            lblDescription.Text = "Version {0} is available." + Environment.NewLine + Environment.NewLine +
-                "Manual download and installation is" + Environment.NewLine + "required.";
+            lblDescription.Text = "版本{0}可用。" + Environment.NewLine + Environment.NewLine +
+                "需要手动下载安装。";
 
             var btnDownload = new XNAClientButton(WindowManager);
             btnDownload.Name = "btnDownload";
             btnDownload.ClientRectangle = new Rectangle(12, 110, 110, 23);
-            btnDownload.Text = "View Downloads";
+            btnDownload.Text = "查看下载";
             btnDownload.LeftClick += BtnDownload_LeftClick;
 
             var btnClose = new XNAClientButton(WindowManager);
             btnClose.Name = "btnClose";
             btnClose.ClientRectangle = new Rectangle(147, 110, 92, 23);
-            btnClose.Text = "Close";
+            btnClose.Text = "关闭";
             btnClose.LeftClick += BtnClose_LeftClick;
 
             AddChild(lblDescription);

@@ -77,13 +77,13 @@ namespace ClientCore
 
             try
             {
-                Logger.Log("Writing spawn.ini for saved game.");
+                Logger.Log("写入存档的spawn.ini。");
                 File.Delete(ProgramConstants.GamePath + SAVED_GAMES_DIRECTORY + "/spawnSG.ini");
                 File.Copy(ProgramConstants.GamePath + "spawn.ini", ProgramConstants.GamePath + SAVED_GAMES_DIRECTORY + "/spawnSG.ini");
             }
             catch (Exception ex)
             {
-                Logger.Log("Writing spawn.ini for saved game failed! Exception message: " + ex.Message);
+                Logger.Log("写入存档的spawn.ini失败！异常信息：" + ex.Message);
                 return false;
             }
 
@@ -92,11 +92,11 @@ namespace ClientCore
 
         public static void RenameSavedGame()
         {
-            Logger.Log("Renaming saved game.");
+            Logger.Log("重命名存档。");
 
             if (saveRenameInProgress)
             {
-                Logger.Log("Save renaming in progress!");
+                Logger.Log("正在保存重命名！");
                 return;
             }
 
@@ -104,7 +104,7 @@ namespace ClientCore
 
             if (!File.Exists(saveGameDirectory + "SAVEGAME.NET"))
             {
-                Logger.Log("SAVEGAME.NET doesn't exist!");
+                Logger.Log("SAVEGAME.NET不存在！");
                 return;
             }
 
@@ -124,7 +124,7 @@ namespace ClientCore
             if (saveGameId == 999)
             {
                 if (File.Exists(saveGameDirectory + "SVGM_999.NET"))
-                    Logger.Log("1000 saved games exceeded! Overwriting previous MP save.");
+                    Logger.Log("超过1000个存档！覆盖以前的MP保存。");
             }
 
             string sgPath = saveGameDirectory + string.Format("SVGM_{0}.NET", saveGameId.ToString("D3"));
@@ -140,14 +140,14 @@ namespace ClientCore
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Renaming saved game failed! Exception message: " + ex.Message);
+                    Logger.Log("重命名存档失败！异常信息：" + ex.Message);
                 }
 
                 tryCount++;
 
                 if (tryCount > 40)
                 {
-                    Logger.Log("Renaming saved game failed 40 times! Aborting.");
+                    Logger.Log("重命名存档失败超过40次！中止。");
                     return;
                 }
 
@@ -156,12 +156,12 @@ namespace ClientCore
 
             saveRenameInProgress = false;
 
-            Logger.Log("Saved game SAVEGAME.NET succesfully renamed to " + Path.GetFileName(sgPath));
+            Logger.Log("存档SAVEGAME.NET成功改名为" + Path.GetFileName(sgPath));
         }
 
         public static bool EraseSavedGames()
         {
-            Logger.Log("Erasing previous MP saved games.");
+            Logger.Log("删除以前的MP存档。");
 
             try
             {
@@ -173,11 +173,11 @@ namespace ClientCore
             }
             catch (Exception ex)
             {
-                Logger.Log("Erasing previous MP saved games failed! Exception message: " + ex.Message);
+                Logger.Log("删除以前的MP存档失败！异常信息：" + ex.Message);
                 return false;
             }
 
-            Logger.Log("MP saved games succesfully erased.");
+            Logger.Log("MP存档已成功删除。");
             return true;
         }
     }

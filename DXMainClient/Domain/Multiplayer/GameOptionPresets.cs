@@ -18,7 +18,7 @@ namespace DTAClient.Domain.Multiplayer
             ProfileName = profileName;
 
             if (ProfileName.Contains('[') || ProfileName.Contains(']'))
-                throw new ArgumentException("Game option preset name cannot contain the [] characters.");
+                throw new ArgumentException("游戏选项预设名称不能包含[]字符。");
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace DTAClient.Domain.Multiplayer
         public static string IsNameValid(string name)
         {
             if (name.Contains('[') || name.Contains(']'))
-                return "Game option preset name cannot contain the [] characters.";
+                return "游戏选项预设名称不能包含[]字符。";
 
             return null;
         }
@@ -48,7 +48,7 @@ namespace DTAClient.Domain.Multiplayer
                 string[] splitValue = value.Split(':');
                 if (splitValue.Length != 2)
                 {
-                    Logger.Log($"Failed to parse game option preset value ({ ProfileName }, { keyName })");
+                    Logger.Log($"解析游戏选项预设值失败（{ ProfileName }，{ keyName }）");
                     continue;
                 }
 

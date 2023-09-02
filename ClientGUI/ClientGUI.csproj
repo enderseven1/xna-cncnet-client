@@ -134,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientGUICreator.cs" />
+    <Compile Include="IMENativeWindow.cs" />
+    <Compile Include="IMMCompositionResultHandler.cs" />
+    <Compile Include="IMMNativeMethods.cs" />
     <Compile Include="ToolTip.cs" />
     <Compile Include="UIDesignConstants.cs" />
     <Compile Include="XNAChatTextBox.cs" />

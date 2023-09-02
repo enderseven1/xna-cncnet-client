@@ -164,7 +164,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Logger.Log("Error when downloading tunnel server info: " + ex.Message);
+                Logger.Log("Error when downloading tunnel server信息： " + ex.Message);
                 Logger.Log("Retrying.");
                 try
                 {
@@ -174,7 +174,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                 {
                     if (!File.Exists(tunnelCacheFile))
                     {
-                        Logger.Log("Tunnel cache file doesn't exist!");
+                        Logger.Log("Tunnel cache file不存在！");
                         return returnValue;
                     }
                     else

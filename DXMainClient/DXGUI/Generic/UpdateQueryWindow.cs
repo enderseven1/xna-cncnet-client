@@ -42,7 +42,7 @@ namespace DTAClient.DXGUI.Generic
 
             var lblChangelogLink = new XNALinkLabel(WindowManager);
             lblChangelogLink.ClientRectangle = new Rectangle(12, 50, 0, 0);
-            lblChangelogLink.Text = "View Changelog";
+            lblChangelogLink.Text = "查看更新日志";
             lblChangelogLink.IdleColor = Color.Goldenrod;
             lblChangelogLink.Name = nameof(lblChangelogLink);
             lblChangelogLink.LeftClick += LblChangelogLink_LeftClick;
@@ -54,13 +54,13 @@ namespace DTAClient.DXGUI.Generic
 
             var btnYes = new XNAClientButton(WindowManager);
             btnYes.ClientRectangle = new Rectangle(12, 110, 75, 23);
-            btnYes.Text = "Yes";
+            btnYes.Text = "是";
             btnYes.LeftClick += BtnYes_LeftClick;
             btnYes.Name = nameof(btnYes);
 
             var btnNo = new XNAClientButton(WindowManager);
             btnNo.ClientRectangle = new Rectangle(164, 110, 75, 23);
-            btnNo.Text = "No";
+            btnNo.Text = "否";
             btnNo.LeftClick += BtnNo_LeftClick;
             btnNo.Name = nameof(btnNo);
 

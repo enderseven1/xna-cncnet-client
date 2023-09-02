@@ -151,7 +151,7 @@ namespace DTAClient.Domain.Multiplayer.LAN
                 catch (Exception ex)
                 {
                     //a socket error has occured
-                    Logger.Log("Socket error with client " + Name + "; removing. Message: " + ex.Message);
+                    Logger.Log("Socket error with client " + Name + "; removing. 信息：" + ex.Message);
                     ConnectionLost?.Invoke(this, EventArgs.Empty);
                     break;
                 }

@@ -29,7 +29,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             var lblDescription = new XNALabel(WindowManager);
             lblDescription.Name = "lblDescription";
             lblDescription.ClientRectangle = new Rectangle(12, 12, 0, 0);
-            lblDescription.Text = "Please enter the password for the game and click OK.";
+            lblDescription.Text = "请输入房间密码并点击确定。";
 
             ClientRectangle = new Rectangle(0, 0, lblDescription.Width + 24, 110);
 
@@ -42,14 +42,14 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnOK.Name = "btnOK";
             btnOK.ClientRectangle = new Rectangle(lblDescription.X,
                 ClientRectangle.Bottom - 35, 92, 23);
-            btnOK.Text = "OK";
+            btnOK.Text = "好";
             btnOK.LeftClick += BtnOK_LeftClick;
 
             var btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(Width - 104,
                 btnOK.Y, 92, 23);
-            btnCancel.Text = "Cancel";
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             AddChild(lblDescription);

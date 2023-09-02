@@ -44,8 +44,8 @@ namespace DTAClient.DXGUI.Generic
             lbSaveGameList = new XNAMultiColumnListBox(WindowManager);
             lbSaveGameList.Name = nameof(lbSaveGameList);
             lbSaveGameList.ClientRectangle = new Rectangle(13, 13, 574, 317);
-            lbSaveGameList.AddColumn("SAVED GAME NAME", 400);
-            lbSaveGameList.AddColumn("DATE / TIME", 174);
+            lbSaveGameList.AddColumn("存档名称", 400);
+            lbSaveGameList.AddColumn("日期/时间", 174);
             lbSaveGameList.BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
             lbSaveGameList.PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
             lbSaveGameList.SelectedIndexChanged += ListBox_SelectedIndexChanged;
@@ -54,21 +54,21 @@ namespace DTAClient.DXGUI.Generic
             btnLaunch = new XNAClientButton(WindowManager);
             btnLaunch.Name = nameof(btnLaunch);
             btnLaunch.ClientRectangle = new Rectangle(125, 345, 110, 23);
-            btnLaunch.Text = "Load";
+            btnLaunch.Text = "载入";
             btnLaunch.AllowClick = false;
             btnLaunch.LeftClick += BtnLaunch_LeftClick;
 
             btnDelete = new XNAClientButton(WindowManager);
             btnDelete.Name = nameof(btnDelete);
             btnDelete.ClientRectangle = new Rectangle(btnLaunch.Right + 10, btnLaunch.Y, 110, 23);
-            btnDelete.Text = "Delete";
+            btnDelete.Text = "删除";
             btnDelete.AllowClick = false;
             btnDelete.LeftClick += BtnDelete_LeftClick;
 
             btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = nameof(btnCancel);
             btnCancel.ClientRectangle = new Rectangle(btnDelete.Right + 10, btnLaunch.Y, 110, 23);
-            btnCancel.Text = "Cancel";
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             AddChild(lbSaveGameList);
@@ -103,7 +103,7 @@ namespace DTAClient.DXGUI.Generic
         private void BtnLaunch_LeftClick(object sender, EventArgs e)
         {
             SavedGame sg = savedGames[lbSaveGameList.SelectedIndex];
-            Logger.Log("Loading saved game " + sg.FileName);
+            Logger.Log("加载存档" + sg.FileName);
 
             File.Delete(ProgramConstants.GamePath + ProgramConstants.SPAWNER_SETTINGS);
             StreamWriter sw = new StreamWriter(ProgramConstants.GamePath + ProgramConstants.SPAWNER_SETTINGS);
@@ -137,14 +137,14 @@ namespace DTAClient.DXGUI.Generic
         private void BtnDelete_LeftClick(object sender, EventArgs e)
         {
             SavedGame sg = savedGames[lbSaveGameList.SelectedIndex];
-            var msgBox = new XNAMessageBox(WindowManager, "Delete Confirmation",
-                    "The following saved game will be deleted permanently:" + Environment.NewLine +
+            var msgBox = new XNAMessageBox(WindowManager, "删除确认",
+                    "将删除以下存档：" + Environment.NewLine +
                     Environment.NewLine +
-                    "Filename: " + sg.FileName + Environment.NewLine +
-                    "Saved game name: " + Renderer.GetSafeString(sg.GUIName, lbSaveGameList.FontIndex) + Environment.NewLine +
-                    "Date and time: " + sg.LastModified.ToString() + Environment.NewLine +
+                    "文件名：" + sg.FileName + Environment.NewLine +
+                    "存档名：" + Renderer.GetSafeString(sg.GUIName, lbSaveGameList.FontIndex) + Environment.NewLine +
+                    "日期/时间：" + sg.LastModified.ToString() + Environment.NewLine +
                     Environment.NewLine +
-                    "Are you sure you want to proceed?", XNAMessageBoxButtons.YesNo);
+                    "你确定要继续吗？", XNAMessageBoxButtons.YesNo);
             msgBox.Show();
             msgBox.YesClickedAction = DeleteMsgBox_YesClicked;
         }
@@ -153,7 +153,7 @@ namespace DTAClient.DXGUI.Generic
         {
             SavedGame sg = savedGames[lbSaveGameList.SelectedIndex];
 
-            Logger.Log("Deleting saved game " + sg.FileName);
+            Logger.Log("删除存档" + sg.FileName);
             File.Delete(ProgramConstants.GamePath + SAVED_GAMES_DIRECTORY + Path.DirectorySeparatorChar + sg.FileName);
             ListSaves();
         }
@@ -177,7 +177,7 @@ namespace DTAClient.DXGUI.Generic
 
             if (!Directory.Exists(ProgramConstants.GamePath + SAVED_GAMES_DIRECTORY))
             {
-                Logger.Log("Saved Games directory not found!");
+                Logger.Log("找不到存档文件夹！");
                 return;
             }
 

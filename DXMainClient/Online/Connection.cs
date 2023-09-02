@@ -180,7 +180,7 @@ namespace DTAClient.Online
 
                         if (!client.Connected)
                         {
-                            Logger.Log("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
+                            Logger.Log("连接到" + server.Host + " port " + server.Ports[i] + " timed out!");
                             continue; // Start all over again, using the next port
                         }
                         else if (client.Connected)
@@ -212,7 +212,7 @@ namespace DTAClient.Online
                 }
             }
 
-            Logger.Log("Connecting to CnCNet failed!");
+            Logger.Log("连接到CnCNet失败！");
             // Clear the failed server list in case connecting to all servers has failed
             failedServerIPs.Clear();
             _attemptingConnection = false;
@@ -253,7 +253,7 @@ namespace DTAClient.Online
 
                     if (errorTimes > 30) // TODO Figure out if this hacky check is actually necessary
                     {
-                        Logger.Log("Disconnected from CnCNet due to a socket error. Message: " + ex.Message);
+                        Logger.Log("Disconnected from CnCNet due to a socket error. 信息：" + ex.Message);
                         failedServerIPs.Add(currentConnectedServerIP);
                         connectionManager.OnConnectionLost(ex.Message);
                         break;
@@ -275,7 +275,7 @@ namespace DTAClient.Online
                     if (errorTimes > 30) // TODO Figure out if this hacky check is actually necessary
                     {
                         failedServerIPs.Add(currentConnectedServerIP);
-                        Logger.Log("Disconnected from CnCNet.");
+                        Logger.Log("与CnCNet断开连接。");
                         connectionManager.OnConnectionLost("Server disconnected.");
                         break;
                     }

@@ -37,16 +37,16 @@ namespace DTAClient
             ProgramConstants.RESOURCES_DIR = "Resources/" + themePath;
 
             if (!Directory.Exists(ProgramConstants.RESOURCES_DIR))
-                throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
+                throw new DirectoryNotFoundException("Theme directory找不到！" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
-            Logger.Log("Initializing updater.");
+            Logger.Log("初始化更新器。");
 
             File.Delete(ProgramConstants.GamePath + "version_u");
 
             CUpdater.Initialize(ClientConfiguration.Instance.LocalGame);
 
-            Logger.Log("Operating system: " + Environment.OSVersion.VersionString);
-            Logger.Log("Selected OS profile: " + MainClientConstants.OSId.ToString());
+            Logger.Log("操作系统：" + Environment.OSVersion.VersionString);
+            Logger.Log("选择的操作系统文件：" + MainClientConstants.OSId.ToString());
 
             // The query in CheckSystemSpecifications takes lots of time,
             // so we'll do it in a separate thread to make startup faster
@@ -63,7 +63,7 @@ namespace DTAClient
 
             if (Directory.Exists(ProgramConstants.GamePath + "Updater"))
             {
-                Logger.Log("Attempting to delete temporary updater directory.");
+                Logger.Log("尝试删除临时更新程序目录。");
                 try
                 {
                     Directory.Delete(ProgramConstants.GamePath + "Updater", true);
@@ -77,7 +77,7 @@ namespace DTAClient
             {
                 if (!Directory.Exists(ProgramConstants.GamePath + "Saved Games"))
                 {
-                    Logger.Log("Saved Games directory does not exist - attempting to create one.");
+                    Logger.Log("存档目录不存在 - 正在尝试创建一个。");
                     try
                     {
                         Directory.CreateDirectory(ProgramConstants.GamePath + "Saved Games");
@@ -90,7 +90,7 @@ namespace DTAClient
 
             if (CUpdater.CustomComponents != null)
             {
-                Logger.Log("Removing partial custom component downloads.");
+                Logger.Log("删除部分自定义组件下载。");
                 foreach (CustomComponent component in CUpdater.CustomComponents)
                 {
                     try
@@ -146,8 +146,8 @@ namespace DTAClient
                         }
                         catch (Exception e)
                         {
-                            Logger.Log("PruneFiles: Could not delete file " + fsEntry.Replace(ProgramConstants.GamePath, "") +
-                                ". Error message: " + e.Message);
+                            Logger.Log("PruneFiles: 不能删除文件" + fsEntry.Replace(ProgramConstants.GamePath, "") +
+                                "。错误信息：" + e.Message);
                             continue;
                         }
                     }
@@ -158,8 +158,8 @@ namespace DTAClient
             }
             catch (Exception ex)
             {
-                Logger.Log("PruneFiles: An error occured while pruning files from " +
-                    directoryPath.Replace(ProgramConstants.GamePath, "") + ". Message: " + ex.Message);
+                Logger.Log("PruneFiles: 修改文件时发生错误" +
+                    directoryPath.Replace(ProgramConstants.GamePath, "") + "。信息：" + ex.Message);
             }
         }
 #endif
@@ -215,7 +215,7 @@ namespace DTAClient
             {
                 Logger.Log("MigrateLogFiles: An error occured while moving log files from " +
                     currentDirectory.Replace(ProgramConstants.GamePath, "") + " to " +
-                    newDirectory.Replace(ProgramConstants.GamePath, "") + ". Message: " + ex.Message);
+                    newDirectory.Replace(ProgramConstants.GamePath, "") + ". 信息：" + ex.Message);
             }
         }
 
@@ -247,7 +247,7 @@ namespace DTAClient
                     if (currentBitsPerPixel != null && description != null)
                     {
                         if (currentBitsPerPixel.Value != null)
-                            videoController = videoController + "Video controller: " + description.Value.ToString().Trim() + " ";
+                            videoController = videoController + "视频控制器：" + description.Value.ToString().Trim() + " ";
                     }
                 }
 
@@ -260,14 +260,14 @@ namespace DTAClient
                 }
 
                 if (total != 0)
-                    memory = "Total physical memory: " + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
+                    memory = "总物理内存：" + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
 
-                Logger.Log(string.Format("Hardware info: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
+                Logger.Log(string.Format("硬件信息： {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
 
             }
             catch (Exception ex)
             {
-                Logger.Log("Checking system specifications failed. Message: " + ex.Message);
+                Logger.Log("检查系统规格失败。信息：" + ex.Message);
             }
         }
 
@@ -333,11 +333,11 @@ namespace DTAClient
         {
             if (!UserINISettings.Instance.WritePathToRegistry)
             {
-                Logger.Log("Skipping writing installation path to the Windows Registry because of INI setting.");
+                Logger.Log("由于INI设置，跳过将安装路径写入Windows注册表。");
                 return;
             }
 
-            Logger.Log("Writing installation path to the Windows registry.");
+            Logger.Log("将安装路径写入Windows注册表。");
 
             try
             {
@@ -348,7 +348,7 @@ namespace DTAClient
             }
             catch
             {
-                Logger.Log("Failed to write installation path to the Windows registry");
+                Logger.Log("将安装路径写入Windows注册表失败。");
             }
         }
     }

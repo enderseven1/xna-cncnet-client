@@ -25,7 +25,7 @@ namespace ClientCore
 
                 // Consolidate with the INI file that this INI file is based on
                 if (!File.Exists(path))
-                    Logger.Log(FileName + ": Base INI file not found! " + path);
+                    Logger.Log(FileName + "：Base的INI文件找不到！ " + path);
 
                 CCIniFile baseIni = new CCIniFile(path);
                 ConsolidateIniFiles(baseIni, this);

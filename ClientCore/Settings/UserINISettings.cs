@@ -15,13 +15,14 @@ namespace ClientCore
         private const string AUDIO = "Audio";
         private const string CUSTOM_SETTINGS = "Custom Settings";
         private const string COMPATIBILITY = "Compatibility";
+        private const string PHOBOS = "Phobos";
 
         public static UserINISettings Instance
         {
             get
             {
                 if (_instance == null)
-                    throw new InvalidOperationException("UserINISettings not initialized!");
+                    throw new InvalidOperationException("UserINISettings未初始化！");
 
                 return _instance;
             }
@@ -30,7 +31,7 @@ namespace ClientCore
         public static void Initialize(string iniFileName)
         {
             if (_instance != null)
-                throw new InvalidOperationException("UserINISettings has already been initialized!");
+                throw new InvalidOperationException("UserINISettings已经初始化！");
 
             var iniFile = new IniFile(ProgramConstants.GamePath + iniFileName);
 
@@ -49,17 +50,17 @@ namespace ClientCore
             BackBufferInVRAM = new BoolSetting(iniFile, VIDEO, "UseGraphicsPatch", true);
 #endif
 
-            IngameScreenWidth = new IntSetting(iniFile, VIDEO, "ScreenWidth", 1024);
-            IngameScreenHeight = new IntSetting(iniFile, VIDEO, "ScreenHeight", 768);
+            IngameScreenWidth = new IntSetting(iniFile, VIDEO, "ScreenWidth", Screen.PrimaryScreen.Bounds.Width); //1024
+            IngameScreenHeight = new IntSetting(iniFile, VIDEO, "ScreenHeight", Screen.PrimaryScreen.Bounds.Height); //768
             ClientTheme = new StringSetting(iniFile, MULTIPLAYER, "Theme", string.Empty);
             DetailLevel = new IntSetting(iniFile, OPTIONS, "DetailLevel", 2);
             Renderer = new StringSetting(iniFile, COMPATIBILITY, "Renderer", string.Empty);
             WindowedMode = new BoolSetting(iniFile, VIDEO, WINDOWED_MODE_KEY, false);
             BorderlessWindowedMode = new BoolSetting(iniFile, VIDEO, "NoWindowFrame", false);
 
-            ClientResolutionX = new IntSetting(iniFile, VIDEO, "ClientResolutionX", Screen.PrimaryScreen.Bounds.Width);
-            ClientResolutionY = new IntSetting(iniFile, VIDEO, "ClientResolutionY", Screen.PrimaryScreen.Bounds.Height);
-            BorderlessWindowedClient = new BoolSetting(iniFile, VIDEO, "BorderlessWindowedClient", true);
+            ClientResolutionX = new IntSetting(iniFile, VIDEO, "ClientResolutionX", 1280); //Screen.PrimaryScreen.Bounds.Width
+            ClientResolutionY = new IntSetting(iniFile, VIDEO, "ClientResolutionY", 800); //Screen.PrimaryScreen.Bounds.Height
+            BorderlessWindowedClient = new BoolSetting(iniFile, VIDEO, "BorderlessWindowedClient", false);
 
             ScoreVolume = new DoubleSetting(iniFile, AUDIO, "ScoreVolume", 0.7);
             SoundVolume = new DoubleSetting(iniFile, AUDIO, "SoundVolume", 0.7);
@@ -109,6 +110,8 @@ namespace ClientCore
             ForceLowestDetailLevel = new BoolSetting(iniFile, VIDEO, "ForceLowestDetailLevel", false);
             MinimizeWindowsOnGameStart = new BoolSetting(iniFile, OPTIONS, "MinimizeWindowsOnGameStart", true);
             AutoRemoveUnderscoresFromName = new BoolSetting(iniFile, OPTIONS, "AutoRemoveUnderscoresFromName", true);
+
+            ToolTipDescriptions = new BoolSetting(iniFile, PHOBOS, "ToolTipDescriptions", true);
         }
 
         public IniFile SettingsIni { get; private set; }
@@ -152,6 +155,7 @@ namespace ClientCore
         public BoolSetting TargetLines { get; private set; }
         public IntSetting ScrollCoasting { get; private set; }
         public BoolSetting Tooltips { get; private set; }
+        public BoolSetting ToolTipDescriptions { get; private set; }
         public BoolSetting ShowHiddenObjects { get; private set; }
         public BoolSetting MoveToUndeploy { get; private set; }
         public IntSetting TextBackgroundColor { get; private set; }
@@ -207,6 +211,7 @@ namespace ClientCore
 
         public BoolSetting AutoRemoveUnderscoresFromName { get; private set; }
 
+
         public bool IsGameFollowed(string gameName)
         {
             return SettingsIni.GetBooleanValue("Channels", gameName, false);
@@ -248,7 +253,7 @@ namespace ClientCore
 
         public void SaveSettings()
         {
-            Logger.Log("Writing settings INI.");
+            Logger.Log("写入设置INI。");
 
             ApplyDefaults();
 
