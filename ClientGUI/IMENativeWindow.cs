@@ -1,9 +1,9 @@
 ﻿
 using System;
 using System.Runtime.InteropServices;
-// #if WINFORMS
+#if WINFORMS
 using System.Windows.Forms;
-// #endif
+#endif
 namespace ClientGUI
 {
     public enum CompositionAttributes
@@ -57,7 +57,7 @@ namespace ClientGUI
     /// <summary>
     /// Native window class that handles IME.
     /// </summary>
-  //#if WINFORMS
+  #if WINFORMS
     public sealed class IMENativeWindow : NativeWindow, IDisposable
     {
 
@@ -431,5 +431,5 @@ namespace ClientGUI
 
         #endregion
     }
-// #endif
+#endif
 }

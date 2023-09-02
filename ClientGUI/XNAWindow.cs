@@ -15,23 +15,23 @@ namespace ClientGUI
     /// </summary>
     public class XNAWindow : XNAWindowBase
     {
-        // #if WINFORMS
+        #if WINFORMS
         private IMENativeWindow _nativeWnd;
-        // #endif
+        #endif
         private const string GENERIC_WINDOW_INI = "GenericWindow.ini";
         private const string GENERIC_WINDOW_SECTION = "GenericWindow";
         private const string EXTRA_CONTROLS = "ExtraControls";
 
         public XNAWindow(WindowManager windowManager) : base(windowManager)
         {
-            // #if WINFORMS
+            #if WINFORMS
             _nativeWnd = new IMENativeWindow(windowManager.GetWindowHandle());
             _nativeWnd.CandidatesReceived += (s, e) => { if (CandidatesReceived != null) CandidatesReceived(s, e); };
             _nativeWnd.CompositionReceived += (s, e) => { if (CompositionReceived != null) CompositionReceived(s, e); };
             _nativeWnd.ResultReceived += (s, e) => { if (ResultReceived != null) ResultReceived(s, e); };
 
             _nativeWnd.EnableIME();
-            // #endif
+            #endif
         }
 
         /// <summary>
