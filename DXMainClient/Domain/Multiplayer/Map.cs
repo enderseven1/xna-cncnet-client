@@ -384,7 +384,7 @@ namespace DTAClient.Domain.Multiplayer
 
                 if (GameModes.Length == 0)
                 {
-                    Logger.Log("自定义地图" + path + "没有游戏模式！");
+                    Logger.Log("Custom map " + path + " has no game modes!");
                     return false;
                 }
                 
@@ -647,7 +647,7 @@ namespace DTAClient.Domain.Multiplayer
         public string GetSizeString()
         {
             if (actualSize == null || actualSize.Length < 4)
-                return "不可用";
+                return "Not available";
             return actualSize[2] + "x" + actualSize[3];
         }
 

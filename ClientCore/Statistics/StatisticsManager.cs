@@ -31,11 +31,11 @@ namespace ClientCore.Statistics
         {
             if (!File.Exists(gamePath + SCORE_FILE_PATH))
             {
-                Logger.Log("统计信息文件不存在。");
+                Logger.Log("Skipping reading statistics because the file doesn't exist!");
                 return;
             }
 
-            Logger.Log("读取统计信息。");
+            Logger.Log("Reading statistics.");
 
             Statistics.Clear();
 
@@ -99,12 +99,12 @@ namespace ClientCore.Statistics
                         ReadDatabase(filePath, 6);
                         break;
                     default:
-                        throw new InvalidDataException("无效版本" + filePath + "：" + databaseVersion);
+                        throw new InvalidDataException("Invalid version for " + filePath + ": " + databaseVersion);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log("读取统计信息时出错：" + ex.Message);
+                Logger.Log("Error reading statistics: " + ex.Message);
             }
 
             return returnValue;
@@ -256,7 +256,7 @@ namespace ClientCore.Statistics
             }
             catch (Exception ex)
             {
-                Logger.Log("读取统计信息失败！信息：" + ex.Message);
+                Logger.Log("Reading the statistics file failed! Message: " + ex.Message);
             }
         }
 
@@ -268,7 +268,7 @@ namespace ClientCore.Statistics
             {
                 if (Statistics[i].LengthInSeconds < 60)
                 {
-                    Logger.Log("删除" + Statistics[i].MapName + "的比赛，因为时长太短。");
+                    Logger.Log("Removing match on " + Statistics[i].MapName + " because it's too short.");
                     Statistics.RemoveAt(i);
                     i--;
                     removedCount++;
@@ -290,13 +290,13 @@ namespace ClientCore.Statistics
             // Skip adding stats if the game only had one player, make exception for co-op since it doesn't recognize pre-placed houses as players.
             if (ms.GetPlayerCount() <= 1 && !ms.MapIsCoop)
             {
-                Logger.Log("跳过将比赛添加到统计数据，因为游戏只有一名玩家。");
+                Logger.Log("Skipping adding match to statistics because game only had one player.");
                 return;
             }
 
             if (ms.LengthInSeconds < 60)
             {
-                Logger.Log("由于比赛取消，因此跳过将比赛添加到统计数据中。");
+                Logger.Log("Skipping adding match to statistics because the game was cancelled.");
                 return;
             }
 
@@ -311,7 +311,7 @@ namespace ClientCore.Statistics
                 CreateDummyFile();
             }
 
-            Logger.Log("将游戏信息写入统计文件。");
+            Logger.Log("Writing game info to statistics file.");
 
             using (FileStream fs = File.Open(ProgramConstants.GamePath + SCORE_FILE_PATH, FileMode.Open, FileAccess.ReadWrite))
             {
@@ -322,12 +322,12 @@ namespace ClientCore.Statistics
                 ms.Write(fs);
             }
 
-            Logger.Log("统计数据写入完毕。");
+            Logger.Log("Finished writing statistics.");
         }
 
         private void CreateDummyFile()
         {
-            Logger.Log("创建空的统计文件。");
+            Logger.Log("Creating empty statistics file.");
 
             StreamWriter sw = new StreamWriter(File.Create(ProgramConstants.GamePath + SCORE_FILE_PATH));
             sw.Write(VERSION);

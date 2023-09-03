@@ -34,7 +34,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
             lblGameInformation = new XNALabel(WindowManager);
             lblGameInformation.FontIndex = 1;
-            lblGameInformation.Text = "游戏信息";
+            lblGameInformation.Text = "GAME INFORMATION";
 
             lblGameMode = new XNALabel(WindowManager);
             lblGameMode.ClientRectangle = new Rectangle(6, 30, 0, 0);
@@ -89,20 +89,20 @@ namespace DTAClient.DXGUI.Multiplayer
 
         public void SetInfo(GenericHostedGame game)
         {
-            lblGameMode.Text = Renderer.GetStringWithLimitedWidth("游戏模式：" + Renderer.GetSafeString(game.GameMode, lblGameMode.FontIndex),
+            lblGameMode.Text = Renderer.GetStringWithLimitedWidth("Game mode: " + Renderer.GetSafeString(game.GameMode, lblGameMode.FontIndex),
                 lblGameMode.FontIndex, Width - lblGameMode.X * 2);
             lblGameMode.Visible = true;
-            lblMap.Text = Renderer.GetStringWithLimitedWidth("地图：" + Renderer.GetSafeString(game.Map, lblMap.FontIndex),
+            lblMap.Text = Renderer.GetStringWithLimitedWidth("Map: " + Renderer.GetSafeString(game.Map, lblMap.FontIndex),
                 lblMap.FontIndex, Width - lblMap.X * 2);
             lblMap.Visible = true;
-            lblGameVersion.Text = "游戏版本：" + Renderer.GetSafeString(game.GameVersion, lblGameVersion.FontIndex);
+            lblGameVersion.Text = "Game version: " + Renderer.GetSafeString(game.GameVersion, lblGameVersion.FontIndex);
             lblGameVersion.Visible = true;
-            lblHost.Text = "房主：" + Renderer.GetSafeString(game.HostName, lblHost.FontIndex);
+            lblHost.Text = "Host: " + Renderer.GetSafeString(game.HostName, lblHost.FontIndex);
             lblHost.Visible = true;
-            lblPing.Text = game.Ping > 0 ? "Ping：" + game.Ping.ToString() + " ms" : "Ping：未知";
+            lblPing.Text = game.Ping > 0 ? "Ping: " + game.Ping.ToString() + " ms" : "Ping: Unknown";
             lblPing.Visible = true;
             lblPlayers.Visible = true;
-            lblPlayers.Text = "玩家 (" + game.Players.Length + " / " + game.MaxPlayers + ")：";
+            lblPlayers.Text = "Players (" + game.Players.Length + " / " + game.MaxPlayers + "):";
 
             for (int i = 0; i < game.Players.Length && i < MAX_PLAYERS; i++)
             {

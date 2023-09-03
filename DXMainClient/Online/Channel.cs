@@ -117,7 +117,7 @@ namespace DTAClient.Online
 
             if (notifyOnUserListChange)
             {
-                AddMessage(new ChatMessage(user.IRCUser.Name + "加入了" + UIName + "。"));
+                AddMessage(new ChatMessage(user.IRCUser.Name + " has joined " + UIName + "."));
             }
 
 #if !YR
@@ -158,7 +158,7 @@ namespace DTAClient.Online
                     users.Clear();
                 }
 
-                AddMessage(new ChatMessage(userName + "被踢出了" + UIName + "。"));
+                AddMessage(new ChatMessage(userName + " has been kicked from " + UIName + "."));
 
                 UserKicked?.Invoke(this, new UserNameEventArgs(userName));
             }
@@ -170,7 +170,7 @@ namespace DTAClient.Online
             {
                 if (notifyOnUserListChange)
                 {
-                    AddMessage(new ChatMessage(userName + "退出了" + UIName + "。"));
+                    AddMessage(new ChatMessage(userName + " has left from " + UIName + "."));
                 }
 
                 UserLeft?.Invoke(this, new UserNameEventArgs(userName));
@@ -183,7 +183,7 @@ namespace DTAClient.Online
             {
                 if (notifyOnUserListChange && users.Find(userName) != null)
                 {
-                    AddMessage(new ChatMessage(userName + "退出了CnCNet。"));
+                    AddMessage(new ChatMessage(userName + " has quit from CnCNet."));
                 }
 
                 UserQuitIRC?.Invoke(this, new UserNameEventArgs(userName));

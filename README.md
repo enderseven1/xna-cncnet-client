@@ -1,10 +1,3 @@
-# CnCNet Client modified by Metadorius and Shimada Mizuki #
-
-This client is modified by Metadorius and me. I translated it to Chinese and add a tag of my mod in it.
-Includes a setting item for Tooltip of phobos. And you can use IME in it.
-
-Thanks for JunYue_OwO, he/she made IME for this client.
-
 # CnCNet Client #
 
 The MonoGame / XNA CnCNet client, a platform for playing classic Command & Conquer games and their mods both online and offline. Supports setting up and launching both singleplayer and multiplayer games with [a CnCNet game spawner](https://github.com/CnCNet/ts-patches). Includes an IRC-based chat client with advanced features like private messaging, a friend list, a configurable game lobby, flexible and moddable UI graphics, and extras like game setting configuration and keeping track of match statistics. And much more!

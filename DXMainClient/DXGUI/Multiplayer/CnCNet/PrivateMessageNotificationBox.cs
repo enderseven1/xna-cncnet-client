@@ -44,7 +44,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             XNALabel lblHeader = new XNALabel(WindowManager);
             lblHeader.Name = "lblHeader";
             lblHeader.FontIndex = 1;
-            lblHeader.Text = "私信列表";
+            lblHeader.Text = "PRIVATE MESSAGE";
             AddChild(lblHeader);
             lblHeader.CenterOnParent();
             lblHeader.ClientRectangle = new Rectangle(lblHeader.X,
@@ -57,7 +57,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             XNALabel lblHint = new XNALabel(WindowManager);
             lblHint.Name = "lblHint";
             lblHint.RemapColor = UISettings.ActiveSettings.SubtleTextColor;
-            lblHint.Text = "按F4响应";
+            lblHint.Text = "Press F4 to respond";
 
             AddChild(lblHint);
             lblHint.CenterOnParent();
@@ -82,7 +82,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblMessage.Name = "lblMessage";
             lblMessage.ClientRectangle = new Rectangle(12, lblSender.Bottom + 6, 0, 0);
             lblMessage.RemapColor = AssetLoader.GetColorFromString(ClientConfiguration.Instance.ReceivedPMColor);
-            lblMessage.Text = "这是一条测试信息。";
+            lblMessage.Text = "This is a test message.";
 
             AddChild(gameIconPanel);
             AddChild(linePanel);
@@ -97,7 +97,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             Visible = true;
             Enabled = true;
             gameIconPanel.BackgroundTexture = gameIcon;
-            lblSender.Text = sender + "：";
+            lblSender.Text = sender + ":";
             lblMessage.Text = message;
 
             if (lblMessage.Right > Width)

@@ -37,7 +37,7 @@ namespace DTAClient.DXGUI.Multiplayer
             lblDescription = new XNALabel(WindowManager);
             lblDescription.Name = "lblDescription";
             lblDescription.FontIndex = 1;
-            lblDescription.Text = "选择会话类型";
+            lblDescription.Text = "SELECT SESSION TYPE";
 
             AddChild(lblDescription);
 
@@ -54,7 +54,7 @@ namespace DTAClient.DXGUI.Multiplayer
             btnNewGame.IdleTexture = AssetLoader.LoadTexture("133pxbtn.png");
             btnNewGame.HoverTexture = AssetLoader.LoadTexture("133pxbtn_c.png");
             btnNewGame.FontIndex = 1;
-            btnNewGame.Text = "新建房间";
+            btnNewGame.Text = "New Game";
             btnNewGame.HoverSoundEffect = new EnhancedSoundEffect("button.wav");
             btnNewGame.LeftClick += BtnNewGame_LeftClick;
 
@@ -65,7 +65,7 @@ namespace DTAClient.DXGUI.Multiplayer
             btnLoadGame.IdleTexture = btnNewGame.IdleTexture;
             btnLoadGame.HoverTexture = btnNewGame.HoverTexture;
             btnLoadGame.FontIndex = 1;
-            btnLoadGame.Text = "开始游戏";
+            btnLoadGame.Text = "Load Game";
             btnLoadGame.HoverSoundEffect = btnNewGame.HoverSoundEffect;
             btnLoadGame.LeftClick += BtnLoadGame_LeftClick;
 
@@ -76,7 +76,7 @@ namespace DTAClient.DXGUI.Multiplayer
             btnCancel.IdleTexture = btnNewGame.IdleTexture;
             btnCancel.HoverTexture = btnNewGame.HoverTexture;
             btnCancel.FontIndex = 1;
-            btnCancel.Text = "取消";
+            btnCancel.Text = "Cancel";
             btnCancel.HoverSoundEffect = btnNewGame.HoverSoundEffect;
             btnCancel.LeftClick += BtnCancel_LeftClick;
 

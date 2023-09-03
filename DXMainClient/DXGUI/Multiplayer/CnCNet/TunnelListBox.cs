@@ -29,10 +29,10 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             Height = 200;
             PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
             BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
-            AddColumn("名称", 230);
-            AddColumn("官方", 70);
+            AddColumn("Name", 230);
+            AddColumn("Official", 70);
             AddColumn("Ping", 76);
-            AddColumn("玩家", 90);
+            AddColumn("Players", 90);
             AllowRightClickUnselect = false;
             AllowKeyboardInput = true;
         }
@@ -76,7 +76,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 info.Add(tunnel.Name);
                 info.Add(Conversions.BooleanToString(tunnel.Official, BooleanStringStyle.YESNO));
                 if (tunnel.PingInMs < 0)
-                    info.Add("未知");
+                    info.Add("Unknown");
                 else
                     info.Add(tunnel.PingInMs + " ms");
                 info.Add(tunnel.Clients + " / " + tunnel.MaxClients);
@@ -126,7 +126,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             CnCNetTunnel tunnel = tunnelHandler.Tunnels[tunnelIndex];
 
             if (tunnel.PingInMs == -1)
-                lbItem.Text = "未知";
+                lbItem.Text = "Unknown";
             else
             {
                 lbItem.Text = tunnel.PingInMs + " ms";

@@ -39,8 +39,8 @@ namespace ClientCore
 
         public static readonly Encoding LAN_ENCODING = Encoding.UTF8;
 
-        public static string GAME_VERSION = "N/A";
-        private static string PlayerName = "无名氏";
+        public static string GAME_VERSION = "Undefined";
+        private static string PlayerName = "No name";
 
         public static string PLAYERNAME
         {

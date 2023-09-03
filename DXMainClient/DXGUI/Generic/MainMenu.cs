@@ -204,7 +204,7 @@ namespace DTAClient.DXGUI.Generic
 
             XNALabel lblCnCNetStatus = new XNALabel(WindowManager);
             lblCnCNetStatus.Name = nameof(lblCnCNetStatus);
-            lblCnCNetStatus.Text = "在线玩家数：";
+            lblCnCNetStatus.Text = "DTA players on CnCNet:";
             lblCnCNetStatus.ClientRectangle = new Rectangle(12, 9, 0, 0);
 
             lblCnCNetPlayerCount = new XNALabel(WindowManager);
@@ -350,7 +350,7 @@ namespace DTAClient.DXGUI.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("刷新设置失败！异常信息：" + ex.Message);
+                Logger.Log("Refreshing settings failed! Exception message: " + ex.Message);
                 // We don't want to show the dialog when starting a game
                 //XNAMessageBox.Show(WindowManager, "Saving settings failed",
                 //    "Saving settings failed! Error message: " + ex.Message);
@@ -395,16 +395,19 @@ namespace DTAClient.DXGUI.Generic
                 .FindAll(f => !string.IsNullOrWhiteSpace(f) && !File.Exists(ProgramConstants.GamePath + f));
 
             if (absentFiles.Count > 0)
-                XNAMessageBox.Show(WindowManager, "丢失文件",
+                XNAMessageBox.Show(WindowManager, "Missing Files",
 #if ARES
-                    "你的游戏似乎不完整，请将游戏运行所必需的文件置于游戏目录：" +
+                    "You are missing Yuri's Revenge files that are required" + Environment.NewLine +
+                    "to play this mod! Yuri's Revenge mods are not standalone," + Environment.NewLine +
+                    "so you need a copy of following Yuri's Revenge (v. 1.001)" + Environment.NewLine +
+                    "files placed in the mod folder to play the mod:" +
 #else
-                    "缺少以下必需文件：" +
+                    "The following required files are missing:" +
 #endif
                     Environment.NewLine + Environment.NewLine +
                     String.Join(Environment.NewLine, absentFiles) +
                     Environment.NewLine + Environment.NewLine +
-                    "你不能没有这些文件");
+                    "You won't be able to play without those files.");
         }
 
         private void CheckForbiddenFiles()
@@ -413,17 +416,20 @@ namespace DTAClient.DXGUI.Generic
                 .FindAll(f => !string.IsNullOrWhiteSpace(f) && File.Exists(ProgramConstants.GamePath + f));
 
             if (presentFiles.Count > 0)
-                XNAMessageBox.Show(WindowManager, "检测到有害文件",
+                XNAMessageBox.Show(WindowManager, "Interfering Files Detected",
 #if TS
-                    "请不要将本MOD放置于其他游戏之上。" +
+                    "You have installed the mod on top of a Tiberian Sun" + Environment.NewLine +
+                    "copy! This mod is standalone, therefore you have to" + Environment.NewLine +
+                    "install it in an empty folder. Otherwise the mod won't" + Environment.NewLine +
+                    "function correctly." +
                     Environment.NewLine + Environment.NewLine +
-                    "请删除以下文件。"
+                    "Please reinstall the mod into an empty folder to play."
 #else
-                    "存在以下干扰文件：" +
+                    "The following interfering files are present:" +
                     Environment.NewLine + Environment.NewLine +
                     String.Join(Environment.NewLine, presentFiles) +
                     Environment.NewLine + Environment.NewLine +
-                    "游戏无法在拥有这些文件时正常运行。"
+                    "The mod won't work correctly without those files removed."
 #endif
                     );
         }
@@ -440,10 +446,10 @@ namespace DTAClient.DXGUI.Generic
                 UserINISettings.Instance.IsFirstRun.Value = false;
                 UserINISettings.Instance.SaveSettings();
 
-                firstRunMessageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "初次安装",
-                    string.Format("你已经安装了{0}。" + Environment.NewLine +
-                    "强烈建议你在游玩前配置你的设置。" +
-                    Environment.NewLine + "你想现在配置吗？", ClientConfiguration.Instance.LocalGame));
+                firstRunMessageBox = XNAMessageBox.ShowYesNoDialog(WindowManager, "Initial Installation",
+                    string.Format("You have just installed {0}." + Environment.NewLine +
+                    "It's highly recommended that you configure your settings before playing." +
+                    Environment.NewLine + "Do you want to configure them now?", ClientConfiguration.Instance.LocalGame));
                 firstRunMessageBox.YesClickedAction = FirstRunMessageBox_YesClicked;
                 firstRunMessageBox.NoClickedAction = FirstRunMessageBox_NoClicked;
             }
@@ -522,7 +528,7 @@ namespace DTAClient.DXGUI.Generic
             {
                 if (CUpdater.UPDATEMIRRORS.Count < 1)
                 {
-                    lblUpdateStatus.Text = "没有可用更新下载镜像。";
+                    lblUpdateStatus.Text = "No update download mirrors available.";
                     lblUpdateStatus.DrawUnderline = false;
                 }
                 else if (UserINISettings.Instance.CheckForUpdates)
@@ -531,7 +537,7 @@ namespace DTAClient.DXGUI.Generic
                 }
                 else
                 {
-                    lblUpdateStatus.Text = "点击检查更新。";
+                    lblUpdateStatus.Text = "Click to check for updates.";
                 }
             }
 
@@ -545,17 +551,18 @@ namespace DTAClient.DXGUI.Generic
         private void UpdateWindow_UpdateFailed(object sender, UpdateFailureEventArgs e)
         {
             innerPanel.Hide();
-            lblUpdateStatus.Text = "更新失败！点击重试。";
+            lblUpdateStatus.Text = "Updating failed! Click to retry.";
             lblUpdateStatus.DrawUnderline = true;
             lblUpdateStatus.Enabled = true;
             UpdateInProgress = false;
 
             innerPanel.Show(null); // Darkening
-            XNAMessageBox msgBox = new XNAMessageBox(WindowManager, "更新失败",
-                string.Format("更新时发生错误。返回错误：{0}" +
+            XNAMessageBox msgBox = new XNAMessageBox(WindowManager, "Update failed",
+                string.Format("An error occured while updating. Returned error was: {0}" +
                 Environment.NewLine + Environment.NewLine +
-                "如果你已连接网络，并且你的防火墙没有阻止{1}，并且该问题可以重现，请通过" + Environment.NewLine +
-                "{2}与我们联系以获得支持。",
+                "If you are connected to the Internet and your firewall isn't blocking" + Environment.NewLine +
+                "{1}, and the issue is reproducible, contact us at " + Environment.NewLine +
+                "{2} for support.",
                 e.Reason, CUpdater.CURRENT_LAUNCHER_NAME, MainClientConstants.SUPPORT_URL_SHORT), XNAMessageBoxButtons.OK);
             msgBox.OKClickedAction = MsgBox_OKClicked;
             msgBox.Show();
@@ -569,7 +576,7 @@ namespace DTAClient.DXGUI.Generic
         private void UpdateWindow_UpdateCancelled(object sender, EventArgs e)
         {
             innerPanel.Hide();
-            lblUpdateStatus.Text = "更新已取消。点击重试。";
+            lblUpdateStatus.Text = "The update was cancelled. Click to retry.";
             lblUpdateStatus.DrawUnderline = true;
             lblUpdateStatus.Enabled = true;
             UpdateInProgress = false;
@@ -578,7 +585,7 @@ namespace DTAClient.DXGUI.Generic
         private void UpdateWindow_UpdateCompleted(object sender, EventArgs e)
         {
             innerPanel.Hide();
-            lblUpdateStatus.Text = MainClientConstants.GAME_NAME_SHORT + "成功更新到v." + CUpdater.GameVersion;
+            lblUpdateStatus.Text = MainClientConstants.GAME_NAME_SHORT + " was succesfully updated to v." + CUpdater.GameVersion;
             lblVersion.Text = CUpdater.GameVersion;
             UpdateInProgress = false;
             lblUpdateStatus.Enabled = true;
@@ -609,7 +616,7 @@ namespace DTAClient.DXGUI.Generic
             innerPanel.Hide();
             innerPanel.UpdateWindow.ForceUpdate();
             innerPanel.Show(innerPanel.UpdateWindow);
-            lblUpdateStatus.Text = "强制更新...";
+            lblUpdateStatus.Text = "Force updating...";
         }
 
         /// <summary>
@@ -621,7 +628,7 @@ namespace DTAClient.DXGUI.Generic
                 return;
             CUpdater.CheckForUpdates();
             lblUpdateStatus.Enabled = false;
-            lblUpdateStatus.Text = "检查更新...";
+            lblUpdateStatus.Text = "Checking for updates...";
             try
             {
                 StatisticsSender.Instance.SendUpdate();
@@ -647,13 +654,13 @@ namespace DTAClient.DXGUI.Generic
 
             if (CUpdater.DTAVersionState == VersionState.UPTODATE)
             {
-                lblUpdateStatus.Text = MainClientConstants.GAME_NAME_SHORT + "已是最新。";
+                lblUpdateStatus.Text = MainClientConstants.GAME_NAME_SHORT + " is up to date.";
                 lblUpdateStatus.Enabled = true;
                 lblUpdateStatus.DrawUnderline = false;
             }
             else if (CUpdater.DTAVersionState == VersionState.OUTDATED && CUpdater.ManualUpdateRequired)
             {
-                lblUpdateStatus.Text = "有更新，需要手动下载安装。";
+                lblUpdateStatus.Text = "An update is available. Manual download & installation required.";
                 lblUpdateStatus.Enabled = true;
                 lblUpdateStatus.DrawUnderline = false;
                 innerPanel.ManualUpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, CUpdater.ManualDownloadURL);
@@ -662,13 +669,13 @@ namespace DTAClient.DXGUI.Generic
             }
             else if (CUpdater.DTAVersionState == VersionState.OUTDATED)
             {
-                lblUpdateStatus.Text = "有更新。";
+                lblUpdateStatus.Text = "An update is available.";
                 innerPanel.UpdateQueryWindow.SetInfo(CUpdater.ServerGameVersion, CUpdater.UpdateSizeInKb);
                 innerPanel.Show(innerPanel.UpdateQueryWindow);
             }
             else if (CUpdater.DTAVersionState == VersionState.UNKNOWN)
             {
-                lblUpdateStatus.Text = "检查更新失败！点击重试。";
+                lblUpdateStatus.Text = "Checking for updates failed! Click to retry.";
                 lblUpdateStatus.Enabled = true;
                 lblUpdateStatus.DrawUnderline = true;
             }
@@ -689,7 +696,8 @@ namespace DTAClient.DXGUI.Generic
 
             if ((firstRunMessageBox != null && firstRunMessageBox.Visible) || optionsWindow.Enabled)
             {
-                // 如果自定义组件在首次运行时已过期或选项窗口已打开，则不显示对话框
+                // If the custom components are out of date on the first run
+                // or the options window is already open, don't show the dialog
                 customComponentDialogQueued = true;
                 return;
             }
@@ -697,8 +705,9 @@ namespace DTAClient.DXGUI.Generic
             customComponentDialogQueued = false;
 
             XNAMessageBox ccMsgBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                "自定义组件有更新",
-                "自定义组件有更新，是否打开组件菜单？");
+                "Custom Component Updates Available",
+                "Updates for custom components are available. Do you want to open" + Environment.NewLine +
+                "the Options menu where you can update the custom components?");
             ccMsgBox.YesClickedAction = CCMsgBox_YesClicked;
         }
 
@@ -709,13 +718,13 @@ namespace DTAClient.DXGUI.Generic
         }
 
         /// <summary>
-        /// 用户拒绝更新时调用。
+        /// Called when the user has declined an update.
         /// </summary>
         private void UpdateQueryWindow_UpdateDeclined(object sender, EventArgs e)
         {
             UpdateQueryWindow uqw = (UpdateQueryWindow)sender;
             innerPanel.Hide();
-            lblUpdateStatus.Text = "有更新，点击安装。";
+            lblUpdateStatus.Text = "An update is available, click to install.";
             lblUpdateStatus.Enabled = true;
             lblUpdateStatus.DrawUnderline = true;
         }
@@ -728,7 +737,7 @@ namespace DTAClient.DXGUI.Generic
             innerPanel.Hide();
             innerPanel.UpdateWindow.SetData(CUpdater.ServerGameVersion);
             innerPanel.Show(innerPanel.UpdateWindow);
-            lblUpdateStatus.Text = "更新...";
+            lblUpdateStatus.Text = "Updating...";
             UpdateInProgress = true;
             CUpdater.StartAsyncUpdate();
         }
@@ -851,7 +860,7 @@ namespace DTAClient.DXGUI.Generic
                 }
                 catch (InvalidOperationException ex)
                 {
-                    Logger.Log("播放主菜单音乐失败！" + ex.Message);
+                    Logger.Log("Playing main menu music failed! " + ex.Message);
                 }
             }
         }
@@ -905,7 +914,7 @@ namespace DTAClient.DXGUI.Generic
 
         private void ExitClient()
         {
-            Logger.Log("退出。");
+            Logger.Log("Exiting.");
             WindowManager.CloseGame();
 #if !XNA
             Thread.Sleep(1000);
@@ -945,7 +954,7 @@ namespace DTAClient.DXGUI.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("关闭音乐失败！信息：" + ex.Message);
+                Logger.Log("Turning music off failed! Message: " + ex.Message);
             }
         }
 
@@ -966,7 +975,7 @@ namespace DTAClient.DXGUI.Generic
             }
             catch (Exception e)
             {
-                Logger.Log("检查媒体播放器可用性时遇到错误。错误信息：" + e.Message);
+                Logger.Log("Error encountered when checking media player availability. Error message: " + e.Message);
                 return false;
             }
         }
@@ -989,6 +998,6 @@ namespace DTAClient.DXGUI.Generic
             mapEditorProcess.Start();
         }
 
-        public string GetSwitchName() => "主菜单";
+        public string GetSwitchName() => "Main Menu";
     }
 }

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("DTA CnCNet Client UI Library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rampastring")]
-[assembly: AssemblyProduct("Dawn of Tiberian Age")]
+[assembly: AssemblyProduct("Dawn of the Tiberium Age")]
 [assembly: AssemblyCopyright("Copyright © Rampastring 2014-2020")]
-[assembly: AssemblyTrademark("Dawn of Tiberian Age")]
+[assembly: AssemblyTrademark("Dawn of the Tiberium Age")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

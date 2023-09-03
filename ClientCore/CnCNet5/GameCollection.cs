@@ -29,7 +29,7 @@ namespace ClientCore.CnCNet5
                     GameBroadcastChannel = "#cncnet-dta-games",
                     InternalName = "dta",
                     RegistryInstallPath = "HKCU\\Software\\TheDawnOfTheTiberiumAge",
-                    UIName = "泰伯利亚时代黎明",
+                    UIName = "Dawn of the Tiberium Age",
                     Texture = AssetLoader.TextureFromImage(Resources.dtaicon)
                 },
 
@@ -40,7 +40,7 @@ namespace ClientCore.CnCNet5
                     GameBroadcastChannel = "#cncnet-ti-games",
                     InternalName = "ti",
                     RegistryInstallPath = "HKCU\\Software\\TwistedInsurrection",
-                    UIName = "扭曲的暴动",
+                    UIName = "Twisted Insurrection",
                     Texture = AssetLoader.TextureFromImage(Resources.tiicon)
                 },
 
@@ -51,7 +51,7 @@ namespace ClientCore.CnCNet5
                     GameBroadcastChannel = "#cncnet-ts-games",
                     InternalName = "ts",
                     RegistryInstallPath = "HKLM\\Software\\Westwood\\Tiberian Sun",
-                    UIName = "泰伯利亚之日",
+                    UIName = "Tiberian Sun",
                     Texture = AssetLoader.TextureFromImage(Resources.tsicon)
                 },
 
@@ -62,7 +62,7 @@ namespace ClientCore.CnCNet5
                     GameBroadcastChannel = "#cncnet-mo-games",
                     InternalName = "mo",
                     RegistryInstallPath = "HKCU\\Software\\MentalOmega",
-                    UIName = "心灵终结",
+                    UIName = "Mental Omega",
                     Texture = AssetLoader.TextureFromImage(Resources.moicon)
                 },
 
@@ -73,7 +73,7 @@ namespace ClientCore.CnCNet5
                     GameBroadcastChannel = "#cncnet-yr-games",
                     InternalName = "yr",
                     RegistryInstallPath = "HKLM\\Software\\Westwood\\Yuri's Revenge",
-                    UIName = "尤里的复仇",
+                    UIName = "Yuri's Revenge",
                     Texture = AssetLoader.TextureFromImage(Resources.yricon)
                 },
 
@@ -84,7 +84,7 @@ namespace ClientCore.CnCNet5
                     GameBroadcastChannel = "#redres-games",
                     InternalName = "rr",
                     RegistryInstallPath = "HKML\\Software\\RedResurrection",
-                    UIName = "红色复活",
+                    UIName = "YR Red-Resurrection",
                     Texture = AssetLoader.TextureFromImage(Resources.rricon)
                 },
 
@@ -95,30 +95,8 @@ namespace ClientCore.CnCNet5
                     GameBroadcastChannel = "#cncreloaded-games",
                     InternalName = "cncr",
                     RegistryInstallPath = "HKCU\\Software\\CnCReloaded",
-                    UIName = "C&C: 重制版",
+                    UIName = "C&C: Reloaded",
                     Texture = AssetLoader.TextureFromImage(Resources.cncricon)
-                },
-
-                new CnCNetGame()
-                {
-                    ChatChannel = "#cncnet-wg",
-                    ClientExecutableName = "HKLYClient.exe",
-                    GameBroadcastChannel = "#cncnet-wg-games",
-                    InternalName = "wg",
-                    RegistryInstallPath = "HKCU\\Software\\WonderfulGarden",
-                    UIName = "欢快乐园",
-                    Texture = AssetLoader.TextureFromImage(Resources.hklyicon)
-                },
-
-                new CnCNetGame()
-                {
-                    ChatChannel = "#cncnet-lis",
-                    ClientExecutableName = "HKLYClient.exe",
-                    GameBroadcastChannel = "#cncnet-lis-games",
-                    InternalName = "lis",
-                    RegistryInstallPath = "HKCU\\Software\\LightInSunset",
-                    UIName = "落日之光",
-                    Texture = AssetLoader.TextureFromImage(Resources.lisicon)
                 }
             };
 
@@ -129,7 +107,7 @@ namespace ClientCore.CnCNet5
                 {
                     ChatChannel = "#cncnet",
                     InternalName = "cncnet",
-                    UIName = "通用CnCNet聊天",
+                    UIName = "General CnCNet Chat",
                     AlwaysEnabled = true,
                     Texture = AssetLoader.TextureFromImage(Resources.cncneticon)
                 },
@@ -138,7 +116,7 @@ namespace ClientCore.CnCNet5
                 {
                     ChatChannel = "#cncnet-td",
                     InternalName = "td",
-                    UIName = "泰伯利亚黎明",
+                    UIName = "Tiberian Dawn",
                     Supported = false,
                     Texture = AssetLoader.TextureFromImage(Resources.tdicon)
                 },
@@ -147,7 +125,7 @@ namespace ClientCore.CnCNet5
                 {
                     ChatChannel = "#cncnet-ra",
                     InternalName = "ra",
-                    UIName = "红色警戒",
+                    UIName = "Red Alert",
                     Supported = false,
                     Texture = AssetLoader.TextureFromImage(Resources.raicon)
                 },
@@ -156,7 +134,7 @@ namespace ClientCore.CnCNet5
                 {
                     ChatChannel = "#cncnet-d2",
                     InternalName = "d2",
-                    UIName = "沙丘2000",
+                    UIName = "Dune 2000",
                     Supported = false,
                     Texture = AssetLoader.TextureFromImage(Resources.unknownicon)
                 }
@@ -168,8 +146,8 @@ namespace ClientCore.CnCNet5
 
             if (GetGameIndexFromInternalName(ClientConfiguration.Instance.LocalGame) == -1)
             {
-                throw new ClientConfigurationException("在游戏集合中找不到匹配LocalGame值为" +
-                    ClientConfiguration.Instance.LocalGame + "的游戏。");
+                throw new ClientConfigurationException("Could not find a game in the game collection matching LocalGame value of " +
+                    ClientConfiguration.Instance.LocalGame + ".");
             }
         }
 
@@ -193,16 +171,16 @@ namespace ClientCore.CnCNet5
                 string ID = iniFile.GetStringValue(kvp.Value, "InternalName", string.Empty).ToLower();
 
                 if (string.IsNullOrEmpty(ID))
-                    throw new GameCollectionConfigurationException("InternalName " + kvp.Value + " 未定义或为空。");
+                    throw new GameCollectionConfigurationException("InternalName for game " + kvp.Value + " is not defined or set to an empty value.");
 
                 if (ID.Length > ProgramConstants.GAME_ID_MAX_LENGTH)
                 {
-                    throw new GameCollectionConfigurationException("InternalGame " + kvp.Value + " 的最大长度为" +
-                        ProgramConstants.GAME_ID_MAX_LENGTH + "个字符。");
+                    throw new GameCollectionConfigurationException("InternalGame for game " + kvp.Value + " is set to a value that exceeds length limit of " +
+                        ProgramConstants.GAME_ID_MAX_LENGTH + " characters.");
                 }
 
                 if (existingGames.Find(g => g.InternalName == ID) != null || customGameIDs.Contains(ID))
-                    throw new GameCollectionConfigurationException("游戏和InternalName " + ID.ToUpper() + " 已经存在于游戏集合。");
+                    throw new GameCollectionConfigurationException("Game with InternalName " + ID.ToUpper() + " already exists in the game collection.");
 
                 string iconFilename = iniFile.GetStringValue(kvp.Value, "IconFilename", ID + "icon.png");
                 customGames.Add(new CnCNetGame
@@ -228,10 +206,10 @@ namespace ClientCore.CnCNet5
             string channel = iniFile.GetStringValue(section, key, string.Empty);
 
             if (string.IsNullOrEmpty(channel))
-                throw new GameCollectionConfigurationException(section + "的" + key + "未定义或为空。");
+                throw new GameCollectionConfigurationException(key + " for game " + section + " is not defined or set to an empty value.");
 
             if (channel.Contains(' ') || channel.Contains(',') || channel.Contains((char)7))
-                throw new GameCollectionConfigurationException(section + "的" + key + "含有IRC频道名称中不允许的字符。");
+                throw new GameCollectionConfigurationException(key + " for game " + section + " contains characters not allowed on IRC channel names.");
 
             if (!channel.StartsWith("#"))
                 return "#" + channel;
@@ -240,10 +218,10 @@ namespace ClientCore.CnCNet5
         }
 
         /// <summary>
-        /// 根据 CnCNet 支持的游戏的内部名称获取其索引。
+        /// Gets the index of a CnCNet supported game based on its internal name.
         /// </summary>
-        /// <param name="gameName">游戏的内部名称（InternalName）。</param>
-        /// <returns>指定 CnCNet 中的游戏的索引。-1 为未知或不支持的游戏。</returns>
+        /// <param name="gameName">The internal name (suffix) of the game.</param>
+        /// <returns>The index of the specified CnCNet game. -1 if the game is unknown or not supported.</returns>
         public int GetGameIndexFromInternalName(string gameName)
         {
             for (int gId = 0; gId < GameList.Count; gId++)

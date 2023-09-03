@@ -40,7 +40,7 @@ namespace DTAConfig.OptionPanels
             var lblScoreVolume = new XNALabel(WindowManager);
             lblScoreVolume.Name = "lblScoreVolume";
             lblScoreVolume.ClientRectangle = new Rectangle(12, 14, 0, 0);
-            lblScoreVolume.Text = "音乐音量：";
+            lblScoreVolume.Text = "Music Volume:";
 
             lblScoreVolumeValue = new XNALabel(WindowManager);
             lblScoreVolumeValue.Name = "lblScoreVolumeValue";
@@ -66,7 +66,7 @@ namespace DTAConfig.OptionPanels
             lblSoundVolume.Name = "lblSoundVolume";
             lblSoundVolume.ClientRectangle = new Rectangle(lblScoreVolume.X,
                 lblScoreVolume.Bottom + 20, 0, 0);
-            lblSoundVolume.Text = "音效音量：";
+            lblSoundVolume.Text = "Sound Volume:";
 
             lblSoundVolumeValue = new XNALabel(WindowManager);
             lblSoundVolumeValue.Name = "lblSoundVolumeValue";
@@ -92,7 +92,7 @@ namespace DTAConfig.OptionPanels
             lblVoiceVolume.Name = "lblVoiceVolume";
             lblVoiceVolume.ClientRectangle = new Rectangle(lblScoreVolume.X,
                 lblSoundVolume.Bottom + 20, 0, 0);
-            lblVoiceVolume.Text = "语音音量：";
+            lblVoiceVolume.Text = "Voice Volume:";
 
             lblVoiceVolumeValue = new XNALabel(WindowManager);
             lblVoiceVolumeValue.Name = "lblVoiceVolumeValue";
@@ -119,13 +119,13 @@ namespace DTAConfig.OptionPanels
             chkScoreShuffle.ClientRectangle = new Rectangle(
                 lblScoreVolume.X,
                 trbVoiceVolume.Bottom + 12, 0, 0);
-            chkScoreShuffle.Text = "随机播放";
+            chkScoreShuffle.Text = "Shuffle Music";
 
             var lblClientVolume = new XNALabel(WindowManager);
             lblClientVolume.Name = "lblClientVolume";
             lblClientVolume.ClientRectangle = new Rectangle(lblScoreVolume.X,
                 chkScoreShuffle.Bottom + 40, 0, 0);
-            lblClientVolume.Text = "客户端音量：";
+            lblClientVolume.Text = "Client Volume:";
 
             lblClientVolumeValue = new XNALabel(WindowManager);
             lblClientVolumeValue.Name = "lblClientVolumeValue";
@@ -152,14 +152,14 @@ namespace DTAConfig.OptionPanels
             chkMainMenuMusic.ClientRectangle = new Rectangle(
                 lblScoreVolume.X,
                 trbClientVolume.Bottom + 12, 0, 0);
-            chkMainMenuMusic.Text = "主菜单音乐";
+            chkMainMenuMusic.Text = "Main menu music";
             chkMainMenuMusic.CheckedChanged += ChkMainMenuMusic_CheckedChanged;
 
             chkStopMusicOnMenu = new XNAClientCheckBox(WindowManager);
             chkStopMusicOnMenu.Name = "chkStopMusicOnMenu";
             chkStopMusicOnMenu.ClientRectangle = new Rectangle(
                 lblScoreVolume.X, chkMainMenuMusic.Bottom + 24, 0, 0);
-            chkStopMusicOnMenu.Text = "在大厅外播放主菜单音乐";
+            chkStopMusicOnMenu.Text = "Don't play main menu music in lobbies";
 
             AddChild(lblScoreVolume);
             AddChild(lblScoreVolumeValue);

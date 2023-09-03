@@ -57,19 +57,19 @@ namespace DTAClient
 
             MainClientConstants.Initialize();
 
-            Logger.Log("*** " + MainClientConstants.GAME_NAME_LONG + "客户端日志 ***");
-            Logger.Log("客户端版本：" + Application.ProductVersion);
+            Logger.Log("***Logfile for " + MainClientConstants.GAME_NAME_LONG + " client***");
+            Logger.Log("Client version: " + Application.ProductVersion);
 
             // Log information about given startup params
             if (parameters.NoAudio)
-                Logger.Log("启动参数：无音频");
+                Logger.Log("Startup parameter: No audio");
 
             if (parameters.MultipleInstanceMode)
-                Logger.Log("启动参数：允许多个客户端实例");
+                Logger.Log("Startup parameter: Allow multiple client instances");
 
-            parameters.UnknownStartupParams.ForEach(p => Logger.Log("未知启动参数：" + p));
+            parameters.UnknownStartupParams.ForEach(p => Logger.Log("Unknown startup parameter: " + p));
 
-            Logger.Log("加载设置。");
+            Logger.Log("Loading settings.");
 
             UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
 
@@ -83,10 +83,11 @@ namespace DTAClient
             }
             catch (Exception ex)
             {
-                MessageBox.Show("删除wsock32.dll失败！请关闭所有可能正在使用该文件的应用程序，然后重启客户端。"
+                MessageBox.Show("Deleting wsock32.dll failed! Please close any " +
+                    "applications that could be using the file, and then start the client again."
                     + Environment.NewLine + Environment.NewLine +
-                    "信息：" + ex.Message,
-                    "CnCNet客户端");
+                    "Message: " + ex.Message,
+                    "CnCNet Client");
                 Environment.Exit(0);
             }
 
@@ -99,16 +100,16 @@ namespace DTAClient
         {
             Exception ex = (Exception)e.ExceptionObject;
 
-            Logger.Log("KABOOOOOOM!!! 信息：");
-            Logger.Log("信息：" + ex.Message);
-            Logger.Log("源：" + ex.Source);
+            Logger.Log("KABOOOOOOM!!! Info:");
+            Logger.Log("Message: " + ex.Message);
+            Logger.Log("Source: " + ex.Source);
             Logger.Log("TargetSite.Name: " + ex.TargetSite.Name);
-            Logger.Log("堆栈跟踪：" + ex.StackTrace);
+            Logger.Log("Stacktrace: " + ex.StackTrace);
             if (ex.InnerException != null)
             {
-                Logger.Log("InnerException信息：");
-                Logger.Log("信息：" + ex.InnerException.Message);
-                Logger.Log("堆栈跟踪：" + ex.InnerException.StackTrace);
+                Logger.Log("InnerException info:");
+                Logger.Log("Message: " + ex.InnerException.Message);
+                Logger.Log("Stacktrace: " + ex.InnerException.StackTrace);
             }
 
             string errorLogPath = Environment.CurrentDirectory.Replace("\\", "/") + "/Client/ClientCrashLogs/ClientCrashLog" +
@@ -125,11 +126,11 @@ namespace DTAClient
             }
             catch { }
 
-            MessageBox.Show(string.Format("{0}崩溃了。错误信息：" + Environment.NewLine + Environment.NewLine +
+            MessageBox.Show(string.Format("{0} has crashed. Error message:" + Environment.NewLine + Environment.NewLine +
                 ex.Message + Environment.NewLine + Environment.NewLine + (crashLogCopied ?
-                "崩溃日志已保存到以下文件：" + Environment.NewLine + Environment.NewLine +
+                "A crash log has been saved to the following file: " + Environment.NewLine + Environment.NewLine +
                 errorLogPath + Environment.NewLine + Environment.NewLine : "") +
-                "如果问题重复出现，请通过{2}" + (crashLogCopied ? "联系{1}工作人员并提供崩溃日志文件" : "") + "。",
+                "If the issue is repeatable, contact the {1} staff at {2}" + (crashLogCopied ? "and provide the crash log file" : "") + ".",
                 MainClientConstants.GAME_NAME_LONG,
                 MainClientConstants.GAME_NAME_SHORT,
                 MainClientConstants.SUPPORT_URL_SHORT),
@@ -141,11 +142,11 @@ namespace DTAClient
             if (UserHasDirectoryAccessRights(Environment.CurrentDirectory, FileSystemRights.Modify))
                 return;
 
-            DialogResult dr = MessageBox.Show(string.Format("你似乎正在从写保护目录运行{0}。" + Environment.NewLine + Environment.NewLine +
-                "{1}需要管理员权限才能在只读目录下正常运行。" + Environment.NewLine + Environment.NewLine +
-                "以管理员权限重新启动客户端？" + Environment.NewLine + Environment.NewLine +
-                "还请确保你的安全软件没有阻止{1}。", MainClientConstants.GAME_NAME_LONG, MainClientConstants.GAME_NAME_SHORT),
-                "需要管理员权限", MessageBoxButtons.YesNo);
+            DialogResult dr = MessageBox.Show(string.Format("You seem to be running {0} from a write-protected directory." + Environment.NewLine + Environment.NewLine +
+                "For {1} to function properly when run from a write-protected directory, it needs administrative priveleges." + Environment.NewLine + Environment.NewLine +
+                "Would you like to restart the client with administrative rights?" + Environment.NewLine + Environment.NewLine +
+                "Please also make sure that your security software isn't blocking {1}.", MainClientConstants.GAME_NAME_LONG, MainClientConstants.GAME_NAME_SHORT),
+                "Administrative priveleges required", MessageBoxButtons.YesNo);
 
             if (dr == DialogResult.No)
                 Environment.Exit(0);

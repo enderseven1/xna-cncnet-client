@@ -88,7 +88,7 @@ namespace DTAConfig
         {
             if (section == null)
             {
-                Logger.Log("DirectDrawWrapper: 渲染器配置'" + InternalName + "'找不到！");
+                Logger.Log("DirectDrawWrapper: Configuration for renderer '" + InternalName + "' not found!");
                 return;
             }
                 

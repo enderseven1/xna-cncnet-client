@@ -24,25 +24,25 @@ namespace DTAClient.DXGUI.Generic
             var btnExStatistics = new XNAClientButton(WindowManager);
             btnExStatistics.Name = "btnExStatistics";
             btnExStatistics.ClientRectangle = new Rectangle(76, 17, 133, 23);
-            btnExStatistics.Text = "统计数据";
+            btnExStatistics.Text = "Statistics";
             btnExStatistics.LeftClick += BtnExStatistics_LeftClick;
 
             var btnExMapEditor = new XNAClientButton(WindowManager);
             btnExMapEditor.Name = "btnExMapEditor";
             btnExMapEditor.ClientRectangle = new Rectangle(76, 59, 133, 23);
-            btnExMapEditor.Text = "地图编辑器";
+            btnExMapEditor.Text = "Map Editor";
             btnExMapEditor.LeftClick += BtnExMapEditor_LeftClick;
 
             var btnExCredits = new XNAClientButton(WindowManager);
             btnExCredits.Name = "btnExCredits";
             btnExCredits.ClientRectangle = new Rectangle(76, 101, 133, 23);
-            btnExCredits.Text = "鸣谢名单";
+            btnExCredits.Text = "Credits";
             btnExCredits.LeftClick += BtnExCredits_LeftClick;
 
             var btnExCancel = new XNAClientButton(WindowManager);
             btnExCancel.Name = "btnExCancel";
             btnExCancel.ClientRectangle = new Rectangle(76, 160, 133, 23);
-            btnExCancel.Text = "取消";
+            btnExCancel.Text = "Cancel";
             btnExCancel.LeftClick += BtnExCancel_LeftClick;
 
             AddChild(btnExStatistics);

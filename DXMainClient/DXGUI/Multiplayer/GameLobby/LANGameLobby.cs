@@ -82,7 +82,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         private void HandleFileHashCommand(string sender, string fileHash)
         {
             if (fileHash != localFileHash)
-                AddNotice(sender + "有修改过的文件！他们可能在作弊！");
+                AddNotice(sender + " has modified game files! They could be cheating!");
 
             PlayerInfo pInfo = Players.Find(p => p.Name == sender);
 
@@ -230,7 +230,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. 信息：" + ex.Message);
+                    Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.Message);
                     break;
                 }
 
@@ -280,7 +280,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             lpInfo.MessageReceived += LpInfo_MessageReceived;
             lpInfo.ConnectionLost += LpInfo_ConnectionLost;
 
-            AddNotice(lpInfo.Name + "从" + lpInfo.IPAddress + "连接");
+            AddNotice(lpInfo.Name + " connected from " + lpInfo.IPAddress);
             lpInfo.StartReceiveLoop();
 
             CopyPlayerDataToUI();
@@ -295,7 +295,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             CleanUpPlayer(lpInfo);
             Players.Remove(lpInfo);
 
-            AddNotice(lpInfo.Name + "退出了游戏。");
+            AddNotice(lpInfo.Name + " has left the game.");
 
             CopyPlayerDataToUI();
             BroadcastPlayerOptions();
@@ -357,7 +357,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Reading data from the server failed! 信息：" + ex.Message);
+                    Logger.Log("Reading data from the server failed! Message: " + ex.Message);
                     BtnLeaveGame_LeftClick(this, EventArgs.Empty);
                     break;
                 }
@@ -466,7 +466,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             tbChatInput.TextColor = chatColors[colorIndex].XNAColor;
         }
 
-        public override string GetSwitchName() => "局域网大厅";
+        public override string GetSwitchName() => "LAN Game Lobby";
 
         protected override void AddNotice(string message, Color color) =>
             lbChatMessages.AddMessage(null, message, color);
@@ -618,20 +618,20 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         {
             Locked = false;
 
-            btnLockGame.Text = "锁定房间";
+            btnLockGame.Text = "Lock Game";
 
             if (manual)
-                AddNotice("你解锁了房间。");
+                AddNotice("You've unlocked the game room.");
         }
 
         protected override void LockGame()
         {
             Locked = true;
 
-            btnLockGame.Text = "解锁房间";
+            btnLockGame.Text = "Unlock Game";
 
             if (Locked)
-                AddNotice("你锁定了房间。");
+                AddNotice("You've locked the game room.");
         }
 
         protected override void GameProcessExited()
@@ -657,7 +657,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         private void ReturnNotification(string sender)
         {
-            AddNotice(sender + "已从游戏中返回。");
+            AddNotice(sender + " has returned from the game.");
 
             PlayerInfo pInfo = Players.Find(p => p.Name == sender);
 
@@ -678,7 +678,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     {
                         CleanUpPlayer(lpInfo);
                         Players.RemoveAt(i);
-                        AddNotice(lpInfo.Name + " - 连接超时");
+                        AddNotice(lpInfo.Name + " - connection timed out");
                         CopyPlayerDataToUI();
                         BroadcastPlayerOptions();
                         UpdateDiscordPresence();
@@ -701,7 +701,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (timeSinceLastReceivedCommand > TimeSpan.FromSeconds(DROPOUT_TIMEOUT))
                 {
                     LobbyNotification?.Invoke(this,
-                        new LobbyNotificationEventArgs("连接到房主超时。"));
+                        new LobbyNotificationEventArgs("Connection to the game host timed out."));
                     BtnLeaveGame_LeftClick(this, EventArgs.Empty);
                 }
             }
@@ -926,7 +926,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (pInfo == null)
                 return;
 
-            AddNotice(pInfo.Name + "退出了游戏。");
+            AddNotice(pInfo.Name + " has left the game.");
             Players.Remove(pInfo);
             ClearReadyStatuses();
             CopyPlayerDataToUI();
@@ -943,8 +943,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             
             if (parts.Length != CheckBoxes.Count + DropDowns.Count + GAME_OPTION_SPECIAL_FLAG_COUNT)
             {
-                AddNotice("房主发送了无效的游戏选项消息。这通常意味着房主的游戏版本与你不同。");
-                Logger.Log("房主的无效选项消息：" + data);
+                AddNotice("The game host has sent an invalid game options message. This " +
+                    "usually means that the game host has a different game version than you.");
+                Logger.Log("Invalid game options message from host: " + data);
                 return;
             }
 
@@ -961,7 +962,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (gm == null)
             {
-                AddNotice("房主选择了你的安装中不存在的地图。房主需要更改地图，否则你将无法参与。");
+                AddNotice("The game host has selected a map that doesn't exist on your " +
+                    "installation. The host needs to change the map or you won't be able to play.");
                 ChangeMap(null, null);
                 return;
             }
@@ -970,7 +972,8 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (map == null)
             {
-                AddNotice("房主选择了你的安装中不存在的地图。房主需要更改地图，否则你将无法参与。");
+                AddNotice("The game host has selected a map that doesn't exist on your " +
+                    "installation. The host needs to change the map or you won't be able to play.");
                 ChangeMap(null, null);
                 return;
             }
@@ -982,7 +985,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             if (frameSendRate != FrameSendRate)
             {
                 FrameSendRate = frameSendRate;
-                AddNotice("房主更改FrameSendRate (order lag)为" + frameSendRate);
+                AddNotice("The game host has changed FrameSendRate (order lag) to " + frameSendRate);
             }
 
             bool removeStartingLocations = Convert.ToBoolean(Conversions.IntFromString(
@@ -999,9 +1002,9 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 if (chkBox.Checked != oldValue)
                 {
                     if (chkBox.Checked)
-                        AddNotice("房主开启了" + chkBox.Text);
+                        AddNotice("The game host has enabled " + chkBox.Text);
                     else
-                        AddNotice("房主关闭了" + chkBox.Text);
+                        AddNotice("The game host has disabled " + chkBox.Text);
                 }
             }
 
@@ -1023,7 +1026,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     if (dd.OptionName == null)
                         ddName = dd.Name;
 
-                    AddNotice("房主设置" + ddName + "为" + dd.SelectedItem.Text);
+                    AddNotice("The game host has set " + ddName + " to " + dd.SelectedItem.Text);
                 }
             }
         }

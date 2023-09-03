@@ -134,7 +134,7 @@ namespace DTAClient
                     {
                         hasHandle = mutex.WaitOne(8000, false);
                         if (hasHandle == false)
-                            throw new TimeoutException("等待访问超时");
+                            throw new TimeoutException("Timeout waiting for exclusive access");
                     }
                     catch (AbandonedMutexException)
                     {

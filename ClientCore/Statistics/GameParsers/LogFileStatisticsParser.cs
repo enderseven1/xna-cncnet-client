@@ -19,7 +19,7 @@ namespace ClientCore.Statistics.GameParsers
         public void ParseStats(string gamepath, string fileName)
         {
             this.fileName = fileName;
-            if (ClientConfiguration.Instance.UseBuiltStatistic) economyString = "建造数";
+            if (ClientConfiguration.Instance.UseBuiltStatistic) economyString = "Built";
             ParseStatistics(gamepath);
         }
 
@@ -27,11 +27,11 @@ namespace ClientCore.Statistics.GameParsers
         {
             if (!File.Exists(gamepath + fileName))
             {
-                Logger.Log("DTAStatisticsParser: 读取统计数据失败：日志文件不存在。");
+                Logger.Log("DTAStatisticsParser: Failed to read statistics: the log file does not exist.");
                 return;
             }
 
-            Logger.Log("尝试从" + fileName + "读取统计数据");
+            Logger.Log("Attempting to read statistics from " + fileName);
 
             try
             {
@@ -57,13 +57,13 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("找到玩家" + playerName);
+                        Logger.Log("Found player " + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
                             // The player has been taken over by an AI during the match
-                            Logger.Log("找到失败接管AI");
+                            Logger.Log("Losing take-over AI found");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
                         }
@@ -81,13 +81,13 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("找到玩家" + playerName);
+                        Logger.Log("Found player " + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
                             // The player has been taken over by an AI during the match
-                            Logger.Log("找到胜利接管AI");
+                            Logger.Log("Winning take-over AI found");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
                         }
@@ -98,7 +98,7 @@ namespace ClientCore.Statistics.GameParsers
                             currentPlayer.Won = true;
                         }
                     }
-                    else if (line.Contains("游戏循环结束。平均FPS"))
+                    else if (line.Contains("Game loop finished. Average FPS"))
                     {
                         // Game loop finished. Average FPS = <integer>
                         string fpsString = line.Substring(34);
@@ -116,8 +116,8 @@ namespace ClientCore.Statistics.GameParsers
                         currentPlayer.Kills = Int32.Parse(line.Substring(8));
                     else if (line.StartsWith("Score = "))
                         currentPlayer.Score = Int32.Parse(line.Substring(8));
-                    else if (line.StartsWith("Built = "))
-                        currentPlayer.Economy = Int32.Parse(line.Substring(8));
+                    else if (line.StartsWith(economyString+ " = "))
+                        currentPlayer.Economy = Int32.Parse(line.Substring(economyString.Length + 2));
                 }
 
                 reader.Close();
@@ -150,7 +150,7 @@ namespace ClientCore.Statistics.GameParsers
             }
             catch (Exception ex)
             {
-                Logger.Log("DTAStatisticsParser: 解析匹配统计信息时出错！信息：" + ex.Message);
+                Logger.Log("DTAStatisticsParser: Error parsing statistics from match! Message: " + ex.Message);
             }
         }
     }

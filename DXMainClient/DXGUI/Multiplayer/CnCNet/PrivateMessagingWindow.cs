@@ -72,7 +72,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         /// <summary>
         /// Because the user cannot view PMs during a game, we store the latest
         /// PM received during a game in this variable and display it when the
-        /// user已从游戏中返回。
+        /// user has returned from the game.
         /// </summary>
         private PrivateMessage pmReceivedDuringGame;
 
@@ -97,7 +97,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblPrivateMessaging = new XNALabel(WindowManager);
             lblPrivateMessaging.Name = nameof(lblPrivateMessaging);
             lblPrivateMessaging.FontIndex = 1;
-            lblPrivateMessaging.Text = "私信列表";
+            lblPrivateMessaging.Text = "PRIVATE MESSAGING";
 
             AddChild(lblPrivateMessaging);
             lblPrivateMessaging.CenterOnParent();
@@ -111,16 +111,16 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             tabControl.ClientRectangle = new Rectangle(60, 50, 0, 0);
             tabControl.ClickSound = new EnhancedSoundEffect("button.wav");
             tabControl.FontIndex = 1;
-            tabControl.AddTab("信息列表", 160);
-            tabControl.AddTab("好友列表", 160);
-            tabControl.AddTab("所有玩家", 160);
+            tabControl.AddTab("Messages", 160);
+            tabControl.AddTab("Friend List", 160);
+            tabControl.AddTab("All Players", 160);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             lblPlayers = new XNALabel(WindowManager);
             lblPlayers.Name = nameof(lblPlayers);
             lblPlayers.ClientRectangle = new Rectangle(12, tabControl.Bottom + 24, 0, 0);
             lblPlayers.FontIndex = 1;
-            lblPlayers.Text = "玩家：";
+            lblPlayers.Text = "PLAYERS:";
 
             lbUserList = new XNAListBox(WindowManager);
             lbUserList.Name = nameof(lbUserList);
@@ -137,7 +137,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblMessages.ClientRectangle = new Rectangle(lbUserList.Right + 12,
                 lblPlayers.Y, 0, 0);
             lblMessages.FontIndex = 1;
-            lblMessages.Text = "信息：";
+            lblMessages.Text = "MESSAGES:";
 
             lbMessages = new ChatListBox(WindowManager);
             lbMessages.Name = nameof(lbMessages);
@@ -160,9 +160,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             playerContextMenu.Name = nameof(playerContextMenu);
             playerContextMenu.ClientRectangle = new Rectangle(0, 0, 150, 2);
             playerContextMenu.Disable();
-            playerContextMenu.AddItem("加好友", PlayerContextMenu_ToggleFriend);
-            playerContextMenu.AddItem("屏蔽", PlayerContextMenu_ToggleIgnore, null, () => (bool)lbUserList.SelectedItem.Tag, null);
-            playerContextMenu.AddItem("邀请", PlayerContextMenu_Invite, null, () => !string.IsNullOrEmpty(inviteChannelName));
+            playerContextMenu.AddItem("Add Friend", PlayerContextMenu_ToggleFriend);
+            playerContextMenu.AddItem("Toggle Block", PlayerContextMenu_ToggleIgnore, null, () => (bool)lbUserList.SelectedItem.Tag, null);
+            playerContextMenu.AddItem("Invite", PlayerContextMenu_Invite, null, () => !string.IsNullOrEmpty(inviteChannelName));
 
             notificationBox = new PrivateMessageNotificationBox(WindowManager);
             notificationBox.Enabled = false;
@@ -214,7 +214,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (pmUser != null)
             {
                 leaveMessage = new ChatMessage(Color.White,
-                    e.UserName + "离线了。");
+                    e.UserName + " is now offline.");
                 pmUser.Messages.Add(leaveMessage);
             }
 
@@ -263,7 +263,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (pmUser != null)
             {
-                joinMessage = new ChatMessage(e.User.Name + "现在在线。");
+                joinMessage = new ChatMessage(e.User.Name + " is now online.");
                 pmUser.Messages.Add(joinMessage);
             }
 
@@ -348,12 +348,12 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 return;
             }
 
-            playerContextMenu.Items[0].Text = cncnetUserData.IsFriend(lbUserList.SelectedItem.Text) ? "删除好友" : "添加好友";
+            playerContextMenu.Items[0].Text = cncnetUserData.IsFriend(lbUserList.SelectedItem.Text) ? "Remove Friend" : "Add Friend";
             
             if ((bool)lbUserList.SelectedItem.Tag)
             {
                 IRCUser iu = connectionManager.UserList.Find(u => u.Name == lbUserList.SelectedItem.Text);
-                playerContextMenu.Items[1].Text = cncnetUserData.IsIgnored(iu.Ident) ? "解除屏蔽" : "屏蔽此人";
+                playerContextMenu.Items[1].Text = cncnetUserData.IsIgnored(iu.Ident) ? "Unblock" : "Block";
             }
 
             playerContextMenu.Open(GetCursorPoint());
@@ -733,7 +733,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         public void SwitchOff() => Disable();
 
-        public string GetSwitchName() => "私信";
+        public string GetSwitchName() => "Private Messaging";
 
         /// <summary>
         /// A class for storing a private message in memory.

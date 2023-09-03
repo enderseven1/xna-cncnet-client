@@ -43,7 +43,7 @@ namespace DTAConfig.CustomSettings
                     string[] parts = fileInfo.Split(',');
                     if (parts.Length != 2)
                     {
-                        Logger.Log($"{Name}中的CustomSettingFileDropDown信息无效：{fileInfo}");
+                        Logger.Log($"Invalid CustomSettingFileDropDown information in {Name}: {fileInfo}");
                         continue;
                     }
                     

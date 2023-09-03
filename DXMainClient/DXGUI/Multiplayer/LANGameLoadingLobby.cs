@@ -191,7 +191,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. 信息：" + ex.Message);
+                    Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.Message);
                     break;
                 }
 
@@ -249,7 +249,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
             sndJoinSound.Play();
 
-            AddNotice(lpInfo.Name + "从" + lpInfo.IPAddress + "连接");
+            AddNotice(lpInfo.Name + " connected from " + lpInfo.IPAddress);
             lpInfo.StartReceiveLoop();
 
             CopyPlayerDataToUI();
@@ -263,7 +263,7 @@ namespace DTAClient.DXGUI.Multiplayer
             CleanUpPlayer(lpInfo);
             Players.Remove(lpInfo);
 
-            AddNotice(lpInfo.Name + "退出了游戏。");
+            AddNotice(lpInfo.Name + " has left the game.");
 
             sndLeaveSound.Play();
 
@@ -322,7 +322,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Reading data from the server failed! 信息：" + ex.Message);
+                    Logger.Log("Reading data from the server failed! Message: " + ex.Message);
                     LeaveGame();
                     break;
                 }
@@ -468,7 +468,7 @@ namespace DTAClient.DXGUI.Multiplayer
         private void Server_HandleFileHashMessage(LANPlayerInfo sender, string hash)
         {
             if (hash != localFileHash)
-                AddNotice(sender.Name + " - 检测到修改过的文件！他们可能在作弊！", Color.Red);
+                AddNotice(sender.Name + " - modified files detected! They could be cheating!", Color.Red);
             sender.Verified = true;
         }
 
@@ -601,7 +601,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
         public override string GetSwitchName()
         {
-            return "开始游戏";
+            return "Load Game";
         }
 
         public override void Update(GameTime gameTime)
@@ -615,7 +615,7 @@ namespace DTAClient.DXGUI.Multiplayer
                     {
                         CleanUpPlayer(lpInfo);
                         Players.RemoveAt(i);
-                        AddNotice(lpInfo.Name + " - 连接超时");
+                        AddNotice(lpInfo.Name + " - connection timed out");
                         CopyPlayerDataToUI();
                         BroadcastOptions();
                         UpdateDiscordPresence();
@@ -638,7 +638,7 @@ namespace DTAClient.DXGUI.Multiplayer
                 if (timeSinceLastReceivedCommand > TimeSpan.FromSeconds(DROPOUT_TIMEOUT))
                 {
                     LobbyNotification?.Invoke(this,
-                        new LobbyNotificationEventArgs("连接到房主超时。"));
+                        new LobbyNotificationEventArgs("Connection to the game host timed out."));
                     LeaveGame();
                 }
             }

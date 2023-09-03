@@ -57,22 +57,22 @@ namespace DTAClient.Online
 
             ircChatColors = new IRCColor[]
             {
-                new IRCColor("默认颜色", false, cDefaultChatColor, 0),
-                new IRCColor("默认颜色 #2", false, cDefaultChatColor, 1),
-                new IRCColor("浅蓝色", true, Color.LightBlue, 2),
-                new IRCColor("绿色", true, Color.ForestGreen, 3),
-                new IRCColor("暗红色", true, new Color(180, 0, 0, 255), 4),
-                new IRCColor("红色", true, Color.Red, 5),
-                new IRCColor("紫色", true, Color.MediumOrchid, 6),
-                new IRCColor("橙色", true, Color.Orange, 7),
-                new IRCColor("黄色", true, Color.Yellow, 8),
-                new IRCColor("亮绿色", true, Color.Lime, 9),
-                new IRCColor("青色", true, Color.Turquoise, 10),
-                new IRCColor("天蓝色", true, Color.LightSkyBlue, 11),
-                new IRCColor("蓝色", true, Color.RoyalBlue, 12),
-                new IRCColor("芭比粉", true, Color.Fuchsia, 13),
-                new IRCColor("灰色", true, Color.LightGray, 14),
-                new IRCColor("灰色 #2", false, Color.Gray, 15)
+                new IRCColor("Default color", false, cDefaultChatColor, 0),
+                new IRCColor("Default color #2", false, cDefaultChatColor, 1),
+                new IRCColor("Light Blue", true, Color.LightBlue, 2),
+                new IRCColor("Green", true, Color.ForestGreen, 3),
+                new IRCColor("Dark Red", true, new Color(180, 0, 0, 255), 4),
+                new IRCColor("Red", true, Color.Red, 5),
+                new IRCColor("Purple", true, Color.MediumOrchid, 6),
+                new IRCColor("Orange", true, Color.Orange, 7),
+                new IRCColor("Yellow", true, Color.Yellow, 8),
+                new IRCColor("Lime Green", true, Color.Lime, 9),
+                new IRCColor("Turquoise", true, Color.Turquoise, 10),
+                new IRCColor("Sky Blue", true, Color.LightSkyBlue, 11),
+                new IRCColor("Blue", true, Color.RoyalBlue, 12),
+                new IRCColor("Pink", true, Color.Fuchsia, 13),
+                new IRCColor("Gray", true, Color.LightGray, 14),
+                new IRCColor("Gray #2", false, Color.Gray, 15)
             };
         }
 
@@ -181,7 +181,7 @@ namespace DTAClient.Online
 
         private void DoAttemptedServerChanged(string serverName)
         {
-            MainChannel.AddMessage(new ChatMessage("尝试连接到" + serverName));
+            MainChannel.AddMessage(new ChatMessage("Attempting connection to " + serverName));
             AttemptedServerChanged?.Invoke(this, new AttemptedServerEventArgs(serverName));
         }
 
@@ -400,7 +400,7 @@ namespace DTAClient.Online
         {
             ConnectAttemptFailed?.Invoke(this, EventArgs.Empty);
 
-            MainChannel.AddMessage(new ChatMessage(Color.Red, "连接到CnCNet失败！"));
+            MainChannel.AddMessage(new ChatMessage(Color.Red, "Connecting to CnCNet failed!"));
         }
 
         public void OnConnected()
@@ -412,7 +412,7 @@ namespace DTAClient.Online
         {
             connected = true;
             Connected?.Invoke(this, EventArgs.Empty);
-            MainChannel.AddMessage(new ChatMessage("已连接到CnCNet。"));
+            MainChannel.AddMessage(new ChatMessage("Connection to CnCNet established."));
         }
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace DTAClient.Online
 
             UserList.Clear();
 
-            MainChannel.AddMessage(new ChatMessage(Color.Red, "CnCNet连接已丢失。"));
+            MainChannel.AddMessage(new ChatMessage(Color.Red, "Connection to CnCNet has been lost."));
             connected = false;
         }
 
@@ -462,7 +462,7 @@ namespace DTAClient.Online
         public void Connect()
         {
             disconnect = false;
-            MainChannel.AddMessage(new ChatMessage("连接到CnCNet..."));
+            MainChannel.AddMessage(new ChatMessage("Connecting to CnCNet..."));
             connection.ConnectAsync();
         }
 
@@ -489,7 +489,7 @@ namespace DTAClient.Online
                 }
             }
 
-            MainChannel.AddMessage(new ChatMessage("你已断开与CnCNet的连接。"));
+            MainChannel.AddMessage(new ChatMessage("You have disconnected from CnCNet."));
             connected = false;
 
             UserList.Clear();
@@ -551,7 +551,7 @@ namespace DTAClient.Online
         {
             ReconnectAttempt?.Invoke(this, EventArgs.Empty);
 
-            MainChannel.AddMessage(new ChatMessage("重新连接到CnCNet..."));
+            MainChannel.AddMessage(new ChatMessage("Attempting to reconnect to CnCNet..."));
 
             connection.ConnectAsync();
         }
@@ -876,8 +876,8 @@ namespace DTAClient.Online
 
                 if (lastNonUnderscoreIndex == -1)
                 {
-                    MainChannel.AddMessage(new ChatMessage(Color.White,
-                        "你的昵称无效或已存在。请在登录屏幕中更改你的昵称。"));
+                    MainChannel.AddMessage(new ChatMessage(Color.White, 
+                        "Your nickname is invalid or already in use. Please change your nickname in the login screen."));
                     UserINISettings.Instance.SkipConnectDialog.Value = false;
                     Disconnect();
                     return;
@@ -891,7 +891,7 @@ namespace DTAClient.Online
                 sb.Append(c);
 
             MainChannel.AddMessage(new ChatMessage(Color.White,
-                string.Format("你的名称已存在，将使用{0}...", sb.ToString())));
+                string.Format("Your name is already in use. Retrying with {0}...", sb.ToString())));
 
             ProgramConstants.PLAYERNAME = sb.ToString();
             connection.ChangeNickname();
@@ -915,7 +915,7 @@ namespace DTAClient.Online
             IRCUser user = UserList.Find(u => u.Name.ToUpper() == oldNickname.ToUpper());
             if (user == null)
             {
-                Logger.Log("DoUserNicknameChange: 找不到用户" + oldNickname);
+                Logger.Log("DoUserNicknameChange: Failed to find user with nickname " + oldNickname);
                 return;
             }
             string realOldNickname = user.Name; // To make sure that case matches

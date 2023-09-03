@@ -55,7 +55,7 @@ namespace DTAClient.DXGUI
             window.ClientRectangle = new Rectangle(0, 0, 200, 100);
 
             XNALabel explanation = new XNALabel(WindowManager);
-            explanation.Text = "游戏正在进行";
+            explanation.Text = "A game is in progress.";
 
             AddChild(window);
 
@@ -102,7 +102,7 @@ namespace DTAClient.DXGUI
             }
             catch (Exception ex)
             {
-                Logger.Log("Exception when deleting error log files! 信息：" + ex.Message);
+                Logger.Log("Exception when deleting error log files! Message: " + ex.Message);
                 deletingLogFilesFailed = true;
             }
 #endif
@@ -230,7 +230,7 @@ namespace DTAClient.DXGUI
             }
             catch (Exception ex)
             {
-                Logger.Log("An error occured while checking for " + filename + " file. 信息：" + ex.Message);
+                Logger.Log("An error occured while checking for " + filename + " file. Message: " + ex.Message);
             }
             return copied;
         }
@@ -271,7 +271,7 @@ namespace DTAClient.DXGUI
             }
             catch (Exception ex)
             {
-                Logger.Log("An error occured while checking for SYNCX.TXT files. 信息：" + ex.Message);
+                Logger.Log("An error occured while checking for SYNCX.TXT files. Message: " + ex.Message);
             }
             return copied;
         }
@@ -341,7 +341,7 @@ namespace DTAClient.DXGUI
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ProcessScreenshots: An error occured trying to create Screenshots directory. 信息：" + ex.Message);
+                    Logger.Log("ProcessScreenshots: An error occured trying to create Screenshots directory. Message: " + ex.Message);
                     return;
                 }
             }
@@ -357,7 +357,7 @@ namespace DTAClient.DXGUI
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ProcessScreenshots: Error occured when trying to save " + Path.GetFileNameWithoutExtension(filename) + ".png. 信息：" + ex.Message);
+                    Logger.Log("ProcessScreenshots: Error occured when trying to save " + Path.GetFileNameWithoutExtension(filename) + ".png. Message: " + ex.Message);
                     continue;
                 }
 

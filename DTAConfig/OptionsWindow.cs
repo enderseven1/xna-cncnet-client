@@ -42,25 +42,25 @@ namespace DTAConfig
             tabControl.ClientRectangle = new Rectangle(12, 12, 0, 23);
             tabControl.FontIndex = 1;
             tabControl.ClickSound = new EnhancedSoundEffect("button.wav");
-            tabControl.AddTab("显示", 92);
-            tabControl.AddTab("音频", 92);
-            tabControl.AddTab("游戏", 92);
+            tabControl.AddTab("Display", 92);
+            tabControl.AddTab("Audio", 92);
+            tabControl.AddTab("Game", 92);
             tabControl.AddTab("CnCNet", 92);
-            tabControl.AddTab("更新", 92);
-            tabControl.AddTab("组件", 92);
+            tabControl.AddTab("Updater", 92);
+            tabControl.AddTab("Components", 92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             var btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(Width - 104,
                 Height - 35, 92, 23);
-            btnCancel.Text = "取消";
+            btnCancel.Text = "Cancel";
             btnCancel.LeftClick += BtnBack_LeftClick;
 
             var btnSave = new XNAClientButton(WindowManager);
             btnSave.Name = "btnSave";
             btnSave.ClientRectangle = new Rectangle(12, btnCancel.Y, 92, 23);
-            btnSave.Text = "保存";
+            btnSave.Text = "Save";
             btnSave.LeftClick += BtnSave_LeftClick;
 
             displayOptionsPanel = new DisplayOptionsPanel(WindowManager, UserINISettings.Instance);
@@ -130,10 +130,10 @@ namespace DTAConfig
         {
             if (CustomComponent.IsDownloadInProgress())
             {
-                var msgBox = new XNAMessageBox(WindowManager, "正在下载",
-                    "可选组件正在下载。退出选项菜单将取消下载。" +
+                var msgBox = new XNAMessageBox(WindowManager, "Downloads in progress",
+                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu." +
                     Environment.NewLine + Environment.NewLine +
-                    "确定要继续吗？", XNAMessageBoxButtons.YesNo);
+                    "Are you sure you want to continue?", XNAMessageBoxButtons.YesNo);
                 msgBox.Show();
                 msgBox.YesClickedAction = ExitDownloadCancelConfirmation_YesClicked;
 
@@ -155,10 +155,10 @@ namespace DTAConfig
         {
             if (CustomComponent.IsDownloadInProgress())
             {
-                var msgBox = new XNAMessageBox(WindowManager, "正在下载",
-                    "可选组件正在下载。退出选项菜单将取消下载。" +
+                var msgBox = new XNAMessageBox(WindowManager, "Downloads in progress",
+                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu." +
                     Environment.NewLine + Environment.NewLine +
-                    "确定要继续吗？", XNAMessageBoxButtons.YesNo);
+                    "Are you sure you want to continue?", XNAMessageBoxButtons.YesNo);
                 msgBox.Show();
                 msgBox.YesClickedAction = SaveDownloadCancelConfirmation_YesClicked;
 
@@ -191,19 +191,19 @@ namespace DTAConfig
             }
             catch (Exception ex)
             {
-                Logger.Log("保存设置失败！错误信息：" + ex.Message);
-                XNAMessageBox.Show(WindowManager, "保存设置失败",
-                    "保存设置失败！错误信息：" + ex.Message);
+                Logger.Log("Saving settings failed! Error message: " + ex.Message);
+                XNAMessageBox.Show(WindowManager, "Saving Settings Failed",
+                    "Saving settings failed! Error message: " + ex.Message);
             }
 
             Disable();
 
             if (restartRequired)
             {
-                var msgBox = new XNAMessageBox(WindowManager, "需要重启",
-                    "需要重启客户端才能使某些更改生效。" +
+                var msgBox = new XNAMessageBox(WindowManager, "Restart Required",
+                    "The client needs to be restarted for some of the changes to take effect." +
                     Environment.NewLine + Environment.NewLine +
-                    "现在重启？", XNAMessageBoxButtons.YesNo);
+                    "Do you want to restart now?", XNAMessageBoxButtons.YesNo);
                 msgBox.Show();
                 msgBox.YesClickedAction = RestartMsgBox_YesClicked;
             }
@@ -227,10 +227,12 @@ namespace DTAConfig
 
             if (optionValuesChanged)
             {
-                XNAMessageBox.Show(WindowManager, "设置值已更改",
-                    "一个或多个设置值不再可用，而是改为默认值。" +
+                XNAMessageBox.Show(WindowManager, "Setting Value(s) Changed",
+                    "One or more setting values were no longer available" + Environment.NewLine +
+                    "and were changed to their default values instead." +
                     Environment.NewLine + Environment.NewLine +
-                    "你可能希望在应用程序的选项窗口中验证新设置值。");
+                    "You may want to verify the new setting values in" + Environment.NewLine +
+                    "application's options window.");
                 return true;
             }
 

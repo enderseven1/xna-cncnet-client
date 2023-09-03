@@ -36,20 +36,20 @@ namespace DTAConfig.OptionPanels
 
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
-                string buttonText = "不可用";
+                string buttonText = "Not Available";
 
                 if (File.Exists(ProgramConstants.GamePath + c.LocalPath))
                 {
-                    buttonText = "卸载";
+                    buttonText = "Uninstall";
 
                     if (c.LocalIdentifier != c.RemoteIdentifier)
-                        buttonText = "更新";
+                        buttonText = "Update";
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(c.RemoteIdentifier))
                     {
-                        buttonText = "安装";
+                        buttonText = "Install";
                     }
                 }
 
@@ -105,22 +105,22 @@ namespace DTAConfig.OptionPanels
                     continue;
                 }
 
-                string buttonText = "不可用";
+                string buttonText = "Not Available";
                 bool buttonEnabled = false;
 
                 if (File.Exists(ProgramConstants.GamePath + c.LocalPath))
                 {
-                    buttonText = "卸载";
+                    buttonText = "Uninstall";
                     buttonEnabled = true;
 
                     if (c.LocalIdentifier != c.RemoteIdentifier)
-                        buttonText = "更新 (" + GetSizeString(c.RemoteSize) + ")";
+                        buttonText = "Update (" + GetSizeString(c.RemoteSize) + ")";
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(c.RemoteIdentifier))
                     {
-                        buttonText = "安装 (" + GetSizeString(c.RemoteSize) + ")";
+                        buttonText = "Install (" + GetSizeString(c.RemoteSize) + ")";
                         buttonEnabled = true;
                     }
                 }
@@ -146,7 +146,7 @@ namespace DTAConfig.OptionPanels
                 if (cc.LocalIdentifier == cc.RemoteIdentifier)
                 {
                     File.Delete(ProgramConstants.GamePath + cc.LocalPath);
-                    btn.Text = "安装 (" + GetSizeString(cc.RemoteSize) + ")";
+                    btn.Text = "Install (" + GetSizeString(cc.RemoteSize) + ")";
                     return;
                 }
 
@@ -160,13 +160,15 @@ namespace DTAConfig.OptionPanels
             {
                 string archiveSizeMsg = "";
                 if (cc.Archived && cc.RemoteArchiveSize != cc.RemoteSize)
-                    archiveSizeMsg = "（下载大小为" + GetSizeString(cc.RemoteArchiveSize) + "）";
-                var msgBox = new XNAMessageBox(WindowManager, "需要确认",
-                    "要启用" + cc.GUIName + "，客户端会将必要的文件下载到你的游戏目录。" +
+                    archiveSizeMsg = " (size of the download is " + GetSizeString(cc.RemoteArchiveSize) + ")";
+                var msgBox = new XNAMessageBox(WindowManager, "Confirmation Required",
+                    "To enable " + cc.GUIName + " the Client will download the necessary files to your game directory." +
                     Environment.NewLine + Environment.NewLine +
-                    "这将需要额外的" + GetSizeString(cc.RemoteSize) + "空间" + archiveSizeMsg + "，并且下载可能会持续几个小时，具体取决于你的网速。" +
+                    "This will take an additional " + GetSizeString(cc.RemoteSize) + " of disk space" + archiveSizeMsg + ", and the download may last" +
+                    Environment.NewLine +
+                    "from a few minutes to multiple hours depending on your Internet connection speed." +
                     Environment.NewLine + Environment.NewLine +
-                    "你将无法在下载期间游玩。你想继续吗？", XNAMessageBoxButtons.YesNo);
+                    "You will not be able to play during the download. Do you want to continue?", XNAMessageBoxButtons.YesNo);
                 msgBox.Tag = btn;
 
                 msgBox.Show();
@@ -215,9 +217,9 @@ namespace DTAConfig.OptionPanels
             var btn = installationButtons.Find(b => object.ReferenceEquals(b.Tag, cc));
 
             if (cc.Archived && percentage == 100)
-                btn.Text = "解压中...";
+                btn.Text = "Unpacking...";
             else
-                btn.Text = "下载中.. " + percentage + "%";
+                btn.Text = "Downloading.. " + percentage + "%";
         }
 
         /// <summary>
@@ -242,29 +244,29 @@ namespace DTAConfig.OptionPanels
             {
                 if (!downloadCancelled)
                 {
-                    XNAMessageBox.Show(WindowManager, "可选组件下载失败",
-                        string.Format("下载可选组件{0}失败。" + Environment.NewLine +
-                        "有关详细信息，请参阅client.log。" + Environment.NewLine + Environment.NewLine +
-                        "如果此问题仍然存在，请联系你的模组作者寻求支持。",
+                    XNAMessageBox.Show(WindowManager, "Optional Component Download Failed",
+                        string.Format("Download of optional component {0} failed." + Environment.NewLine +
+                        "See client.log for details." + Environment.NewLine + Environment.NewLine +
+                        "If this problem continues, please contact your mod's authors for support.",
                         cc.GUIName));
                 }
 
-                btn.Text = "安装 (" + GetSizeString(cc.RemoteSize) + ")";
+                btn.Text = "Install (" + GetSizeString(cc.RemoteSize) + ")";
 
                 if (File.Exists(ProgramConstants.GamePath + cc.LocalPath))
-                    btn.Text = "更新 (" + GetSizeString(cc.RemoteSize) + ")";
+                    btn.Text = "Update (" + GetSizeString(cc.RemoteSize) + ")";
             }
             else
             {
-                XNAMessageBox.Show(WindowManager, "下载完成",
-                    string.Format("可选组件{0}的下载已成功完成。", cc.GUIName));
-                btn.Text = "卸载";
+                XNAMessageBox.Show(WindowManager, "Download Completed",
+                    string.Format("Download of optional component {0} completed succesfully.", cc.GUIName));
+                btn.Text = "Uninstall";
             }
         }
 
         public void CancelAllDownloads()
         {
-            Logger.Log("取消所有下载。");
+            Logger.Log("Cancelling all downloads.");
 
             downloadCancelled = true;
 

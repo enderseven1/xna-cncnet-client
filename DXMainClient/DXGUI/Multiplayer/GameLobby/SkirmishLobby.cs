@@ -36,11 +36,11 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             //InitPlayerOptionDropdowns(128, 98, 90, 48, 55, new Point(6, 24));
             InitPlayerOptionDropdowns();
 
-            btnLeaveGame.Text = "主菜单";
+            btnLeaveGame.Text = "Main Menu";
 
             //MapPreviewBox.EnableContextMenu = true;
 
-            ddPlayerSides[0].AddItem("观察者", AssetLoader.LoadTexture("spectatoricon.png"));
+            ddPlayerSides[0].AddItem("Spectator", AssetLoader.LoadTexture("spectatoricon.png"));
 
             MapPreviewBox.LocalStartingLocationSelected += MapPreviewBox_LocalStartingLocationSelected;
             MapPreviewBox.StartingLocationApplied += MapPreviewBox_StartingLocationApplied;
@@ -92,24 +92,24 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (GameMode.MultiplayerOnly)
             {
-                return GameMode.UIName + "只能在CnCNet和局域网使用。";
+                return GameMode.UIName + " can only be played on CnCNet and LAN.";
             }
 
             if (Map.MultiplayerOnly)
             {
-                return "选择的地图只能在CnCNet和局域网使用。";
+                return "The selected map can only be played on CnCNet and LAN.";
             }
 
             if (totalPlayerCount < Map.MinPlayers)
             {
-                return "选择的地图不能少于" + Map.MinPlayers + "个玩家。";
+                return "The selected map cannot be played with less than " + Map.MinPlayers + " players.";
             }
 
             if (Map.EnforceMaxPlayers)
             {
                 if (totalPlayerCount > Map.MaxPlayers)
                 {
-                    return "选择的地图不能超过" + Map.MaxPlayers + "个玩家。";
+                    return "The selected map cannot be played with more than " + Map.MaxPlayers + " players.";
                 }
 
                 IEnumerable<PlayerInfo> concatList = Players.Concat(AIPlayers);
@@ -121,14 +121,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                     if (concatList.Count(p => p.StartingLocation == pInfo.StartingLocation) > 1)
                     {
-                        return "多个玩家不能在所选地图上共享相同的起始位置。";
+                        return "Multiple players cannot share the same starting location on the selected map.";
                     }
                 }
             }
 
             if (Map.IsCoop && Players[0].SideId == ddPlayerSides[0].Items.Count - 1)
             {
-                return "无法观看合作任务。你必须更努力才能在这里作弊。";
+                return "Co-op missions cannot be spectated. You'll have to show a bit more effort to cheat here.";
             }
 
             return null;
@@ -145,7 +145,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 return;
             }
 
-            XNAMessageBox.Show(WindowManager, "无法启动游戏", error);
+            XNAMessageBox.Show(WindowManager, "Cannot launch game", error);
         }
 
         protected override void BtnLeaveGame_LeftClick(object sender, EventArgs e)
@@ -221,7 +221,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
         public string GetSwitchName()
         {
-            return "遭遇战大厅";
+            return "Skirmish Lobby";
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             }
             catch (Exception ex)
             {
-                Logger.Log("保存遭遇战设置失败！原因：" + ex.Message);
+                Logger.Log("Saving skirmish settings failed! Reason: " + ex.Message);
             }
         }
 
@@ -309,7 +309,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
             if (player == null)
             {
-                Logger.Log("无法从遭遇战设置中加载人类玩家信息！");
+                Logger.Log("Failed to load human player information from skirmish settings!");
                 InitDefaultSettings();
                 return;
             }
@@ -339,7 +339,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
 
                 if (aiPlayer == null)
                 {
-                    Logger.Log("无法从遭遇战设置中加载AI玩家信息！");
+                    Logger.Log("Failed to load AI player information from skirmish settings!");
                     InitDefaultSettings();
                     return;
                 }
@@ -447,7 +447,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
             AIPlayers.Clear();
 
             Players.Add(new PlayerInfo(ProgramConstants.PLAYERNAME, 0, 0, 0, 0));
-            PlayerInfo aiPlayer = new PlayerInfo("弱鸡的AI", 0, 0, 0, 0);
+            PlayerInfo aiPlayer = new PlayerInfo("Easy AI", 0, 0, 0, 0);
             aiPlayer.IsAI = true;
             aiPlayer.AILevel = 2;
             AIPlayers.Add(aiPlayer);

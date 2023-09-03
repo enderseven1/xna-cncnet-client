@@ -120,7 +120,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnChangeTunnel.Name = nameof(btnChangeTunnel);
             btnChangeTunnel.ClientRectangle = new Rectangle(btnLeaveGame.Right - btnLeaveGame.Width - 145,
                 btnLeaveGame.Y, 133, 23);
-            btnChangeTunnel.Text = "切换服务器";
+            btnChangeTunnel.Text = "Change Tunnel";
             btnChangeTunnel.LeftClick += BtnChangeTunnel_LeftClick;
             AddChild(btnChangeTunnel);
 
@@ -248,9 +248,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 channel.SendCTCPMessage(TUNNEL_PING_CTCP_COMMAND + " " + tunnelHandler.CurrentTunnel.PingInMs, QueuedMessageType.SYSTEM_MESSAGE, 10);
 
                 if (tunnelHandler.CurrentTunnel.PingInMs < 0)
-                    AddNotice(ProgramConstants.PLAYERNAME + " - Ping值未知。");
+                    AddNotice(ProgramConstants.PLAYERNAME + " - unknown ping to tunnel server.");
                 else
-                    AddNotice(ProgramConstants.PLAYERNAME + " - Ping到服务器：" + tunnelHandler.CurrentTunnel.PingInMs + " ms");
+                    AddNotice(ProgramConstants.PLAYERNAME + " - ping to tunnel server: " + tunnelHandler.CurrentTunnel.PingInMs + " ms");
             }
 
             topBar.AddPrimarySwitchable(this);
@@ -301,7 +301,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (!IsHost && playerName == hostName && !ProgramConstants.IsInGame)
             {
                 connectionManager.MainChannel.AddMessage(new ChatMessage(
-                    Color.Yellow, "房主离开了游戏！"));
+                    Color.Yellow, "The game host left the game!"));
 
                 Clear();
             }
@@ -427,7 +427,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             if (sender != hostName)
                 return;
 
-            AddNotice(cheaterName + " - 检测到修改过的文件！他们可能在作弊！", Color.Red);
+            AddNotice(cheaterName + " - modified files detected! They could be cheating!", Color.Red);
 
             if (IsHost)
                 channel.SendCTCPMessage(INVALID_FILE_HASH_CTCP_COMMAND + " " + cheaterName, QueuedMessageType.SYSTEM_MESSAGE, 0);
@@ -436,9 +436,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private void HandleTunnelPing(string sender, int pingInMs)
         {
             if (pingInMs < 0)
-                AddNotice(sender + " - 服务器Ping未知。");
+                AddNotice(sender + " - unknown ping to tunnel server.");
             else
-                AddNotice(sender + " - 服务器Ping：" + pingInMs + " ms");
+                AddNotice(sender + " - ping to tunnel server: " + pingInMs + " ms");
         }
 
         /// <summary>
@@ -461,7 +461,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (sgIndex >= ddSavedGame.Items.Count)
             {
-                AddNotice("房主选择了无效的存档序列。 " + sgIndex);
+                AddNotice("The game host has selected an invalid saved game index! " + sgIndex);
                 channel.SendCTCPMessage(INVALID_SAVED_GAME_INDEX_CTCP_COMMAND, QueuedMessageType.SYSTEM_MESSAGE, 10);
                 return;
             }
@@ -501,7 +501,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             pInfo.Ready = false;
 
-            AddNotice(pInfo.Name + "的系统上没有选定的存档！尝试选择较早的存档。");
+            AddNotice(pInfo.Name + " does not have the selected saved game on their system! Try selecting an earlier saved game.");
 
             CopyPlayerDataToUI();
         }
@@ -570,7 +570,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             CnCNetTunnel tunnel = tunnelHandler.Tunnels.Find(t => t.Address == tunnelAddress && t.Port == tunnelPort);
             if (tunnel == null)
             {
-                AddNotice("房主选择的服务器无效，若不更换服务器将无法参与。",
+                AddNotice("The game host has selected an invalid tunnel server! " +
+                    "The game host needs to change the server or you will be unable " +
+                    "to participate in the match.",
                     Color.Yellow);
                 btnLoadGame.AllowClick = false;
                 return;
@@ -587,7 +589,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         private void HandleTunnelServerChange(CnCNetTunnel tunnel)
         {
             tunnelHandler.CurrentTunnel = tunnel;
-            AddNotice($"房主切换服务器到：{tunnel.Name}");
+            AddNotice($"The game host has changed the tunnel server to: {tunnel.Name}");
             //UpdatePing();
         }
 
@@ -595,14 +597,16 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         protected override void HostStartGame()
         {
-            AddNotice("正在连接服务器...");
+            AddNotice("Contacting tunnel server...");
             List<int> playerPorts = tunnelHandler.CurrentTunnel.GetPlayerPortInfo(SGPlayers.Count);
 
             if (playerPorts.Count < Players.Count)
             {
-                ShowTunnelSelectionWindow("连接CnCNet服务器时出错。" + Environment.NewLine +
-                        "切换服务器：");
-                AddNotice("连接指定的CnCNet服务器时出错。请换一个服务器", Color.Yellow);
+                ShowTunnelSelectionWindow("An error occured while contacting " +
+                        "the CnCNet tunnel server." + Environment.NewLine +
+                        "Try picking a different tunnel server:");
+                AddNotice("An error occured while contacting the specified CnCNet " +
+                    "tunnel server. Please try using a different tunnel server ", Color.Yellow);
                 return;
             }
 
@@ -619,7 +623,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             sb.Remove(sb.Length - 1, 1);
             channel.SendCTCPMessage(sb.ToString(), QueuedMessageType.SYSTEM_MESSAGE, 9);
 
-            AddNotice("开始游戏...");
+            AddNotice("Starting game...");
 
             started = true;
 
@@ -695,7 +699,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             broadcastChannel.SendCTCPMessage(sb.ToString(), QueuedMessageType.SYSTEM_MESSAGE, 20);
         }
 
-        public override string GetSwitchName() => "开始游戏";
+        public override string GetSwitchName() => "Load Game";
 
         protected override void UpdateDiscordPresence(bool resetTimer = false)
         {

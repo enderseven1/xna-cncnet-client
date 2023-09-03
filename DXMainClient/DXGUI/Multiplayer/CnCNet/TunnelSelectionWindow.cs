@@ -38,7 +38,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             lblDescription = new XNALabel(WindowManager);
             lblDescription.Name = "lblDescription";
-            lblDescription.Text = "第一行" + Environment.NewLine + "第二行";
+            lblDescription.Text = "Line 1" + Environment.NewLine + "Line 2";
             lblDescription.X = UIDesignConstants.EMPTY_SPACE_SIDES;
             lblDescription.Y = UIDesignConstants.EMPTY_SPACE_TOP;
             AddChild(lblDescription);
@@ -53,7 +53,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnApply.Name = "btnApply";
             btnApply.Width = UIDesignConstants.BUTTON_WIDTH_92;
             btnApply.Height = UIDesignConstants.BUTTON_HEIGHT;
-            btnApply.Text = "应用";
+            btnApply.Text = "Apply";
             btnApply.Y = lbTunnelList.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN;
             AddChild(btnApply);
             btnApply.LeftClick += BtnApply_LeftClick;
