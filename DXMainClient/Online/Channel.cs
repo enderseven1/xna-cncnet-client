@@ -4,10 +4,11 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DTAClient.DXGUI;
 
 namespace DTAClient.Online
 {
-    public class Channel
+    public class Channel : IMessageView
     {
         const int MESSAGE_LIMIT = 1024;
 
@@ -82,7 +83,7 @@ namespace DTAClient.Online
             {
                 _topic = value;
                 if (Persistent)
-                    AddMessage(new ChatMessage("Topic for " + UIName + " is: " + _topic));
+                    AddMessage(new ChatMessage(UIName + "主题：" + _topic));
             }
         }
 
@@ -117,7 +118,7 @@ namespace DTAClient.Online
 
             if (notifyOnUserListChange)
             {
-                AddMessage(new ChatMessage(user.IRCUser.Name + " has joined " + UIName + "."));
+                AddMessage(new ChatMessage(user.IRCUser.Name + "加入了" + UIName));
             }
 
 #if !YR
@@ -141,6 +142,7 @@ namespace DTAClient.Online
                     if (existingUser.IsAdmin != user.IsAdmin)
                     {
                         existingUser.IsAdmin = user.IsAdmin;
+                        existingUser.IsFriend = user.IsFriend;
                         users.Reinsert(user.IRCUser.Name);
                     }
                 }
@@ -158,7 +160,7 @@ namespace DTAClient.Online
                     users.Clear();
                 }
 
-                AddMessage(new ChatMessage(userName + " has been kicked from " + UIName + "."));
+                AddMessage(new ChatMessage(userName + "被踢出" + UIName + "了"));
 
                 UserKicked?.Invoke(this, new UserNameEventArgs(userName));
             }
@@ -170,7 +172,7 @@ namespace DTAClient.Online
             {
                 if (notifyOnUserListChange)
                 {
-                    AddMessage(new ChatMessage(userName + " has left from " + UIName + "."));
+                    AddMessage(new ChatMessage(userName + "退出了" + UIName));
                 }
 
                 UserLeft?.Invoke(this, new UserNameEventArgs(userName));
@@ -183,7 +185,7 @@ namespace DTAClient.Online
             {
                 if (notifyOnUserListChange && users.Find(userName) != null)
                 {
-                    AddMessage(new ChatMessage(userName + " has quit from CnCNet."));
+                    AddMessage(new ChatMessage(userName + "退出了CnCNet"));
                 }
 
                 UserQuitIRC?.Invoke(this, new UserNameEventArgs(userName));
@@ -258,13 +260,20 @@ namespace DTAClient.Online
                 "PRIVMSG " + ChannelName + " :" + colorString + message);
         }
 
-        public void SendCTCPMessage(string message, QueuedMessageType qmType, int priority)
+        /// <param name="message"></param>
+        /// <param name="qmType"></param>
+        /// <param name="priority"></param>
+        /// <param name="replace">
+        ///     This can be used to help prevent flooding for multiple options that are changed quickly. It allows for a single message
+        ///     for multiple changes.
+        /// </param>
+        public void SendCTCPMessage(string message, QueuedMessageType qmType, int priority, bool replace = false)
         {
             char CTCPChar1 = (char)58;
             char CTCPChar2 = (char)01;
 
             connection.QueueMessage(qmType, priority,
-                "NOTICE " + ChannelName + " " + CTCPChar1 + CTCPChar2 + message + CTCPChar2);
+                "NOTICE " + ChannelName + " " + CTCPChar1 + CTCPChar2 + message + CTCPChar2, replace);
         }
 
         /// <summary>

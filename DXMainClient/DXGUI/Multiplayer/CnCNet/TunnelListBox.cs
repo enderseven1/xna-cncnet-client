@@ -25,14 +25,16 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             SelectedIndexChanged += TunnelListBox_SelectedIndexChanged;
 
+            int headerHeight = (int)Renderer.GetTextDimensions("Name", HeaderFontIndex).Y;
+
             Width = 466;
-            Height = 200;
+            Height = LineHeight * 12 + headerHeight + 3;
             PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
             BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
-            AddColumn("Name", 230);
-            AddColumn("Official", 70);
+            AddColumn("服务器", 230);
+            AddColumn("官方", 70);
             AddColumn("Ping", 76);
-            AddColumn("Players", 90);
+            AddColumn("人数", 90);
             AllowRightClickUnselect = false;
             AllowKeyboardInput = true;
         }
@@ -63,6 +65,14 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             }
         }
 
+        /// <summary>
+        /// Gets whether or not a tunnel from the list with the given address is selected.
+        /// </summary>
+        /// <param name="address">The address of the tunnel server</param>
+        /// <returns>True if tunnel with given address is selected, otherwise false.</returns>
+        public bool IsTunnelSelected(string address) =>
+            tunnelHandler.Tunnels.FindIndex(t => t.Address == address) == SelectedIndex;
+
         private void TunnelHandler_TunnelsRefreshed(object sender, EventArgs e)
         {
             ClearItems();
@@ -76,7 +86,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
                 info.Add(tunnel.Name);
                 info.Add(Conversions.BooleanToString(tunnel.Official, BooleanStringStyle.YESNO));
                 if (tunnel.PingInMs < 0)
-                    info.Add("Unknown");
+                    info.Add("未知");
                 else
                     info.Add(tunnel.PingInMs + " ms");
                 info.Add(tunnel.Clients + " / " + tunnel.MaxClients);

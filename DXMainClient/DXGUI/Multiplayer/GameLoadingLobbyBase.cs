@@ -112,20 +112,20 @@ namespace DTAClient.DXGUI.Multiplayer
             lblMapName.FontIndex = 1;
             lblMapName.ClientRectangle = new Rectangle(panelPlayers.Right + 12,
                 panelPlayers.Y, 0, 0);
-            lblMapName.Text = "MAP:";
+            lblMapName.Text = "地图：";
 
             lblMapNameValue = new XNALabel(WindowManager);
             lblMapNameValue.Name = nameof(lblMapNameValue);
             lblMapNameValue.ClientRectangle = new Rectangle(lblMapName.X,
                 lblMapName.Y + 18, 0, 0);
-            lblMapNameValue.Text = "Map name";
+            lblMapNameValue.Text = "地图名称";
 
             lblGameMode = new XNALabel(WindowManager);
             lblGameMode.Name = nameof(lblGameMode);
             lblGameMode.ClientRectangle = new Rectangle(lblMapName.X,
                 panelPlayers.Y + 40, 0, 0);
             lblGameMode.FontIndex = 1;
-            lblGameMode.Text = "GAME MODE:";
+            lblGameMode.Text = "游戏模式：";
 
             lblGameModeValue = new XNALabel(WindowManager);
             lblGameModeValue.Name = nameof(lblGameModeValue);
@@ -165,15 +165,15 @@ namespace DTAClient.DXGUI.Multiplayer
             btnLoadGame = new XNAClientButton(WindowManager);
             btnLoadGame.Name = nameof(btnLoadGame);
             btnLoadGame.ClientRectangle = new Rectangle(lbChatMessages.X,
-                tbChatInput.Bottom + 6, 133, 23);
-            btnLoadGame.Text = "Load Game";
+                tbChatInput.Bottom + 6, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
+            btnLoadGame.Text = "加载存档";
             btnLoadGame.LeftClick += BtnLoadGame_LeftClick;
 
             btnLeaveGame = new XNAClientButton(WindowManager);
             btnLeaveGame.Name = nameof(btnLeaveGame);
             btnLeaveGame.ClientRectangle = new Rectangle(Width - 145,
-                btnLoadGame.Y, 133, 23);
-            btnLeaveGame.Text = "Leave Game";
+                btnLoadGame.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
+            btnLeaveGame.Text = "退出房间";
             btnLeaveGame.LeftClick += BtnLeaveGame_LeftClick;
 
             AddChild(lblMapName);
@@ -389,7 +389,7 @@ namespace DTAClient.DXGUI.Multiplayer
             lbChatMessages.TopIndex = 0;
 
             ddSavedGame.AllowDropDown = isHost;
-            btnLoadGame.Text = isHost ? "Load Game" : "I'm Ready";
+            btnLoadGame.Text = isHost ? "加载存档" : "准备好了";
 
             IniFile spawnSGIni = new IniFile(ProgramConstants.GamePath + "Saved Games/spawnSG.ini");
 

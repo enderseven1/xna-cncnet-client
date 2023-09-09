@@ -36,27 +36,27 @@ namespace DTAConfig.OptionPanels
 
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
-                string buttonText = "Not Available";
+                string buttonText = "不可用";
 
                 if (File.Exists(ProgramConstants.GamePath + c.LocalPath))
                 {
-                    buttonText = "Uninstall";
+                    buttonText = "卸载";
 
                     if (c.LocalIdentifier != c.RemoteIdentifier)
-                        buttonText = "Update";
+                        buttonText = "更新";
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(c.RemoteIdentifier))
                     {
-                        buttonText = "Install";
+                        buttonText = "安装";
                     }
                 }
 
                 var btn = new XNAClientButton(WindowManager);
                 btn.Name = "btn" + c.ININame;
                 btn.ClientRectangle = new Rectangle(Width - 145,
-                    12 + componentIndex * 35, 133, 23);
+                    12 + componentIndex * 35, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
                 btn.Text = buttonText;
                 btn.Tag = c;
                 btn.LeftClick += Btn_LeftClick;
@@ -73,54 +73,36 @@ namespace DTAConfig.OptionPanels
 
                 componentIndex++;
             }
-
-            CUpdater.FileIdentifiersUpdated += CUpdater_FileIdentifiersUpdated;
-        }
-
-        private void CUpdater_FileIdentifiersUpdated()
-        {
-            UpdateInstallationButtons();
         }
 
         public override void Load()
         {
             base.Load();
 
-            UpdateInstallationButtons();
-        }
+            int componentIndex = 0;
+            bool buttonEnabled;
 
-        private void UpdateInstallationButtons()
-        {
             if (CUpdater.CustomComponents == null)
                 return;
 
-            int componentIndex = 0;
-
             foreach (CustomComponent c in CUpdater.CustomComponents)
             {
-                if (!c.Initialized || c.IsBeingDownloaded)
-                {
-                    installationButtons[componentIndex].AllowClick = false;
-                    componentIndex++;
-                    continue;
-                }
-
-                string buttonText = "Not Available";
-                bool buttonEnabled = false;
+                string buttonText = "不可用";
+                buttonEnabled = false;
 
                 if (File.Exists(ProgramConstants.GamePath + c.LocalPath))
                 {
-                    buttonText = "Uninstall";
+                    buttonText = "下载";
                     buttonEnabled = true;
 
                     if (c.LocalIdentifier != c.RemoteIdentifier)
-                        buttonText = "Update (" + GetSizeString(c.RemoteSize) + ")";
+                        buttonText = "更新（" + GetSizeString(c.RemoteSize) + "）";
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(c.RemoteIdentifier))
                     {
-                        buttonText = "Install (" + GetSizeString(c.RemoteSize) + ")";
+                        buttonText = "安装（" + GetSizeString(c.RemoteSize) + "）";
                         buttonEnabled = true;
                     }
                 }
@@ -130,6 +112,11 @@ namespace DTAConfig.OptionPanels
 
                 componentIndex++;
             }
+        }
+
+        public override bool Save()
+        {
+            return base.Save();
         }
 
         private void Btn_LeftClick(object sender, EventArgs e)
@@ -146,7 +133,7 @@ namespace DTAConfig.OptionPanels
                 if (cc.LocalIdentifier == cc.RemoteIdentifier)
                 {
                     File.Delete(ProgramConstants.GamePath + cc.LocalPath);
-                    btn.Text = "Install (" + GetSizeString(cc.RemoteSize) + ")";
+                    btn.Text = "安装";
                     return;
                 }
 
@@ -154,21 +141,17 @@ namespace DTAConfig.OptionPanels
 
                 cc.DownloadFinished += cc_DownloadFinished;
                 cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-                cc.DownloadComponent();
+                Thread thread = new Thread(cc.DownloadComponent);
+                thread.Start();
             }
             else
             {
-                string archiveSizeMsg = "";
-                if (cc.Archived && cc.RemoteArchiveSize != cc.RemoteSize)
-                    archiveSizeMsg = " (size of the download is " + GetSizeString(cc.RemoteArchiveSize) + ")";
-                var msgBox = new XNAMessageBox(WindowManager, "Confirmation Required",
-                    "To enable " + cc.GUIName + " the Client will download the necessary files to your game directory." +
+                var msgBox = new XNAMessageBox(WindowManager, "需要确认",
+                    "需要下载必要文件才能启用" + cc.GUIName + "。" +
                     Environment.NewLine + Environment.NewLine +
-                    "This will take an additional " + GetSizeString(cc.RemoteSize) + " of disk space" + archiveSizeMsg + ", and the download may last" +
-                    Environment.NewLine +
-                    "from a few minutes to multiple hours depending on your Internet connection speed." +
+                    "这会占用" + GetSizeString(cc.RemoteSize) + "的空间。" +
                     Environment.NewLine + Environment.NewLine +
-                    "You will not be able to play during the download. Do you want to continue?", XNAMessageBoxButtons.YesNo);
+                    "完成之前将不能游玩，确定要下载吗？", XNAMessageBoxButtons.YesNo);
                 msgBox.Tag = btn;
 
                 msgBox.Show();
@@ -185,7 +168,8 @@ namespace DTAConfig.OptionPanels
 
             cc.DownloadFinished += cc_DownloadFinished;
             cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-            cc.DownloadComponent();
+            Thread thread = new Thread(cc.DownloadComponent);
+            thread.Start();
         }
 
         public void InstallComponent(int id)
@@ -197,7 +181,8 @@ namespace DTAConfig.OptionPanels
 
             cc.DownloadFinished += cc_DownloadFinished;
             cc.DownloadProgressChanged += cc_DownloadProgressChanged;
-            cc.DownloadComponent();
+            Thread thread = new Thread(cc.DownloadComponent);
+            thread.Start();
         }
 
         /// <summary>
@@ -215,11 +200,7 @@ namespace DTAConfig.OptionPanels
             percentage = Math.Min(percentage, 100);
 
             var btn = installationButtons.Find(b => object.ReferenceEquals(b.Tag, cc));
-
-            if (cc.Archived && percentage == 100)
-                btn.Text = "Unpacking...";
-            else
-                btn.Text = "Downloading.. " + percentage + "%";
+            btn.Text = "下载中.. " + percentage + "%";
         }
 
         /// <summary>
@@ -244,29 +225,29 @@ namespace DTAConfig.OptionPanels
             {
                 if (!downloadCancelled)
                 {
-                    XNAMessageBox.Show(WindowManager, "Optional Component Download Failed",
-                        string.Format("Download of optional component {0} failed." + Environment.NewLine +
-                        "See client.log for details." + Environment.NewLine + Environment.NewLine +
-                        "If this problem continues, please contact your mod's authors for support.",
+                    XNAMessageBox.Show(WindowManager, "组件下载失败",
+                        string.Format("{0}下载失败。" + Environment.NewLine +
+                        "查看client.log获取详细信息。" + Environment.NewLine + Environment.NewLine +
+                        "如果错误依然存在，请联系MOD作者。",
                         cc.GUIName));
                 }
 
-                btn.Text = "Install (" + GetSizeString(cc.RemoteSize) + ")";
+                btn.Text = "安装（" + GetSizeString(cc.RemoteSize) + "）";
 
                 if (File.Exists(ProgramConstants.GamePath + cc.LocalPath))
-                    btn.Text = "Update (" + GetSizeString(cc.RemoteSize) + ")";
+                    btn.Text = "更新（" + GetSizeString(cc.RemoteSize) + "）";
             }
             else
             {
-                XNAMessageBox.Show(WindowManager, "Download Completed",
-                    string.Format("Download of optional component {0} completed succesfully.", cc.GUIName));
-                btn.Text = "Uninstall";
+                XNAMessageBox.Show(WindowManager, "下载完成",
+                    string.Format("{0}已下载完成。", cc.GUIName));
+                btn.Text = "下载";
             }
         }
 
         public void CancelAllDownloads()
         {
-            Logger.Log("Cancelling all downloads.");
+            Logger.Log("取消全部下载");
 
             downloadCancelled = true;
 

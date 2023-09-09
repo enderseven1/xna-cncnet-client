@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -39,8 +41,8 @@ namespace ClientCore
 
         public static readonly Encoding LAN_ENCODING = Encoding.UTF8;
 
-        public static string GAME_VERSION = "Undefined";
-        private static string PlayerName = "No name";
+        public static string GAME_VERSION = "无";
+        private static string PlayerName = "无名氏";
 
         public static string PLAYERNAME
         {
@@ -73,5 +75,9 @@ namespace ClientCore
 
         public const string GAME_INVITE_CTCP_COMMAND = "INVITE";
         public const string GAME_INVITATION_FAILED_CTCP_COMMAND = "INVITATION_FAILED";
+
+        public static readonly List<string> TEAMS = new List<string> { "A", "B", "C", "D" };
+        public static readonly List<string> AI_PLAYER_NAMES = new List<string> { "弱鸡的敌人", "凑合的敌人", "牛逼的敌人" };
+        
     }
 }

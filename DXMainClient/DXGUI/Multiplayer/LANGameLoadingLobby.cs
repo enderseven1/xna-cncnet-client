@@ -249,7 +249,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
             sndJoinSound.Play();
 
-            AddNotice(lpInfo.Name + " connected from " + lpInfo.IPAddress);
+            AddNotice(lpInfo.Name + "从" + lpInfo.IPAddress + "连接");
             lpInfo.StartReceiveLoop();
 
             CopyPlayerDataToUI();
@@ -601,7 +601,7 @@ namespace DTAClient.DXGUI.Multiplayer
 
         public override string GetSwitchName()
         {
-            return "Load Game";
+            return "加载存档";
         }
 
         public override void Update(GameTime gameTime)

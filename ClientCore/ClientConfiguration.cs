@@ -140,11 +140,11 @@ namespace ClientCore
 
         #region Game options
 
-        public string Sides => gameOptions_ini.GetStringValue(GENERAL, "Sides", "GDI,Nod,Allies,Soviet");
+        public string Sides => gameOptions_ini.GetStringValue(GENERAL, nameof(Sides), "GDI,Nod,Allies,Soviet");
+        
+        public string InternalSideIndices => gameOptions_ini.GetStringValue(GENERAL, nameof(InternalSideIndices), string.Empty);
 
-        public string InternalSideIds => gameOptions_ini.GetStringValue(GENERAL, "InternalSideIds", string.Empty);
-
-        public string SpectatorInternalSideId => gameOptions_ini.GetStringValue(GENERAL, "SpectatorInternalSideId", string.Empty);
+        public string SpectatorInternalSideIndex => gameOptions_ini.GetStringValue(GENERAL, nameof(SpectatorInternalSideIndex), string.Empty);
 
         #endregion
 

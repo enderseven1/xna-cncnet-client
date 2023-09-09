@@ -57,7 +57,7 @@ namespace ClientGUI
     /// <summary>
     /// Native window class that handles IME.
     /// </summary>
-  #if WINFORMS
+#if WINFORMS
     public sealed class IMENativeWindow : NativeWindow, IDisposable
     {
 

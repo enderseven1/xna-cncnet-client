@@ -27,11 +27,11 @@ namespace ClientCore.Statistics.GameParsers
         {
             if (!File.Exists(gamepath + fileName))
             {
-                Logger.Log("DTAStatisticsParser: Failed to read statistics: the log file does not exist.");
+                Logger.Log("DTAStatisticsParser: 读取统计数据失败，文件不存在");
                 return;
             }
 
-            Logger.Log("Attempting to read statistics from " + fileName);
+            Logger.Log("从" + fileName + "读取统计数据");
 
             try
             {
@@ -57,7 +57,7 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("Found player " + playerName);
+                        Logger.Log("找到玩家" + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
@@ -81,7 +81,7 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("Found player " + playerName);
+                        Logger.Log("找到玩家" + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)

@@ -24,7 +24,6 @@ namespace DTAClient.DXGUI.Generic
         public event UpdateFailureEventHandler UpdateFailed;
 
         delegate void UpdateProgressChangedDelegate(string fileName, int filePercentage, int totalPercentage);
-        delegate void FileDownloadCompletedDelegate(string archiveName);
 
         private const double DOT_TIME = 0.66;
         private const int MAX_DOTS = 5;
@@ -112,8 +111,8 @@ namespace DTAClient.DXGUI.Generic
             lblUpdaterStatus.ClientRectangle = new Rectangle(12, 240, 0, 0);
 
             var btnCancel = new XNAClientButton(WindowManager);
-            btnCancel.ClientRectangle = new Rectangle(301, 240, 133, 23);
-            btnCancel.Text = "Cancel";
+            btnCancel.ClientRectangle = new Rectangle(301, 240, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             AddChild(lblDescription);
@@ -136,7 +135,6 @@ namespace DTAClient.DXGUI.Generic
             CUpdater.OnUpdateFailed += Updater_OnUpdateFailed;
             CUpdater.UpdateProgressChanged += Updater_UpdateProgressChanged;
             CUpdater.LocalFileCheckProgressChanged += CUpdater_LocalFileCheckProgressChanged;
-            CUpdater.OnFileDownloadCompleted += CUpdater_OnFileDownloadCompleted;
 
             if (IsTaskbarSupported())
                 tbp = new TaskbarProgress();
@@ -149,14 +147,8 @@ namespace DTAClient.DXGUI.Generic
 
             if (CUpdater.DTAVersionState == VersionState.UNKNOWN)
             {
-                XNAMessageBox.Show(WindowManager, "Force Update Failure", "Checking for updates failed.");
-                AddCallback(new Action(CloseWindow), null);
-                return;
-            }
-            else if (CUpdater.DTAVersionState == VersionState.OUTDATED && CUpdater.ManualUpdateRequired)
-            {
-                UpdateCancelled?.Invoke(this, EventArgs.Empty);
-                AddCallback(new Action(CloseWindow), null);
+                XNAMessageBox.Show(WindowManager, "强制更新失败", "检查更新失败。");
+                CloseWindow();
                 return;
             }
 
@@ -207,8 +199,8 @@ namespace DTAClient.DXGUI.Generic
 
             lblCurrentFileProgressPercentageValue.Text = prgCurrentFile.Value.ToString() + "%";
             lblTotalProgressPercentageValue.Text = prgTotal.Value.ToString() + "%";
-            lblCurrentFile.Text = "Current file: " + currFileName;
-            lblUpdaterStatus.Text = "Downloading files";
+            lblCurrentFile.Text = "当前文件：" + currFileName;
+            lblUpdaterStatus.Text = "下载文件";
 
             /*/ TODO Improve the updater
              * When the updater thread in DTAUpdater.dll has completed the update, it will
@@ -232,16 +224,6 @@ namespace DTAClient.DXGUI.Generic
             {
 
             }
-        }
-
-        private void CUpdater_OnFileDownloadCompleted(string archiveName)
-        {
-            AddCallback(new FileDownloadCompletedDelegate(HandleFileDownloadCompleted), archiveName);
-        }
-
-        private void HandleFileDownloadCompleted(string archiveName)
-        {
-            lblUpdaterStatus.Text = "Unpacking archive";
         }
 
         private void Updater_OnUpdateCompleted()

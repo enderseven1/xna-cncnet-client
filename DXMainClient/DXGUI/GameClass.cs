@@ -36,11 +36,11 @@ namespace DTAClient.DXGUI
 
         protected override void Initialize()
         {
-            Logger.Log("Initializing GameClass.");
+            Logger.Log("初始化GameClass");
 
             string windowTitle = ClientConfiguration.Instance.WindowTitle;
             Window.Title = string.IsNullOrEmpty(windowTitle) ?
-                string.Format("{0} Client", MainClientConstants.GAME_NAME_SHORT) : windowTitle;
+                string.Format("{0}客户端", MainClientConstants.GAME_NAME_SHORT) : windowTitle;
 
             base.Initialize();
 

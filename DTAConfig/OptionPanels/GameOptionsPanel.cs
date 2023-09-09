@@ -50,7 +50,7 @@ namespace DTAConfig.OptionPanels
             lblScrollRate.Name = "lblScrollRate";
             lblScrollRate.ClientRectangle = new Rectangle(12,
                 14, 0, 0);
-            lblScrollRate.Text = "Scroll Rate:";
+            lblScrollRate.Text = "卷动速率：";
 
             lblScrollRateValue = new XNALabel(WindowManager);
             lblScrollRateValue.Name = "lblScrollRateValue";
@@ -77,26 +77,26 @@ namespace DTAConfig.OptionPanels
             chkScrollCoasting.ClientRectangle = new Rectangle(
                 lblScrollRate.X,
                 trbScrollRate.Bottom + 20, 0, 0);
-            chkScrollCoasting.Text = "Scroll Coasting";
+            chkScrollCoasting.Text = "滚动滑行";
 
             chkTargetLines = new XNAClientCheckBox(WindowManager);
             chkTargetLines.Name = "chkTargetLines";
             chkTargetLines.ClientRectangle = new Rectangle(
                 lblScrollRate.X,
                 chkScrollCoasting.Bottom + 24, 0, 0);
-            chkTargetLines.Text = "Target Lines";
+            chkTargetLines.Text = "目标线";
 
             chkTooltips = new XNAClientCheckBox(WindowManager);
             chkTooltips.Name = "chkTooltips";
-            chkTooltips.Text = "Tooltips";
+            chkTooltips.Text = "工具提示";
 
             chkToolTipDescriptions = new XNAClientCheckBox(WindowManager);
             chkToolTipDescriptions.Name = "chkToolTipDescriptions";
-            chkToolTipDescriptions.Text = "Advanced Tooltips";
+            chkToolTipDescriptions.Text = "高级工具提示（需要Phobos）";
 
             var lblPlayerName = new XNALabel(WindowManager);
             lblPlayerName.Name = "lblPlayerName";
-            lblPlayerName.Text = "Player Name*:";
+            lblPlayerName.Text = "玩家昵称*：";
 
 #if YR
             chkShowHiddenObjects = new XNAClientCheckBox(WindowManager);
@@ -104,7 +104,7 @@ namespace DTAConfig.OptionPanels
             chkShowHiddenObjects.ClientRectangle = new Rectangle(
                 lblScrollRate.X,
                 chkTargetLines.Bottom + 24, 0, 0);
-            chkShowHiddenObjects.Text = "Show Hidden Objects";
+            chkShowHiddenObjects.Text = "显示隐藏对象";
 
             chkTooltips.ClientRectangle = new Rectangle(
                 lblScrollRate.X,
@@ -165,8 +165,7 @@ namespace DTAConfig.OptionPanels
             lblNotice.Name = "lblNotice";
             lblNotice.ClientRectangle = new Rectangle(lblPlayerName.X,
                 lblPlayerName.Bottom + 30, 0, 0);
-            lblNotice.Text = "* If you are currently connected to CnCNet, you need to log out and reconnect" +
-                Environment.NewLine + "for your new name to be applied.";
+            lblNotice.Text = "* 你需要重新登录CnCNet才能应用新昵称";
 
             hotkeyConfigWindow = new HotkeyConfigurationWindow(WindowManager);
             DarkeningPanel.AddAndInitializeWithControl(WindowManager, hotkeyConfigWindow);
@@ -174,8 +173,8 @@ namespace DTAConfig.OptionPanels
 
             var btnConfigureHotkeys = new XNAClientButton(WindowManager);
             btnConfigureHotkeys.Name = "btnConfigureHotkeys";
-            btnConfigureHotkeys.ClientRectangle = new Rectangle(lblPlayerName.X, lblNotice.Bottom + 36, 160, 23);
-            btnConfigureHotkeys.Text = "Configure Hotkeys";
+            btnConfigureHotkeys.ClientRectangle = new Rectangle(lblPlayerName.X, lblNotice.Bottom + 36, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
+            btnConfigureHotkeys.Text = "配置快捷键";
             btnConfigureHotkeys.LeftClick += BtnConfigureHotkeys_LeftClick;
 
             AddChild(lblScrollRate);

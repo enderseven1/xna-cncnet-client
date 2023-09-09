@@ -19,7 +19,6 @@ namespace DTAClient.DXGUI
     /// </summary>
     public class GameInProgressWindow : XNAPanel
     {
-        private const double FPS = 60.0;
         private const double POWER_SAVING_FPS = 5.0;
 
         public GameInProgressWindow(WindowManager windowManager) : base(windowManager)
@@ -55,7 +54,7 @@ namespace DTAClient.DXGUI
             window.ClientRectangle = new Rectangle(0, 0, 200, 100);
 
             XNALabel explanation = new XNALabel(WindowManager);
-            explanation.Text = "A game is in progress.";
+            explanation.Text = "游戏正在进行";
 
             AddChild(window);
 
@@ -70,7 +69,7 @@ namespace DTAClient.DXGUI
 
             window.CenterOnParent();
 
-            Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / FPS);
+            Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / UserINISettings.Instance.ClientFPS);
 
             Visible = false;
             Enabled = false;
@@ -133,7 +132,7 @@ namespace DTAClient.DXGUI
             else
                 WindowManager.Cursor.Visible = true;
             ProgramConstants.IsInGame = false;
-            Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / FPS);
+            Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / UserINISettings.Instance.ClientFPS);
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
                 WindowManager.MaximizeWindow();
 

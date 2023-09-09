@@ -57,19 +57,19 @@ namespace DTAClient
 
             MainClientConstants.Initialize();
 
-            Logger.Log("***Logfile for " + MainClientConstants.GAME_NAME_LONG + " client***");
-            Logger.Log("Client version: " + Application.ProductVersion);
+            Logger.Log("*** " + MainClientConstants.GAME_NAME_LONG + "客户端日志 ***");
+            Logger.Log("版本：" + Application.ProductVersion);
 
             // Log information about given startup params
             if (parameters.NoAudio)
-                Logger.Log("Startup parameter: No audio");
+                Logger.Log("启动参数：无音频");
 
             if (parameters.MultipleInstanceMode)
-                Logger.Log("Startup parameter: Allow multiple client instances");
+                Logger.Log("启动参数：允许多个客户端实例");
 
             parameters.UnknownStartupParams.ForEach(p => Logger.Log("Unknown startup parameter: " + p));
 
-            Logger.Log("Loading settings.");
+            Logger.Log("加载设置");
 
             UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
 

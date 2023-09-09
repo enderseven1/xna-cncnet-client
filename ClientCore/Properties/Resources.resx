@@ -148,19 +148,16 @@
   <data name="cncneticon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cncneticon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="hklyicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hklyicon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lisicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lisicon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="rricon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\rricon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cncricon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cncricon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="rbicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\rbicon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ecicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ecicon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="mmicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\mmicon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

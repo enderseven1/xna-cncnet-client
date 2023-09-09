@@ -14,6 +14,7 @@ using System.Linq;
 using DTAClient.Online;
 using ClientCore.INIProcessing;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace DTAClient
 {
@@ -37,16 +38,17 @@ namespace DTAClient
             ProgramConstants.RESOURCES_DIR = "Resources/" + themePath;
 
             if (!Directory.Exists(ProgramConstants.RESOURCES_DIR))
-                throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
+                throw new DirectoryNotFoundException("找不到主题文件夹" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
-            Logger.Log("Initializing updater.");
+            Logger.Log("初始化更新器");
 
             File.Delete(ProgramConstants.GamePath + "version_u");
 
             CUpdater.Initialize(ClientConfiguration.Instance.LocalGame);
 
-            Logger.Log("Operating system: " + Environment.OSVersion.VersionString);
-            Logger.Log("Selected OS profile: " + MainClientConstants.OSId.ToString());
+            Logger.Log("操作系统：" + Environment.OSVersion.VersionString);
+            Logger.Log("操作系统名称：" + MainClientConstants.OSId.ToString());
+            Logger.Log("当前语言：" + CultureInfo.CurrentCulture?.ToString());
 
             // The query in CheckSystemSpecifications takes lots of time,
             // so we'll do it in a separate thread to make startup faster
@@ -63,7 +65,7 @@ namespace DTAClient
 
             if (Directory.Exists(ProgramConstants.GamePath + "Updater"))
             {
-                Logger.Log("Attempting to delete temporary updater directory.");
+                Logger.Log("删除临时更新器文件夹");
                 try
                 {
                     Directory.Delete(ProgramConstants.GamePath + "Updater", true);
@@ -77,7 +79,7 @@ namespace DTAClient
             {
                 if (!Directory.Exists(ProgramConstants.GamePath + "Saved Games"))
                 {
-                    Logger.Log("Saved Games directory does not exist - attempting to create one.");
+                    Logger.Log("存档文件夹不存在 - 正在创建");
                     try
                     {
                         Directory.CreateDirectory(ProgramConstants.GamePath + "Saved Games");
@@ -90,8 +92,8 @@ namespace DTAClient
 
             if (CUpdater.CustomComponents != null)
             {
-                Logger.Log("Removing partial custom component downloads.");
-                foreach (CustomComponent component in CUpdater.CustomComponents)
+                Logger.Log("删除部分组件下载");
+                foreach (var component in CUpdater.CustomComponents)
                 {
                     try
                     {
@@ -133,7 +135,7 @@ namespace DTAClient
             {
                 foreach (string fsEntry in Directory.EnumerateFileSystemEntries(directoryPath))
                 {
-                    FileAttributes attr = File.GetAttributes(fsEntry);
+                    var attr = File.GetAttributes(fsEntry);
                     if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                         PruneFiles(fsEntry, pruneThresholdTime);
                     else
@@ -146,8 +148,8 @@ namespace DTAClient
                         }
                         catch (Exception e)
                         {
-                            Logger.Log("PruneFiles: Could not delete file " + fsEntry.Replace(ProgramConstants.GamePath, "") +
-                                ". Error message: " + e.Message);
+                            Logger.Log("PruneFiles: 无法删除文件" + fsEntry.Replace(ProgramConstants.GamePath, "") +
+                                "：" + e.Message);
                             continue;
                         }
                     }
@@ -220,37 +222,53 @@ namespace DTAClient
         }
 
         /// <summary>
-        /// Writes processor and graphics card info to the log file.
+        /// Writes processor, graphics card and memory info to the log file.
         /// </summary>
         private void CheckSystemSpecifications()
         {
+            string cpu = string.Empty;
+            string videoController = string.Empty;
+            string memory = string.Empty;
+
+            ManagementObjectSearcher searcher;
+
             try
             {
-                string cpu = string.Empty;
-                string videoController = string.Empty;
-                string memory = string.Empty;
-
-                ManagementObjectSearcher searcher =
-                    new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
+                searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
 
                 foreach (var proc in searcher.Get())
                 {
                     cpu = cpu + proc["Name"].ToString().Trim() + " (" + proc["NumberOfCores"] + " cores) ";
                 }
 
+            }
+            catch
+            {
+                cpu = "找不到CPU信息";
+            }
+
+            try
+            {
                 searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
 
                 foreach (ManagementObject mo in searcher.Get())
                 {
-                    PropertyData currentBitsPerPixel = mo.Properties["CurrentBitsPerPixel"];
-                    PropertyData description = mo.Properties["Description"];
+                    var currentBitsPerPixel = mo.Properties["CurrentBitsPerPixel"];
+                    var description = mo.Properties["Description"];
                     if (currentBitsPerPixel != null && description != null)
                     {
                         if (currentBitsPerPixel.Value != null)
-                            videoController = videoController + "Video controller: " + description.Value.ToString().Trim() + " ";
+                            videoController = videoController + "视频控制器：" + description.Value.ToString().Trim() + " ";
                     }
                 }
+            }
+            catch
+            {
+                cpu = "找不到视频控制器信息";
+            }
 
+            try
+            {
                 searcher = new ManagementObjectSearcher("Select * From Win32_PhysicalMemory");
                 ulong total = 0;
 
@@ -260,15 +278,14 @@ namespace DTAClient
                 }
 
                 if (total != 0)
-                    memory = "Total physical memory: " + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
-
-                Logger.Log(string.Format("Hardware info: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
-
+                    memory = "总计物理内存：" + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Log("Checking system specifications failed. Message: " + ex.Message);
+                cpu = "找不到内存信息";
             }
+
+            Logger.Log(string.Format("硬件信息:{0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
         }
 
 
@@ -289,7 +306,7 @@ namespace DTAClient
                 }
 
                 ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_BaseBoard");
-                ManagementObjectCollection moc = mos.Get();
+                var moc = mos.Get();
                 string mbid = "";
                 foreach (ManagementObject mo in moc)
                 {
@@ -333,11 +350,11 @@ namespace DTAClient
         {
             if (!UserINISettings.Instance.WritePathToRegistry)
             {
-                Logger.Log("Skipping writing installation path to the Windows Registry because of INI setting.");
+                Logger.Log("已设置不将安装路径写入注册表");
                 return;
             }
 
-            Logger.Log("Writing installation path to the Windows registry.");
+            Logger.Log("正在将安装路径写入注册表");
 
             try
             {
@@ -348,7 +365,7 @@ namespace DTAClient
             }
             catch
             {
-                Logger.Log("Failed to write installation path to the Windows registry");
+                Logger.Log("写入注册表失败");
             }
         }
     }

@@ -16,10 +16,10 @@ namespace DTAClient.Domain
             {
                 string finalSunIniPath = ClientConfiguration.Instance.FinalSunIniPath;
 
-                Logger.Log("Checking for the existence of FinalSun.ini.");
+                Logger.Log("正在检查FinalSun.ini是否存在");
                 if (File.Exists(ProgramConstants.GamePath + finalSunIniPath))
                 {
-                    Logger.Log("FinalSun settings file exists.");
+                    Logger.Log("FinalSun设置文件存在");
 
                     IniFile iniFile = new IniFile();
                     iniFile.FileName = ProgramConstants.GamePath + finalSunIniPath;
@@ -34,7 +34,7 @@ namespace DTAClient.Domain
                     return;
                 }
 
-                Logger.Log("FinalSun.ini doesn't exist - writing default settings.");
+                Logger.Log("FinalSun.ini不存在 - 正在写入默认设置");
 
                 StreamWriter sw = new StreamWriter(ProgramConstants.GamePath + finalSunIniPath, false, System.Text.Encoding.Default);
 
@@ -54,7 +54,7 @@ namespace DTAClient.Domain
             }
             catch
             {
-                Logger.Log("An exception occured while checking the existence of FinalSun settings");
+                Logger.Log("检查过程中出错");
             }
         }
     }

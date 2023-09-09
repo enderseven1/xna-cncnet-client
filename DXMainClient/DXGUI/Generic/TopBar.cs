@@ -10,6 +10,7 @@ using ClientGUI;
 using ClientCore;
 using System.Threading;
 using DTAClient.Domain.Multiplayer.CnCNet;
+using DTAClient.Online.EventArguments;
 using DTAConfig;
 
 namespace DTAClient.DXGUI.Generic
@@ -31,10 +32,17 @@ namespace DTAClient.DXGUI.Generic
         const double UP_MOVEMENT_RATE = 1.7;
         const int APPEAR_CURSOR_THRESHOLD_Y = 8;
 
-        public TopBar(WindowManager windowManager, CnCNetManager connectionManager) : base(windowManager)
+        private const string DEFAULT_PM_BTN_LABEL = "私信 (F4)";
+
+        public TopBar(
+            WindowManager windowManager, 
+            CnCNetManager connectionManager,
+            PrivateMessageHandler privateMessageHandler
+        ) : base(windowManager)
         {
             downTimeWaitTime = TimeSpan.FromSeconds(DOWN_TIME_WAIT_SECONDS);
             this.connectionManager = connectionManager;
+            this.privateMessageHandler = privateMessageHandler;
         }
 
         public SwitchType LastSwitchType { get; private set; }
@@ -57,6 +65,7 @@ namespace DTAClient.DXGUI.Generic
         private XNALabel lblConnectionStatus;
 
         private CnCNetManager connectionManager;
+        private readonly PrivateMessageHandler privateMessageHandler;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private static readonly object locker = new object();
@@ -70,6 +79,8 @@ namespace DTAClient.DXGUI.Generic
         private double locationY = -40.0;
 
         private bool lanMode;
+
+        public EventHandler LogoutEvent;
 
         public void AddPrimarySwitchable(ISwitchable switchable)
         {
@@ -122,20 +133,20 @@ namespace DTAClient.DXGUI.Generic
 
             btnMainButton = new XNAClientButton(WindowManager);
             btnMainButton.Name = "btnMainButton";
-            btnMainButton.ClientRectangle = new Rectangle(12, 9, 160, 23);
-            btnMainButton.Text = "Main Menu (F2)";
+            btnMainButton.ClientRectangle = new Rectangle(12, 9, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
+            btnMainButton.Text = "主菜单 (F2)";
             btnMainButton.LeftClick += BtnMainButton_LeftClick;
 
             btnCnCNetLobby = new XNAClientButton(WindowManager);
             btnCnCNetLobby.Name = "btnCnCNetLobby";
-            btnCnCNetLobby.ClientRectangle = new Rectangle(184, 9, 160, 23);
-            btnCnCNetLobby.Text = "CnCNet Lobby (F3)";
+            btnCnCNetLobby.ClientRectangle = new Rectangle(184, 9, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
+            btnCnCNetLobby.Text = "CnCNet大厅 (F3)";
             btnCnCNetLobby.LeftClick += BtnCnCNetLobby_LeftClick;
 
             btnPrivateMessages = new XNAClientButton(WindowManager);
             btnPrivateMessages.Name = "btnPrivateMessages";
-            btnPrivateMessages.ClientRectangle = new Rectangle(356, 9, 160, 23);
-            btnPrivateMessages.Text = "Private Messages (F4)";
+            btnPrivateMessages.ClientRectangle = new Rectangle(356, 9, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
+            btnPrivateMessages.Text = DEFAULT_PM_BTN_LABEL;
             btnPrivateMessages.LeftClick += BtnPrivateMessages_LeftClick;
 
             lblDate = new XNALabel(WindowManager);
@@ -158,20 +169,20 @@ namespace DTAClient.DXGUI.Generic
             btnLogout.Name = "btnLogout";
             btnLogout.ClientRectangle = new Rectangle(lblDate.X - 87, 9, 75, 23);
             btnLogout.FontIndex = 1;
-            btnLogout.Text = "Log Out";
+            btnLogout.Text = "退出登录";
             btnLogout.AllowClick = false;
             btnLogout.LeftClick += BtnLogout_LeftClick;
 
             btnOptions = new XNAClientButton(WindowManager);
             btnOptions.Name = "btnOptions";
             btnOptions.ClientRectangle = new Rectangle(btnLogout.X - 122, 9, 110, 23);
-            btnOptions.Text = "Options (F12)";
+            btnOptions.Text = "选项 (F12)";
             btnOptions.LeftClick += BtnOptions_LeftClick;
 
             lblConnectionStatus = new XNALabel(WindowManager);
             lblConnectionStatus.Name = "lblConnectionStatus";
             lblConnectionStatus.FontIndex = 1;
-            lblConnectionStatus.Text = "OFFLINE";
+            lblConnectionStatus.Text = "离线（未登录）";
 
             AddChild(btnMainButton);
             AddChild(btnCnCNetLobby);
@@ -187,7 +198,7 @@ namespace DTAClient.DXGUI.Generic
                 lblCnCNetStatus = new XNALabel(WindowManager);
                 lblCnCNetStatus.Name = "lblCnCNetStatus";
                 lblCnCNetStatus.FontIndex = 1;
-                lblCnCNetStatus.Text = ClientConfiguration.Instance.LocalGame.ToUpper() + " PLAYERS ONLINE:";
+                lblCnCNetStatus.Text = ClientConfiguration.Instance.LocalGame.ToUpper() + "在线人数：";
                 lblCnCNetPlayerCount = new XNALabel(WindowManager);
                 lblCnCNetPlayerCount.Name = "lblCnCNetPlayerCount";
                 lblCnCNetPlayerCount.FontIndex = 1;
@@ -213,6 +224,20 @@ namespace DTAClient.DXGUI.Generic
             connectionManager.AttemptedServerChanged += ConnectionManager_AttemptedServerChanged;
             connectionManager.ConnectAttemptFailed += ConnectionManager_ConnectAttemptFailed;
 
+            privateMessageHandler.UnreadMessageCountUpdated += PrivateMessageHandler_UnreadMessageCountUpdated;
+        }
+
+        private void PrivateMessageHandler_UnreadMessageCountUpdated(object sender, UnreadMessageCountEventArgs args) 
+            => UpdatePrivateMessagesBtnLabel(args.UnreadMessageCount);
+
+        private void UpdatePrivateMessagesBtnLabel(int unreadMessageCount)
+        {
+            btnPrivateMessages.Text = DEFAULT_PM_BTN_LABEL;
+            if (unreadMessageCount > 0)
+            {
+                // TODO need to make a wider button to accommodate count
+                // btnPrivateMessages.Text += $" ({unreadMessageCount})";
+            }
         }
 
         private void CnCNetInfoController_CnCNetGameCountUpdated(object sender, PlayerCountEventArgs e)
@@ -229,29 +254,29 @@ namespace DTAClient.DXGUI.Generic
         private void ConnectionManager_ConnectionLost(object sender, Online.EventArguments.ConnectionLostEventArgs e)
         {
             if (!lanMode)
-                ConnectionEvent("OFFLINE");
+                ConnectionEvent("离线（未登录）");
         }
 
         private void ConnectionManager_ConnectAttemptFailed(object sender, EventArgs e)
         {
             if (!lanMode)
-                ConnectionEvent("OFFLINE");
+                ConnectionEvent("离线（未登录）");
         }
 
         private void ConnectionManager_AttemptedServerChanged(object sender, Online.EventArguments.AttemptedServerEventArgs e)
         {
-            ConnectionEvent("CONNECTING...");
+            ConnectionEvent("登录中...");
             BringDown();
         }
 
         private void ConnectionManager_WelcomeMessageReceived(object sender, Online.EventArguments.ServerMessageEventArgs e)
-            => ConnectionEvent("CONNECTED");
+            => ConnectionEvent("已登录");
 
         private void ConnectionManager_Disconnected(object sender, EventArgs e)
         {
             btnLogout.AllowClick = false;
             if (!lanMode)
-                ConnectionEvent("OFFLINE");
+                ConnectionEvent("离线（未登录）");
         }
 
         private void ConnectionEvent(string text)
@@ -265,6 +290,7 @@ namespace DTAClient.DXGUI.Generic
         private void BtnLogout_LeftClick(object sender, EventArgs e)
         {
             connectionManager.Disconnect();
+            LogoutEvent?.Invoke(this, null);
             SwitchToPrimary();
         }
 
@@ -339,12 +365,12 @@ namespace DTAClient.DXGUI.Generic
             }
         }
 
-        public override void OnMouseOnControl(MouseEventArgs eventArgs)
+        public override void OnMouseOnControl()
         {
             if (Cursor.Location.Y > -1 && !ProgramConstants.IsInGame)
                 BringDown();
 
-            base.OnMouseOnControl(eventArgs);
+            base.OnMouseOnControl();
         }
 
         void BringDown()
@@ -377,9 +403,9 @@ namespace DTAClient.DXGUI.Generic
             this.lanMode = lanMode;
             SetSwitchButtonsClickable(!lanMode);
             if (lanMode)
-                ConnectionEvent("LAN MODE");
+                ConnectionEvent("局域网模式");
             else
-                ConnectionEvent("OFFLINE");
+                ConnectionEvent("离线（未登录）");
         }
 
         public override void Update(GameTime gameTime)

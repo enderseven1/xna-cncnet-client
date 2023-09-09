@@ -56,7 +56,9 @@ namespace DTAClient
             "Ionic.Zip",
             "DTAUpdater",
             "Newtonsoft.Json",
-            "DiscordRPC"
+            "DiscordRPC",
+            "lzo.net",
+            "OpenMcdf",
         };
 
         static List<string> SPECIFIC_LIBRARIES = new List<string>()
@@ -67,7 +69,7 @@ namespace DTAClient
             "MonoGame.Framework",
             "Rampastring.XNAUI",
             "Sdl",
-            "soft_oal"
+            "soft_oal",
         };
 
         private static string COMMON_LIBRARY_PATH;

@@ -18,7 +18,6 @@ namespace DTAClient.DXGUI.Generic
             this.discordHandler = discordHandler;
             DrawBorders = false;
             DrawMode = ControlDrawMode.UNIQUE_RENDER_TARGET;
-            AlphaRate = 0.0f;
         }
 
         private DiscordHandler discordHandler;
@@ -27,28 +26,18 @@ namespace DTAClient.DXGUI.Generic
         public GameLoadingWindow GameLoadingWindow;
         public StatisticsWindow StatisticsWindow;
         public UpdateQueryWindow UpdateQueryWindow;
-        public ManualUpdateQueryWindow ManualUpdateQueryWindow;
         public UpdateWindow UpdateWindow;
         public ExtrasWindow ExtrasWindow;
-
-        const float BG_ALPHA_APPEAR_RATE = 0.1f;
-        const float BG_ALPHA_DISAPPEAR_RATE = -0.1f;
-
-        float bgAlphaRate = -0.1f;
 
         public override void Initialize()
         {
             base.Initialize();
 
             Name = "DarkeningPanel";
-            //BorderColor = UISettings.WindowBorderColor;
             BorderColor = UISettings.ActiveSettings.PanelBorderColor;
             BackgroundTexture = AssetLoader.CreateTexture(new Color(0, 0, 0, 128), 1, 1);
-            //ClientRectangle = new Rectangle(0, 0, 1, 1);
             PanelBackgroundDrawMode = PanelBackgroundImageDrawMode.STRETCHED;
             Alpha = 1.0f;
-
-            //ClientRectangle = new Rectangle(0, 0, WindowManager.Instance.RenderResolutionX, WindowManager.Instance.RenderResolutionY);
 
             CampaignSelector = new CampaignSelector(WindowManager, discordHandler);
             AddChild(CampaignSelector);
@@ -61,9 +50,6 @@ namespace DTAClient.DXGUI.Generic
 
             UpdateQueryWindow = new UpdateQueryWindow(WindowManager);
             AddChild(UpdateQueryWindow);
-
-            ManualUpdateQueryWindow = new ManualUpdateQueryWindow(WindowManager);
-            AddChild(ManualUpdateQueryWindow);
 
             UpdateWindow = new UpdateWindow(WindowManager);
             AddChild(UpdateWindow);
@@ -97,7 +83,7 @@ namespace DTAClient.DXGUI.Generic
             Enabled = true;
             Visible = true;
 
-            bgAlphaRate = BG_ALPHA_APPEAR_RATE;
+            AlphaRate = DarkeningPanel.ALPHA_RATE;
 
             if (control != null)
             {
@@ -109,7 +95,7 @@ namespace DTAClient.DXGUI.Generic
 
         public void Hide()
         {
-            bgAlphaRate = BG_ALPHA_DISAPPEAR_RATE;
+            AlphaRate = -DarkeningPanel.ALPHA_RATE;
 
             foreach (XNAControl child in Children)
             {
@@ -121,8 +107,6 @@ namespace DTAClient.DXGUI.Generic
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            Alpha += bgAlphaRate;
 
             if (Alpha <= 0f)
             {

@@ -92,11 +92,11 @@ namespace ClientCore
 
         public static void RenameSavedGame()
         {
-            Logger.Log("Renaming saved game.");
+            Logger.Log("重命名存档");
 
             if (saveRenameInProgress)
             {
-                Logger.Log("Save renaming in progress!");
+                Logger.Log("正在重命名");
                 return;
             }
 
@@ -104,7 +104,7 @@ namespace ClientCore
 
             if (!File.Exists(saveGameDirectory + "SAVEGAME.NET"))
             {
-                Logger.Log("SAVEGAME.NET doesn't exist!");
+                Logger.Log("SAVEGAME.NET不存在");
                 return;
             }
 

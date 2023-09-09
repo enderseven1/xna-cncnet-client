@@ -34,7 +34,7 @@ namespace DTAConfig
         public override void Initialize()
         {
             Name = "OptionsWindow";
-            ClientRectangle = new Rectangle(0, 0, 576, 435);
+            ClientRectangle = new Rectangle(0, 0, 576, 475);
             BackgroundTexture = AssetLoader.LoadTextureUncached("optionsbg.png");
 
             tabControl = new XNAClientTabControl(WindowManager);
@@ -42,25 +42,25 @@ namespace DTAConfig
             tabControl.ClientRectangle = new Rectangle(12, 12, 0, 23);
             tabControl.FontIndex = 1;
             tabControl.ClickSound = new EnhancedSoundEffect("button.wav");
-            tabControl.AddTab("Display", 92);
-            tabControl.AddTab("Audio", 92);
-            tabControl.AddTab("Game", 92);
-            tabControl.AddTab("CnCNet", 92);
-            tabControl.AddTab("Updater", 92);
-            tabControl.AddTab("Components", 92);
+            tabControl.AddTab("显示", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("声音", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("游戏", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("CnCNet", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("更新", UIDesignConstants.BUTTON_WIDTH_92);
+            tabControl.AddTab("组件", UIDesignConstants.BUTTON_WIDTH_92);
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             var btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(Width - 104,
-                Height - 35, 92, 23);
-            btnCancel.Text = "Cancel";
+                Height - 35, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnBack_LeftClick;
 
             var btnSave = new XNAClientButton(WindowManager);
             btnSave.Name = "btnSave";
-            btnSave.ClientRectangle = new Rectangle(12, btnCancel.Y, 92, 23);
-            btnSave.Text = "Save";
+            btnSave.ClientRectangle = new Rectangle(12, btnCancel.Y, UIDesignConstants.BUTTON_WIDTH_92, UIDesignConstants.BUTTON_HEIGHT);
+            btnSave.Text = "保存";
             btnSave.LeftClick += BtnSave_LeftClick;
 
             displayOptionsPanel = new DisplayOptionsPanel(WindowManager, UserINISettings.Instance);
@@ -130,10 +130,10 @@ namespace DTAConfig
         {
             if (CustomComponent.IsDownloadInProgress())
             {
-                var msgBox = new XNAMessageBox(WindowManager, "Downloads in progress",
-                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu." +
+                var msgBox = new XNAMessageBox(WindowManager, "下载正在进行",
+                    "组件正在下载，退出将取消。" +
                     Environment.NewLine + Environment.NewLine +
-                    "Are you sure you want to continue?", XNAMessageBoxButtons.YesNo);
+                    "你要继续吗？", XNAMessageBoxButtons.YesNo);
                 msgBox.Show();
                 msgBox.YesClickedAction = ExitDownloadCancelConfirmation_YesClicked;
 
@@ -155,10 +155,10 @@ namespace DTAConfig
         {
             if (CustomComponent.IsDownloadInProgress())
             {
-                var msgBox = new XNAMessageBox(WindowManager, "Downloads in progress",
-                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu." +
+                var msgBox = new XNAMessageBox(WindowManager, "下载正在进行",
+                    "组件正在下载，退出将取消。" +
                     Environment.NewLine + Environment.NewLine +
-                    "Are you sure you want to continue?", XNAMessageBoxButtons.YesNo);
+                    "你要继续吗？", XNAMessageBoxButtons.YesNo);
                 msgBox.Show();
                 msgBox.YesClickedAction = SaveDownloadCancelConfirmation_YesClicked;
 
@@ -191,19 +191,19 @@ namespace DTAConfig
             }
             catch (Exception ex)
             {
-                Logger.Log("Saving settings failed! Error message: " + ex.Message);
-                XNAMessageBox.Show(WindowManager, "Saving Settings Failed",
-                    "Saving settings failed! Error message: " + ex.Message);
+                Logger.Log("保存设置失败：" + ex.Message);
+                XNAMessageBox.Show(WindowManager, "保存设置失败",
+                    "保存设置失败：" + ex.Message);
             }
 
             Disable();
 
             if (restartRequired)
             {
-                var msgBox = new XNAMessageBox(WindowManager, "Restart Required",
-                    "The client needs to be restarted for some of the changes to take effect." +
+                var msgBox = new XNAMessageBox(WindowManager, "需要重启",
+                    "有些设置需要重启客户端方可生效。" +
                     Environment.NewLine + Environment.NewLine +
-                    "Do you want to restart now?", XNAMessageBoxButtons.YesNo);
+                    "你想现在重启吗？", XNAMessageBoxButtons.YesNo);
                 msgBox.Show();
                 msgBox.YesClickedAction = RestartMsgBox_YesClicked;
             }
@@ -217,7 +217,7 @@ namespace DTAConfig
         /// Shows the popup to inform the user if needed.
         /// </summary>
         /// <returns>A bool that determines whether the 
-        /// setting's value was changed.</returns>
+        /// settings values were changed.</returns>
         private bool RefreshOptionPanels()
         {
             bool optionValuesChanged = false;
@@ -227,12 +227,11 @@ namespace DTAConfig
 
             if (optionValuesChanged)
             {
-                XNAMessageBox.Show(WindowManager, "Setting Value(s) Changed",
-                    "One or more setting values were no longer available" + Environment.NewLine +
-                    "and were changed to their default values instead." +
+                XNAMessageBox.Show(WindowManager, "设置有更改",
+                    "部分设置已更改或不可用。" +
                     Environment.NewLine + Environment.NewLine +
-                    "You may want to verify the new setting values in" + Environment.NewLine +
-                    "application's options window.");
+                    "可能需要验证新的设置。");
+
                 return true;
             }
 

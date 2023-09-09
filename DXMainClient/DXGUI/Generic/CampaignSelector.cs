@@ -68,7 +68,7 @@ namespace DTAClient.DXGUI.Generic
             lblSelectCampaign.Name = "lblSelectCampaign";
             lblSelectCampaign.FontIndex = 1;
             lblSelectCampaign.ClientRectangle = new Rectangle(12, 12, 0, 0);
-            lblSelectCampaign.Text = "MISSIONS:";
+            lblSelectCampaign.Text = "战役：";
 
             lbCampaignList = new XNAListBox(WindowManager);
             lbCampaignList.Name = "lbCampaignList";
@@ -84,7 +84,7 @@ namespace DTAClient.DXGUI.Generic
             lblMissionDescriptionHeader.ClientRectangle = new Rectangle(
                 lbCampaignList.Right + 12, 
                 lblSelectCampaign.Y, 0, 0);
-            lblMissionDescriptionHeader.Text = "MISSION DESCRIPTION:";
+            lblMissionDescriptionHeader.Text = "战役描述：";
 
             tbMissionDescription = new XNATextBlock(WindowManager);
             tbMissionDescription.Name = "tbMissionDescription";
@@ -100,7 +100,7 @@ namespace DTAClient.DXGUI.Generic
 
             var lblDifficultyLevel = new XNALabel(WindowManager);
             lblDifficultyLevel.Name = "lblDifficultyLevel";
-            lblDifficultyLevel.Text = "DIFFICULTY LEVEL";
+            lblDifficultyLevel.Text = "难度等级";
             lblDifficultyLevel.FontIndex = 1;
             Vector2 textSize = Renderer.GetTextDimensions(lblDifficultyLevel.Text, lblDifficultyLevel.FontIndex);
             lblDifficultyLevel.ClientRectangle = new Rectangle(
@@ -122,14 +122,14 @@ namespace DTAClient.DXGUI.Generic
             var lblEasy = new XNALabel(WindowManager);
             lblEasy.Name = "lblEasy";
             lblEasy.FontIndex = 1;
-            lblEasy.Text = "EASY";
+            lblEasy.Text = "简单";
             lblEasy.ClientRectangle = new Rectangle(trbDifficultySelector.X,
                 trbDifficultySelector.Bottom + 6, 1, 1);
 
             var lblNormal = new XNALabel(WindowManager);
             lblNormal.Name = "lblNormal";
             lblNormal.FontIndex = 1;
-            lblNormal.Text = "NORMAL";
+            lblNormal.Text = "中等";
             textSize = Renderer.GetTextDimensions(lblNormal.Text, lblNormal.FontIndex);
             lblNormal.ClientRectangle = new Rectangle(
                 tbMissionDescription.X + (tbMissionDescription.Width - (int)textSize.X) / 2,
@@ -138,23 +138,23 @@ namespace DTAClient.DXGUI.Generic
             var lblHard = new XNALabel(WindowManager);
             lblHard.Name = "lblHard";
             lblHard.FontIndex = 1;
-            lblHard.Text = "HARD";
+            lblHard.Text = "困难";
             lblHard.ClientRectangle = new Rectangle(
                 tbMissionDescription.Right - lblHard.Width,
                 lblEasy.Y, 1, 1);
 
             btnLaunch = new XNAClientButton(WindowManager);
             btnLaunch.Name = "btnLaunch";
-            btnLaunch.ClientRectangle = new Rectangle(12, Height - 35, 133, 23);
-            btnLaunch.Text = "Launch";
+            btnLaunch.ClientRectangle = new Rectangle(12, Height - 35, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
+            btnLaunch.Text = "启动";
             btnLaunch.AllowClick = false;
             btnLaunch.LeftClick += BtnLaunch_LeftClick;
 
             var btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = "btnCancel";
             btnCancel.ClientRectangle = new Rectangle(Width - 145,
-                btnLaunch.Y, 133, 23);
-            btnCancel.Text = "Cancel";
+                btnLaunch.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             AddChild(lblSelectCampaign);
@@ -286,7 +286,7 @@ namespace DTAClient.DXGUI.Generic
 
             swriter.WriteLine("GameSpeed=" + UserINISettings.Instance.GameSpeed);
             swriter.WriteLine("Firestorm=" + mission.RequiredAddon);
-            swriter.WriteLine("CustomLoadScreen=" + LoadingScreenController.GetLoadScreenName(mission.Side));
+            swriter.WriteLine("CustomLoadScreen=" + LoadingScreenController.GetLoadScreenName(mission.Side.ToString()));
             swriter.WriteLine("IsSinglePlayer=Yes");
             swriter.WriteLine("SidebarHack=" + ClientConfiguration.Instance.SidebarHack);
             swriter.WriteLine("Side=" + mission.Side);
@@ -345,12 +345,12 @@ namespace DTAClient.DXGUI.Generic
         /// <returns>True if succesful, otherwise false.</returns>
         private bool ParseBattleIni(string path)
         {
-            Logger.Log("Attempting to parse " + path + " to populate mission list.");
+            Logger.Log("解析" + path + "以填充任务列表。");
 
             string battleIniPath = ProgramConstants.GamePath + path;
             if (!File.Exists(battleIniPath))
             {
-                Logger.Log("File " + path + " not found. Ignoring.");
+                Logger.Log("找不到文件" + path + "，已忽略");
                 return false;
             }
 
@@ -396,7 +396,7 @@ namespace DTAClient.DXGUI.Generic
                 lbCampaignList.AddItem(item);
             }
 
-            Logger.Log("Finished parsing " + path + ".");
+            Logger.Log(path + "解析结束");
             return true;
         }
 

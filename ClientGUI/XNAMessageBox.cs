@@ -175,7 +175,7 @@ namespace ClientGUI
             btnCancel.HoverTexture = AssetLoader.LoadTexture("75pxbtn_c.png");
             btnCancel.HoverSoundEffect = new EnhancedSoundEffect("button.wav");
             btnCancel.Name = "btnCancel";
-            btnCancel.Text = "Cancel";
+            btnCancel.Text = "取消";
             btnCancel.LeftClick += BtnCancel_LeftClick;
             btnCancel.HotKey = Keys.C;
 

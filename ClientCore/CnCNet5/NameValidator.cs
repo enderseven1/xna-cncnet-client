@@ -15,16 +15,16 @@ namespace ClientCore.CnCNet5
             var profanityFilter = new ProfanityFilter();
 
             if (string.IsNullOrEmpty(name))
-                return "Please enter a name.";
+                return "昵称不能为空";
 
             if (profanityFilter.IsOffensive(name))
-                return "Please enter a name that is less offensive.";
+                return "昵称不文明";
 
             if (int.TryParse(name.Substring(0, 1), out _))
-                return "The first character in the player name cannot be a number.";
+                return "昵称不能以数字开头";
 
             if (name[0] == '-')
-                return "The first character in the player name cannot be a dash ( - ).";
+                return "昵称不能以短横（-）开头";
 
             // Check that there are no invalid chars
             char[] allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_[]|\\{}^`".ToCharArray();
@@ -34,13 +34,13 @@ namespace ClientCore.CnCNet5
             {
                 if (!allowedCharacters.Contains(nickChar))
                 {
-                    return "Your player name has invalid characters in it." + Environment.NewLine +
-                    "Allowed characters are anything from A to Z and numbers.";
+                    return "昵称内含有无效字符" + Environment.NewLine +
+                    "仅允许使用字母和数字";
                 }
             }
 
             if (name.Length > ClientConfiguration.Instance.MaxNameLength)
-                return "Your nickname is too long.";
+                return "昵称不宜过长";
 
             return null;
         }

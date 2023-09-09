@@ -97,7 +97,7 @@ namespace ClientGUI
                     MessageBox.Show("Error launching " + ProgramConstants.QRES_EXECUTABLE + ". Please check that your anti-virus isn't blocking the CnCNet Client. " +
                         "You can also try running the client as an administrator." + Environment.NewLine + Environment.NewLine + "You are unable to participate in this match." +
                         Environment.NewLine + Environment.NewLine + "Returned error: " + ex.Message,
-                        "Error launching game", MessageBoxButtons.OK);
+                        "游戏启动出错", MessageBoxButtons.OK);
                     Process_Exited(QResProcess, EventArgs.Empty);
                     return;
                 }
@@ -129,7 +129,7 @@ namespace ClientGUI
                     MessageBox.Show("Error launching " + gameExecutableName + ". Please check that your anti-virus isn't blocking the CnCNet Client. " +
                         "You can also try running the client as an administrator." + Environment.NewLine + Environment.NewLine + "You are unable to participate in this match." + 
                         Environment.NewLine + Environment.NewLine + "Returned error: " + ex.Message,
-                        "Error launching game", MessageBoxButtons.OK);
+                        "游戏启动出错", MessageBoxButtons.OK);
                     Process_Exited(DtaProcess, EventArgs.Empty);
                     return;
                 }
