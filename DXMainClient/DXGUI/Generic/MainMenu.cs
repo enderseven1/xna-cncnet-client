@@ -25,6 +25,7 @@ using DTAClient.Domain.Multiplayer;
 using System.Drawing;
 using System.Globalization;
 using System.Threading.Tasks;
+using ClientCore.CnCNet5;
 // using System.Reflection.Metadata;
 
 namespace DTAClient.DXGUI.Generic
@@ -564,16 +565,19 @@ namespace DTAClient.DXGUI.Generic
             dd年.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(129, 133, 70, 20);
             dd年.Text = year;
             dd年.Suggestion = "Year".L10N("Client:Main:ddYear");
+            dd年.DisableIME = true;
 
             dd月 = new XNASuggestionTextBox(WindowManager);
             dd月.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(209, 133, 50, 20);
             dd月.Text = month;
             dd月.Suggestion = "Month".L10N("Client:Main:ddMonth");
+            dd月.DisableIME = true;
 
             dd日 = new XNASuggestionTextBox(WindowManager);
             dd日.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(269, 133, 50, 20);
             dd日.Text = day;
             dd日.Suggestion = "Day".L10N("Client:Main:ddDay");
+            dd日.DisableIME = true;
 
             firstRunMessageBox.AddChild(dd年);
             firstRunMessageBox.AddChild(dd月);
@@ -623,7 +627,8 @@ namespace DTAClient.DXGUI.Generic
             {
                 ClientRectangle = new Microsoft.Xna.Framework.Rectangle(20, 185, 408, 25),
                 Name = "nameTextBox",
-                Suggestion = "Name must be less than ".L10N("Client:Main:tbxName1") + ClientConfiguration.Instance.MaxNameLength.ToString() + " characters in length".L10N("Client:Main:tbxName2")
+                Suggestion = "Name must be less than ".L10N("Client:Main:tbxName1") + ClientConfiguration.Instance.MaxNameLength.ToString() + " characters in length".L10N("Client:Main:tbxName2"),
+                DisableIME = true
             };
 
             // First label
@@ -735,6 +740,12 @@ namespace DTAClient.DXGUI.Generic
             }
             else if (string.IsNullOrWhiteSpace(tbxName.Text) || tbxName.Text.Length > ClientConfiguration.Instance.MaxNameLength || int.TryParse(tbxName.Text.Substring(0, 1), out _) || tbxName.Text[0] == '-')
             {
+                string errorMessage = NameValidator.IsNameValid(tbxName.Text);
+
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    XNAMessageBox.Show(WindowManager, "Invalid Player Name".L10N("Client:Main:InvalidPlayerName"), errorMessage);
+                }
                 firstLabel.Text = "Name must be less than ".L10N("Client:Main:tbxName1") + ClientConfiguration.Instance.MaxNameLength.ToString() + " characters in length".L10N("Client:Main:tbxName2");
                 tbxName.IdleBorderColor = Microsoft.Xna.Framework.Color.Red;
                 //tbxName.BackColor = Color.Red;
