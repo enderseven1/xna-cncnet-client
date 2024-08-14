@@ -943,15 +943,16 @@ namespace DTAClient.DXGUI.Generic
                 if (生日 == "00000101")
                 {
                     ShowFirstRunMessageBox();
-                }else
+                }
+                else
                 {
-                // 尝试解析生日字符串为 DateTime 对象
-                if (DateTime.TryParseExact(生日, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime birthDate))
-                {
-                    // 计算年龄
-                    int 年龄 = DateTime.Now.Year - birthDate.Year;
-                    if (birthDate > DateTime.Now.AddYears(-年龄)) 年龄--;
-                    Logger.Log("Your age is: " + 年龄.ToString());
+                    // 尝试解析生日字符串为 DateTime 对象
+                    if (DateTime.TryParseExact(生日, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime birthDate))
+                    {
+                        // 计算年龄
+                        int 年龄 = DateTime.Now.Year - birthDate.Year;
+                        if (birthDate > DateTime.Now.AddYears(-年龄)) 年龄--;
+                        Logger.Log("Your age is: " + 年龄.ToString());
                         if (年龄 < 18)
                         {
                             if (年龄 < 0)
@@ -989,14 +990,15 @@ namespace DTAClient.DXGUI.Generic
                         }
                     }
                 }
-                else
-                {
-                    Logger.Log("Parsing birthday failed: " + 生日);
-                    fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                    "防沉迷系统提示", "获取您的年龄失败，您可以重新输入生日信息，\n也可以稍后再次尝试。");
-                    fangChenmiBox.YesClickedAction += FangChenMi_LeftClick;
-                    fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
-                }
+            }
+            else
+            {
+                Logger.Log("Parsing birthday failed: " + 生日);
+                fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
+                "防沉迷系统提示", "获取您的年龄失败，您可以重新输入生日信息，\n也可以稍后再次尝试。");
+                fangChenmiBox.YesClickedAction += FangChenMi_LeftClick;
+                fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
+            }
             }
             CheckIfFirstRun();
         }
