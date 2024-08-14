@@ -61,11 +61,11 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             {
                 if (ex is FormatException || ex is OverflowException || ex is IndexOutOfRangeException)
                 {
-                    Logger.Log("解析服务器信息失败：" + ex.Message + Environment.NewLine + "解析的字符串：" + str);
+                    Logger.Log("Parsing tunnel information failed: " + ex.ToString() + Environment.NewLine + "Parsed string: " + str);
                     return null;
                 }
 
-                throw ex;
+                throw;
             }
         }
 
@@ -93,10 +93,10 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
         {
             try
             {
-                Logger.Log($"正在连接服务器{Address}:{Port}");
+                Logger.Log($"Contacting tunnel at {Address}:{Port}");
 
                 string addressString = $"http://{Address}:{Port}/request?clients={playerCount}";
-                Logger.Log($"从{addressString}下载");
+                Logger.Log($"Downloading from {addressString}");
 
                 using (var client = new ExtendedWebClient(REQUEST_TIMEOUT))
                 {
@@ -111,7 +111,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                     foreach (string _port in portIDs)
                     {
                         playerPorts.Add(Convert.ToInt32(_port));
-                        Logger.Log($"已添加端口{_port}");
+                        Logger.Log($"Added port {_port}");
                     }
 
                     return playerPorts;
@@ -119,7 +119,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Logger.Log("无法连接该服务器：" + ex.Message);
+                Logger.Log("Unable to connect to the specified tunnel server. Returned error message: " + ex.ToString());
             }
 
             return new List<int>();
@@ -137,7 +137,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
                 }
                 catch (PingException ex)
                 {
-                    Logger.Log($"Ping服务器{Name}时出错：{ex.Message}");
+                    Logger.Log($"Caught an exception when pinging {Name} tunnel server: {ex.ToString()}");
                 }
             }
         }

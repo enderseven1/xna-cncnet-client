@@ -35,7 +35,7 @@ namespace DTAClient.Domain.LAN
 
             GameVersion = parameters[1];
             Incompatible = GameVersion != ProgramConstants.GAME_VERSION;
-            Game = gc.GameList.Find(g => g.InternalName.ToUpper() == parameters[2]);
+            Game = gc.GameList.Find(g => g.InternalName.ToUpperInvariant() == parameters[2]);
             Map = parameters[3];
             GameMode = parameters[4];
             LoadedGameID = parameters[5];
@@ -48,7 +48,7 @@ namespace DTAClient.Domain.LAN
             IsLoadedGame = Conversions.IntFromString(parameters[8], 0) > 0;
             LastRefreshTime = DateTime.Now;
             TimeWithoutRefresh = TimeSpan.Zero;
-            RoomName = HostName + "的房间";
+            RoomName = HostName + "'s Game";
 
             return true;
         }

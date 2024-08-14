@@ -1,4 +1,5 @@
 ﻿using ClientCore;
+using ClientCore.Extensions;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -30,28 +31,32 @@ namespace DTAClient.Online
 
         IConnectionManager connectionManager;
 
+        private static IList<Server> _servers = null;
         /// <summary>
         /// The list of CnCNet / GameSurge IRC servers to connect to.
         /// </summary>
-        private static readonly IList<Server> Servers = new List<Server>
+        private static IList<Server> Servers
         {
-            new Server("Burstfire.UK.EU.GameSurge.net", "GameSurge London, UK", new int[3] { 6667, 6668, 7000 }),
-            new Server("ColoCrossing.IL.US.GameSurge.net", "GameSurge Chicago, IL", new int[5] { 6660, 6666, 6667, 6668, 6669 }),
-            new Server("Gameservers.NJ.US.GameSurge.net", "GameSurge Newark, NJ", new int[7] { 6665, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("Krypt.CA.US.GameSurge.net", "GameSurge Santa Ana, CA", new int[4] { 6666, 6667, 6668, 6669 }),
-            new Server("NuclearFallout.WA.US.GameSurge.net", "GameSurge Seattle, WA", new int[2] { 6667, 5960 }),
-            new Server("Portlane.SE.EU.GameSurge.net", "GameSurge Stockholm, Sweden", new int[5] { 6660, 6666, 6667, 6668, 6669 }),
-            new Server("Prothid.NY.US.GameSurge.Net", "GameSurge NYC, NY", new int[7] { 5960, 6660, 6666, 6667, 6668, 6669, 6697 }),
-            new Server("TAL.DE.EU.GameSurge.net", "GameSurge Wuppertal, Germany", new int[5] { 6660, 6666, 6667, 6668, 6669 }),
-            new Server("208.167.237.120", "GameSurge IP 208.167.237.120", new int[7] {  6660, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("192.223.27.109", "GameSurge IP 192.223.27.109", new int[7] {  6660, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("108.174.48.100", "GameSurge IP 108.174.48.100", new int[7] { 6660, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("208.146.35.105", "GameSurge IP 208.146.35.105", new int[7] { 6660, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("195.8.250.180", "GameSurge IP 195.8.250.180", new int[7] { 6660, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("91.217.189.76", "GameSurge IP 91.217.189.76", new int[7] { 6660, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("195.68.206.250", "GameSurge IP 195.68.206.250", new int[7] { 6660, 6666, 6667, 6668, 6669, 7000, 8080 }),
-            new Server("irc.gamesurge.net", "GameSurge", new int[1] { 6667 }),
-        }.AsReadOnly();
+            get
+            {
+                if (_servers is not null)
+                    return _servers;
+
+                IEnumerable<string> serversList;
+                if (ClientConfiguration.Instance.IRCServers.Count > 0)
+                    serversList = ClientConfiguration.Instance.IRCServers;
+                else
+                {
+                    // fallback to the hardcoded servers list
+                    serversList = [
+                        "irc.gamesurge.net|GameSurge|6667,6660,6666,6668,6669",
+                    ];
+                }
+
+                _servers = serversList.Select(Server.Deserialize).ToList();
+                return _servers;
+            }
+        }
 
         bool _isConnected = false;
         public bool IsConnected
@@ -176,66 +181,60 @@ namespace DTAClient.Online
                         var result = client.BeginConnect(server.Host, server.Ports[i], null, null);
                         result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(3), false);
 
-                        Logger.Log("连接到" + server.Host + "：" + server.Ports[i]);
+                        Logger.Log("Attempting connection to " + server.Host + ":" + server.Ports[i]);
 
                         if (!client.Connected)
                         {
-                            Logger.Log("连接到" + server.Host + ":" + server.Ports[i] + "超时");
+                            Logger.Log("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
                             continue; // Start all over again, using the next port
                         }
-                        else if (client.Connected)
-                        {
-                            Logger.Log("成功连接到" + server.Host + ":" + server.Ports[i]);
-                            client.EndConnect(result);
 
-                            _isConnected = true;
-                            _attemptingConnection = false;
+                        Logger.Log("Succesfully connected to " + server.Host + " on port " + server.Ports[i]);
+                        client.EndConnect(result);
 
-                            connectionManager.OnConnected();
+                        _isConnected = true;
+                        _attemptingConnection = false;
 
-                            Thread sendQueueHandler = new Thread(RunSendQueue);
-                            sendQueueHandler.Start();
+                        connectionManager.OnConnected();
 
-                            tcpClient = client;
-                            serverStream = tcpClient.GetStream();
-                            serverStream.ReadTimeout = 1000;
+                        Thread sendQueueHandler = new Thread(RunSendQueue);
+                        sendQueueHandler.Start();
 
-                            currentConnectedServerIP = server.Host;
-                            HandleComm(client);
-                            return;
-                        }
+                        tcpClient = client;
+                        serverStream = tcpClient.GetStream();
+                        serverStream.ReadTimeout = 1000;
+
+                        currentConnectedServerIP = server.Host;
+                        HandleComm();
+                        return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("服务器连接失败：" + ex.Message);
+                    Logger.Log("Unable to connect to the server. " + ex.ToString());
                 }
             }
 
-            Logger.Log("连接到CnCNet失败");
+            Logger.Log("Connecting to CnCNet failed!");
             // Clear the failed server list in case connecting to all servers has failed
             failedServerIPs.Clear();
             _attemptingConnection = false;
             connectionManager.OnConnectAttemptFailed();
         }
 
-        private void HandleComm(object client)
+        private void HandleComm()
         {
             int errorTimes = 0;
-
             byte[] message = new byte[1024];
-            int bytesRead;
 
             Register();
 
-            Timer timer = new Timer(new TimerCallback(AutoPing), null, 30000, 120000);
+            Timer timer = new Timer(AutoPing, null, 30000, 120000);
 
             connectionCut = true;
 
             while (true)
             {
-                bytesRead = 0;
-
                 if (connectionManager.GetDisconnectStatus())
                 {
                     connectionManager.OnDisconnected();
@@ -243,40 +242,29 @@ namespace DTAClient.Online
                     break;
                 }
 
+                if (!serverStream.DataAvailable)
+                {
+                    Thread.Sleep(10);
+                    continue;
+                }
+
+                int bytesRead;
+
                 try
                 {
                     bytesRead = serverStream.Read(message, 0, 1024);
                 }
                 catch (Exception ex)
                 {
+                    Logger.Log("Disconnected from CnCNet due to a socket error. Message: " + ex.ToString());
                     errorTimes++;
 
-                    if (errorTimes > 30) // TODO Figure out if this hacky check is actually necessary
+                    if (errorTimes > MAX_RECONNECT_COUNT)
                     {
-                        Logger.Log("套接字错误，已断开与CnCNet的连接：" + ex.Message);
+                        const string errorMessage = "Disconnected from CnCNet after reaching the maximum number of connection retries.";
+                        Logger.Log(errorMessage);
                         failedServerIPs.Add(currentConnectedServerIP);
-                        connectionManager.OnConnectionLost(ex.Message);
-                        break;
-                    }
-                    else if (connectionManager.GetDisconnectStatus())
-                    {
-                        connectionManager.OnDisconnected();
-                        connectionCut = false; // This disconnect is intentional
-                        break;
-                    }
-
-                    continue;
-                }
-
-                if (bytesRead == 0)
-                {
-                    errorTimes++;
-
-                    if (errorTimes > 30) // TODO Figure out if this hacky check is actually necessary
-                    {
-                        failedServerIPs.Add(currentConnectedServerIP);
-                        Logger.Log("CnCNet已断开连接");
-                        connectionManager.OnConnectionLost("已断开连接");
+                        connectionManager.OnConnectionLost(errorMessage.L10N("Client:Main:ClientDisconnectedAfterRetries"));
                         break;
                     }
 
@@ -287,7 +275,7 @@ namespace DTAClient.Online
 
                 // A message has been succesfully received
                 string msg = encoding.GetString(message, 0, bytesRead);
-                Logger.Log("收到消息：" + msg);
+                Logger.Log("Message received: " + msg);
 
                 HandleMessage(msg);
                 timer.Change(30000, 30000);
@@ -308,7 +296,7 @@ namespace DTAClient.Online
 
                 if (reconnectCount > MAX_RECONNECT_COUNT)
                 {
-                    Logger.Log("超出重连次数");
+                    Logger.Log("Reconnect attempt count exceeded!");
                     return;
                 }
 
@@ -316,11 +304,11 @@ namespace DTAClient.Online
 
                 if (IsConnected || AttemptingConnection)
                 {
-                    Logger.Log("用户已尝试重连");
+                    Logger.Log("Cancelling reconnection attempt because the user has attempted to reconnect manually.");
                     return;
                 }
 
-                Logger.Log("重连到CnCNet");
+                Logger.Log("Attempting to reconnect to CnCNet.");
                 connectionManager.OnReconnectAttempt();
             }
         }
@@ -345,7 +333,7 @@ namespace DTAClient.Online
 
                 Task<IEnumerable<Tuple<IPAddress, string, int[]>>> dnsTask = new Task<IEnumerable<Tuple<IPAddress, string, int[]>>>(() =>
                 {
-                    Logger.Log($"正在解析服务器{serverName}（{serverHostnameOrIPAddress}）DNS");
+                    Logger.Log($"Attempting to DNS resolve {serverName} ({serverHostnameOrIPAddress}).");
                     ICollection<Tuple<IPAddress, string, int[]>> _serverInfos = new List<Tuple<IPAddress, string, int[]>>();
 
                     try
@@ -354,7 +342,7 @@ namespace DTAClient.Online
                         IEnumerable<IPAddress> serverIPAddresses = Dns.GetHostAddresses(serverHostnameOrIPAddress)
                                                                       .Where(IPAddress => IPAddress.AddressFamily == AddressFamily.InterNetwork);
 
-                        Logger.Log($"已解析服务器{serverName}（{serverHostnameOrIPAddress}）DNS：" +
+                        Logger.Log($"DNS resolved {serverName} ({serverHostnameOrIPAddress}): " +
                             $"{string.Join(", ", serverIPAddresses.Select(item => item.ToString()))}");
 
                         // Store each IPAddress in a different tuple.
@@ -365,7 +353,7 @@ namespace DTAClient.Online
                     }
                     catch (SocketException ex)
                     {
-                        Logger.Log($"解析服务器{serverName}（{serverHostnameOrIPAddress}）DNS时出错：{ex.Message}");
+                        Logger.Log($"Caught an exception when DNS resolving {serverName} ({serverHostnameOrIPAddress}) Lobby server: {ex.ToString()}");
                     }
 
                     return _serverInfos;
@@ -409,10 +397,10 @@ namespace DTAClient.Online
                 string serverNames = string.Join(", ", serverInfo.Item2.ToString());
                 string serverPorts = string.Join(", ", serverInfo.Item3.Select(port => port.ToString()));
 
-                Logger.Log($"获取到服务器，IP: {serverIPAddress}; 名称: {serverNames}; 端口: {serverPorts}.");
+                Logger.Log($"Got a Lobby server. IP: {serverIPAddress}; Name: {serverNames}; Ports: {serverPorts}.");
             }
 
-            Logger.Log($"服务器数量：{serverInfos.Count()}");
+            Logger.Log($"The number of Lobby servers is {serverInfos.Count()}.");
 
             // Test the latency.
             ICollection<Task<Tuple<Server, long>>> pingTasks = new List<Task<Tuple<Server, long>>>(serverInfos.Count());
@@ -425,13 +413,13 @@ namespace DTAClient.Online
 
                 if (failedServerIPs.Contains(serverIPAddress.ToString()))
                 {
-                    Logger.Log($"跳过无效服务器{serverNames}（{serverIPAddress}）");
+                    Logger.Log($"Skipped a failed server {serverNames} ({serverIPAddress}).");
                     continue;
                 }
 
                 Task<Tuple<Server, long>> pingTask = new Task<Tuple<Server, long>>(() =>
                 {
-                    Logger.Log($"Ping {serverNames}（{serverIPAddress}）");
+                    Logger.Log($"Attempting to ping {serverNames} ({serverIPAddress}).");
                     Server server = new Server(serverIPAddress.ToString(), serverNames, serverPorts);
 
                     using (Ping ping = new Ping())
@@ -443,13 +431,13 @@ namespace DTAClient.Online
                             if (pingReply.Status == IPStatus.Success)
                             {
                                 long pingInMs = pingReply.RoundtripTime;
-                                Logger.Log($"服务器延迟{serverNames}（{serverIPAddress}）：{pingInMs}");
+                                Logger.Log($"The latency in milliseconds to the server {serverNames} ({serverIPAddress}): {pingInMs}.");
 
                                 return new Tuple<Server, long>(server, pingInMs);
                             }
                             else
                             {
-                                Logger.Log($"Ping服务器{serverNames}（{serverIPAddress}）失败：" +
+                                Logger.Log($"Failed to ping the server {serverNames} ({serverIPAddress}): " +
                                     $"{Enum.GetName(typeof(IPStatus), pingReply.Status)}.");
 
                                 return new Tuple<Server, long>(server, long.MaxValue);
@@ -457,7 +445,7 @@ namespace DTAClient.Online
                         }
                         catch (PingException ex)
                         {
-                            Logger.Log($"Ping服务器{serverNames}（{serverIPAddress}）出错：{ex.Message}");
+                            Logger.Log($"Caught an exception when pinging {serverNames} ({serverIPAddress}) Lobby server: {ex.ToString()}");
 
                             return new Tuple<Server, long>(server, long.MaxValue);
                         }
@@ -482,7 +470,16 @@ namespace DTAClient.Online
                 long serverLatencyValue = serverAndLatencyResult.Item2;
                 string serverLatencyString = serverLatencyValue <= MAXIMUM_LATENCY ? serverLatencyValue.ToString() : "DNF";
 
-                Logger.Log($"服务器IP：{serverIPAddress}，延迟{serverLatencyString}");
+                Logger.Log($"Lobby server IP: {serverIPAddress}, latency: {serverLatencyString}.");
+            }
+
+            {
+                int candidateCount = sortedServerAndLatencyResults.Count();
+                int closerCount = sortedServerAndLatencyResults.Count(
+                    serverAndLatencyResult => serverAndLatencyResult.Item2 <= MAXIMUM_LATENCY);
+
+                Logger.Log($"Lobby servers: {candidateCount} available, {closerCount} fast.");
+                connectionManager.OnServerLatencyTested(candidateCount, closerCount);
             }
 
             return sortedServerAndLatencyResults.Select(taskResult => taskResult.Item1).ToList(); // Server
@@ -717,9 +714,9 @@ namespace DTAClient.Online
                         foreach (string recipient in recipients)
                         {
                             if (recipient.StartsWith("#"))
-                                connectionManager.OnChatMessageReceived(recipient, pmsgUserName, pmsgIdent, privmsg);
+                                connectionManager.OnChatMessageReceived(recipient, pmsgUserName, pmsgIdent, new ProfanityFilter().CrabsInRiver(privmsg));
                             else if (recipient == ProgramConstants.PLAYERNAME)
-                                connectionManager.OnPrivateMessageReceived(pmsgUserName, privmsg);
+                                connectionManager.OnPrivateMessageReceived(pmsgUserName, new ProfanityFilter().CrabsInRiver(privmsg));
                             //else if (pmsgUserName == ProgramConstants.PLAYERNAME)
                             //{
                             //    DoPrivateMessageSent(privmsg, recipient);
@@ -975,7 +972,7 @@ namespace DTAClient.Online
                 }
                 catch (IOException ex)
                 {
-                    Logger.Log("Sending message to the server failed! Reason: " + ex.Message);
+                    Logger.Log("Sending message to the server failed! Reason: " + ex.ToString());
                 }
             }
         }
@@ -994,7 +991,7 @@ namespace DTAClient.Online
                 var previousMessageIndex = MessageQueue.FindIndex(m => m.MessageType == qm.MessageType);
                 if (previousMessageIndex == -1)
                     return false;
-                
+
                 MessageQueue[previousMessageIndex] = qm;
                 return true;
             }

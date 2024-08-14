@@ -1,12 +1,12 @@
 ﻿using ClientCore;
 using ClientGUI;
 using DTAClient.Domain.Multiplayer.CnCNet;
+using ClientCore.Extensions;
 using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
@@ -60,13 +60,13 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             tbGameName.ClientRectangle = new Rectangle(Width - 150 - UIDesignConstants.EMPTY_SPACE_SIDES -
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, UIDesignConstants.EMPTY_SPACE_TOP +
                 UIDesignConstants.CONTROL_VERTICAL_MARGIN, 150, 21);
-            tbGameName.Text = ProgramConstants.PLAYERNAME + "的房间";
+            tbGameName.Text = string.Format("{0}'s Game".L10N("Client:Main:GameOfPlayer"), ProgramConstants.PLAYERNAME);
 
             lblRoomName = new XNALabel(WindowManager);
             lblRoomName.Name = nameof(lblRoomName);
             lblRoomName.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, tbGameName.Y + 1, 0, 0);
-            lblRoomName.Text = "房间名：";
+            lblRoomName.Text = "Game room name:".L10N("Client:Main:GameRoomName");
 
             ddMaxPlayers = new XNAClientDropDown(WindowManager);
             ddMaxPlayers.Name = nameof(ddMaxPlayers);
@@ -80,7 +80,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblMaxPlayers.Name = nameof(lblMaxPlayers);
             lblMaxPlayers.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, ddMaxPlayers.Y + 1, 0, 0);
-            lblMaxPlayers.Text = "最大人数：";
+            lblMaxPlayers.Text = "Maximum number of players:".L10N("Client:Main:GameMaxPlayerCount");
 
             tbPassword = new XNATextBox(WindowManager);
             tbPassword.Name = nameof(tbPassword);
@@ -92,20 +92,20 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             lblPassword.Name = nameof(lblPassword);
             lblPassword.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, tbPassword.Y + 1, 0, 0);
-            lblPassword.Text = "密码（留空则无）：";
+            lblPassword.Text = "Password (leave blank for none):".L10N("Client:Main:PasswordTextBlankForNone");
 
             btnDisplayAdvancedOptions = new XNAClientButton(WindowManager);
             btnDisplayAdvancedOptions.Name = nameof(btnDisplayAdvancedOptions);
             btnDisplayAdvancedOptions.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, lblPassword.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 3, UIDesignConstants.BUTTON_WIDTH_160, UIDesignConstants.BUTTON_HEIGHT);
-            btnDisplayAdvancedOptions.Text = "高级选项";
+            btnDisplayAdvancedOptions.Text = "Advanced Options".L10N("Client:Main:AdvancedOptions");
             btnDisplayAdvancedOptions.LeftClick += BtnDisplayAdvancedOptions_LeftClick;
 
             lblTunnelServer = new XNALabel(WindowManager);
             lblTunnelServer.Name = nameof(lblTunnelServer);
             lblTunnelServer.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, lblPassword.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 4, 0, 0);
-            lblTunnelServer.Text = "服务器：";
+            lblTunnelServer.Text = "Tunnel server:".L10N("Client:Main:TunnelServer");
             lblTunnelServer.Enabled = false;
             lblTunnelServer.Visible = false;
 
@@ -120,14 +120,14 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnCreateGame.ClientRectangle = new Rectangle(UIDesignConstants.EMPTY_SPACE_SIDES +
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, btnDisplayAdvancedOptions.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN * 3,
                 UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnCreateGame.Text = "创建房间";
+            btnCreateGame.Text = "Create Game".L10N("Client:Main:CreateGame");
             btnCreateGame.LeftClick += BtnCreateGame_LeftClick;
 
             btnCancel = new XNAClientButton(WindowManager);
             btnCancel.Name = nameof(btnCancel);
             btnCancel.ClientRectangle = new Rectangle(Width - UIDesignConstants.BUTTON_WIDTH_133 - UIDesignConstants.EMPTY_SPACE_SIDES -
                 UIDesignConstants.CONTROL_HORIZONTAL_MARGIN, btnCreateGame.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnCancel.Text = "取消";
+            btnCancel.Text = "Cancel".L10N("Client:Main:ButtonCancel");
             btnCancel.LeftClick += BtnCancel_LeftClick;
 
             int btnLoadMPGameX = btnCreateGame.Right + (btnCancel.X - btnCreateGame.Right) / 2 - UIDesignConstants.BUTTON_WIDTH_133 / 2;
@@ -135,9 +135,9 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             btnLoadMPGame = new XNAClientButton(WindowManager);
             btnLoadMPGame.Name = nameof(btnLoadMPGame);
             btnLoadMPGame.ClientRectangle = new Rectangle(btnLoadMPGameX, btnCreateGame.Y, UIDesignConstants.BUTTON_WIDTH_133, UIDesignConstants.BUTTON_HEIGHT);
-            btnLoadMPGame.Text = "加载存档";
+            btnLoadMPGame.Text = "Load Game".L10N("Client:Main:LoadGame");
             btnLoadMPGame.LeftClick += BtnLoadMPGame_LeftClick;
-            
+
             AddChild(tbGameName);
             AddChild(lblRoomName);
             AddChild(ddMaxPlayers);
@@ -153,7 +153,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
             AddChild(btnCancel);
 
             base.Initialize();
-            
+
             Height = btnCreateGame.Bottom + UIDesignConstants.CONTROL_VERTICAL_MARGIN + UIDesignConstants.EMPTY_SPACE_BOTTOM;
 
             CenterOnParent();
@@ -180,7 +180,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private void Instance_SettingsSaved(object sender, EventArgs e)
         {
-            tbGameName.Text = UserINISettings.Instance.PlayerName.Value + "的房间";
+            tbGameName.Text = string.Format("{0}'s Game".L10N("Client:Main:GameOfPlayer"), UserINISettings.Instance.PlayerName.Value);
         }
 
         private void BtnCancel_LeftClick(object sender, EventArgs e)
@@ -192,16 +192,11 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
         {
             string gameName = tbGameName.Text.Replace(";", string.Empty);
 
-            if (string.IsNullOrEmpty(gameName))
+            if (string.IsNullOrEmpty(gameName) || !lbTunnelList.IsValidIndexSelected())
                 return;
 
-            if (!lbTunnelList.IsValidIndexSelected())
-            {
-                return;
-            }
-
-            IniFile spawnSGIni = new IniFile(ProgramConstants.GamePath +
-                ProgramConstants.SAVED_GAME_SPAWN_INI);
+            IniFile spawnSGIni =
+                new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ProgramConstants.SAVED_GAME_SPAWN_INI));
 
             string password = Utilities.CalculateSHA1ForString(
                 spawnSGIni.GetStringValue("Settings", "GameID", string.Empty)).Substring(0, 10);
@@ -224,8 +219,8 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
             if (new ProfanityFilter().IsOffensive(gameName))
             {
-                XNAMessageBox.Show(WindowManager, "房间名不文明",
-                    "请输入房间名时文明用语");
+                XNAMessageBox.Show(WindowManager, "Offensive game name".L10N("Client:Main:GameNameOffensiveTitle"),
+                    "Please enter a less offensive game name.".L10N("Client:Main:GameNameOffensiveText"));
                 return;
             }
 
@@ -271,11 +266,12 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
 
         private bool AllowLoadingGame()
         {
-            if (!File.Exists(ProgramConstants.GamePath + ProgramConstants.SAVED_GAME_SPAWN_INI))
+            FileInfo savedGameSpawnIniFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.SAVED_GAME_SPAWN_INI);
+
+            if (!savedGameSpawnIniFile.Exists)
                 return false;
 
-            IniFile iniFile = new IniFile(ProgramConstants.GamePath +
-                ProgramConstants.SAVED_GAME_SPAWN_INI);
+            IniFile iniFile = new IniFile(savedGameSpawnIniFile.FullName);
 
             if (iniFile.GetStringValue("Settings", "Name", string.Empty) != ProgramConstants.PLAYERNAME)
                 return false;

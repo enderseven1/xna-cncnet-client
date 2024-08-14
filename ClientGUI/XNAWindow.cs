@@ -1,10 +1,7 @@
 ﻿using ClientCore;
-using Rampastring.XNAUI.XNAControls;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Rampastring.XNAUI;
 
 namespace ClientGUI
@@ -15,39 +12,13 @@ namespace ClientGUI
     /// </summary>
     public class XNAWindow : XNAWindowBase
     {
-        #if WINFORMS
-        private IMENativeWindow _nativeWnd;
-        #endif
         private const string GENERIC_WINDOW_INI = "GenericWindow.ini";
         private const string GENERIC_WINDOW_SECTION = "GenericWindow";
         private const string EXTRA_CONTROLS = "ExtraControls";
 
         public XNAWindow(WindowManager windowManager) : base(windowManager)
         {
-            #if WINFORMS
-            _nativeWnd = new IMENativeWindow(windowManager.GetWindowHandle());
-            _nativeWnd.CandidatesReceived += (s, e) => { if (CandidatesReceived != null) CandidatesReceived(s, e); };
-            _nativeWnd.CompositionReceived += (s, e) => { if (CompositionReceived != null) CompositionReceived(s, e); };
-            _nativeWnd.ResultReceived += (s, e) => { if (ResultReceived != null) ResultReceived(s, e); };
-
-            _nativeWnd.EnableIME();
-            #endif
         }
-
-        /// <summary>
-        /// Called when the candidates updated
-        /// </summary>
-        public event EventHandler CandidatesReceived;
-
-        /// <summary>
-        /// Called when the composition updated
-        /// </summary>
-        public event EventHandler CompositionReceived;
-
-        /// <summary>
-        /// Called when a new result character is coming
-        /// </summary>
-        public event EventHandler<IMEResultEventArgs> ResultReceived;
 
         /// <summary>
         /// The INI file that was used for theming this window.
@@ -64,14 +35,14 @@ namespace ClientGUI
 
         protected virtual void SetAttributesFromIni()
         {
-            if (File.Exists(ProgramConstants.GetResourcePath() + Name + ".ini"))
-                GetINIAttributes(new CCIniFile(ProgramConstants.GetResourcePath() + Name + ".ini"));
-            else if (File.Exists(ProgramConstants.GetBaseResourcePath() + Name + ".ini"))
-                GetINIAttributes(new CCIniFile(ProgramConstants.GetBaseResourcePath() + Name + ".ini"));
-            else if (File.Exists(ProgramConstants.GetResourcePath() + GENERIC_WINDOW_INI))
-                GetINIAttributes(new CCIniFile(ProgramConstants.GetResourcePath() + GENERIC_WINDOW_INI));
+            if (SafePath.GetFile(ProgramConstants.GetResourcePath(), FormattableString.Invariant($"{Name}.ini")).Exists)
+                GetINIAttributes(new CCIniFile(SafePath.CombineFilePath(ProgramConstants.GetResourcePath(), FormattableString.Invariant($"{Name}.ini"))));
+            else if (SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), FormattableString.Invariant($"{Name}.ini")).Exists)
+                GetINIAttributes(new CCIniFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), FormattableString.Invariant($"{Name}.ini"))));
+            else if (SafePath.GetFile(ProgramConstants.GetResourcePath(), GENERIC_WINDOW_INI).Exists)
+                GetINIAttributes(new CCIniFile(SafePath.CombineFilePath(ProgramConstants.GetResourcePath(), GENERIC_WINDOW_INI)));
             else
-                GetINIAttributes(new CCIniFile(ProgramConstants.GetBaseResourcePath() + GENERIC_WINDOW_INI));
+                GetINIAttributes(new CCIniFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), GENERIC_WINDOW_INI)));
         }
 
         /// <summary>
@@ -86,7 +57,7 @@ namespace ClientGUI
             if (keys != null)
             {
                 foreach (string key in keys)
-                    ParseAttributeFromINI(iniFile, key, iniFile.GetStringValue(Name, key, String.Empty));
+                    ParseINIAttribute(iniFile, key, iniFile.GetStringValue(Name, key, String.Empty));
             }
             else
             {
@@ -95,7 +66,7 @@ namespace ClientGUI
                 if (keys != null)
                 {
                     foreach (string key in keys)
-                        ParseAttributeFromINI(iniFile, key, iniFile.GetStringValue(GENERIC_WINDOW_SECTION, key, String.Empty));
+                        ParseINIAttribute(iniFile, key, iniFile.GetStringValue(GENERIC_WINDOW_SECTION, key, String.Empty));
                 }
             }
 

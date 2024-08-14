@@ -1,27 +1,38 @@
-﻿using ClientCore;
+﻿using System;
+using System.Drawing;
+using System.Numerics;
+// using System.Reflection.Metadata;
+using System.Threading.Tasks;
+using ClientCore;
 using ClientCore.CnCNet5;
 using ClientGUI;
-using DTAClient.Domain;
+using ClientUpdater;
 using DTAClient.Domain.Multiplayer;
-using DTAClient.Domain.Multiplayer.CnCNet;
 using DTAClient.DXGUI.Multiplayer;
 using DTAClient.DXGUI.Multiplayer.CnCNet;
 using DTAClient.DXGUI.Multiplayer.GameLobby;
 using DTAClient.Online;
-using DTAConfig;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
+using Rampastring.Tools;
 using Rampastring.XNAUI;
-using System.Threading.Tasks;
-using Updater;
-using SkirmishLobby = DTAClient.DXGUI.Multiplayer.GameLobby.SkirmishLobby;
+using ClientCore.Extensions;
+using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Generic
 {
     public class LoadingScreen : XNAWindow
     {
-        public LoadingScreen(WindowManager windowManager) : base(windowManager)
+        public LoadingScreen(
+            CnCNetManager cncnetManager,
+            WindowManager windowManager,
+            IServiceProvider serviceProvider,
+            MapLoader mapLoader
+        ) : base(windowManager)
         {
-
+            this.cncnetManager = cncnetManager;
+            this.serviceProvider = serviceProvider;
+            this.mapLoader = mapLoader;
         }
 
         private static readonly object locker = new object();
@@ -30,17 +41,55 @@ namespace DTAClient.DXGUI.Generic
 
         private PrivateMessagingPanel privateMessagingPanel;
 
-        private bool visibleSpriteCursor = false;
+        private bool visibleSpriteCursor;
 
-        private Task updaterInitTask = null;
-        private Task mapLoadTask = null;
+        private Task updaterInitTask;
+        private Task mapLoadTask;
+        private readonly CnCNetManager cncnetManager;
+        private readonly IServiceProvider serviceProvider;
 
         public override void Initialize()
         {
-            ClientRectangle = new Rectangle(0, 0, 800, 600);
+            ClientRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, 800, 600);
             Name = "LoadingScreen";
 
             BackgroundTexture = AssetLoader.LoadTexture("loadingscreen.png");
+
+            if (UserINISettings.Instance.EnableChineseNotice && System.Threading.Thread.CurrentThread.CurrentCulture.Name == "zh-CN")
+            {
+                /*
+                var lblGameNameAndVersion = new XNALabel(WindowManager);
+                lblGameNameAndVersion.Name = "lblGameNameAndVersion";
+                lblGameNameAndVersion.Text = ClientConfiguration.Instance.LongGameName + " v." + CUpdater.GameVersion;
+                lblGameNameAndVersion.FontIndex = 1;
+                lblGameNameAndVersion.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(0,0,0,0);
+                */
+
+                var lblJianKangYouXiZhongGao = new XNALabel(WindowManager);
+                lblJianKangYouXiZhongGao.Name = "lblJianKangYouXiZhongGao";
+                lblJianKangYouXiZhongGao.Text = "抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。" +
+                Environment.NewLine + "适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活。".L10N("Client:ClientCore:JianKangYouXiZhongGao");
+                lblJianKangYouXiZhongGao.FontIndex = 0;
+                Microsoft.Xna.Framework.Vector2 textSize2 = Renderer.GetTextDimensions(lblJianKangYouXiZhongGao.Text, lblJianKangYouXiZhongGao.FontIndex);
+                lblJianKangYouXiZhongGao.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(
+                    (UserINISettings.Instance.ClientResolutionX - (int)textSize2.X) / 2,
+                     UserINISettings.Instance.ClientResolutionY - (int)textSize2.Y - 30,
+                    (int)textSize2.X, (int)textSize2.Y);
+
+                var lblJianKangYouXiZhongGaoTitle = new XNALabel(WindowManager);
+                lblJianKangYouXiZhongGaoTitle.Name = "lblJianKangYouXiZhongGao";
+                lblJianKangYouXiZhongGaoTitle.Text = "健康游戏忠告".L10N("Client:ClientCore:JianKangYouXiZhongGaoTitle");
+                lblJianKangYouXiZhongGaoTitle.FontIndex = 1;
+                Microsoft.Xna.Framework.Vector2 textSize = Renderer.GetTextDimensions(lblJianKangYouXiZhongGaoTitle.Text, lblJianKangYouXiZhongGaoTitle.FontIndex);
+                lblJianKangYouXiZhongGaoTitle.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(
+                    (UserINISettings.Instance.ClientResolutionX - (int)textSize.X) / 2,
+                     UserINISettings.Instance.ClientResolutionY - (int)textSize.Y * 3 - 30,
+                    (int)textSize.X, (int)textSize.Y);
+
+                // AddChild(lblGameNameAndVersion);
+                AddChild(lblJianKangYouXiZhongGao);
+                AddChild(lblJianKangYouXiZhongGaoTitle);
+            }
 
             base.Initialize();
 
@@ -54,8 +103,7 @@ namespace DTAClient.DXGUI.Generic
                 updaterInitTask.Start();
             }
 
-            mapLoadTask = new Task(LoadMaps);
-            mapLoadTask.Start();
+            mapLoadTask = mapLoader.LoadMapsAsync();
 
             if (Cursor.Visible)
             {
@@ -66,89 +114,24 @@ namespace DTAClient.DXGUI.Generic
 
         private void InitUpdater()
         {
-            CUpdater.CheckLocalFileVersions();
+            Updater.OnLocalFileVersionsChecked += LogGameClientVersion;
+            Updater.CheckLocalFileVersions();
         }
 
-        private void LoadMaps()
+        private void LogGameClientVersion()
         {
-            mapLoader = new MapLoader();
-            mapLoader.LoadMaps();
+            Logger.Log($"Game Client Version: {ClientConfiguration.Instance.LocalGame} {Updater.GameVersion}");
+            Updater.OnLocalFileVersionsChecked -= LogGameClientVersion;
         }
 
         private void Finish()
         {
             ProgramConstants.GAME_VERSION = ClientConfiguration.Instance.ModMode ? 
-                "N/A" : CUpdater.GameVersion;
+                "N/A" : Updater.GameVersion;
 
-            DiscordHandler discordHandler = null;
-            if (!string.IsNullOrEmpty(ClientConfiguration.Instance.DiscordAppId))
-                discordHandler = new DiscordHandler(WindowManager);
+            MainMenu mainMenu = serviceProvider.GetService<MainMenu>();
 
-            var gameCollection = new GameCollection();
-            gameCollection.Initialize(GraphicsDevice);
-
-            var lanLobby = new LANLobby(WindowManager, gameCollection, mapLoader.GameModes, mapLoader, discordHandler);
-
-            var cncnetUserData = new CnCNetUserData(WindowManager);
-            var cncnetManager = new CnCNetManager(WindowManager, gameCollection, cncnetUserData);
-            var tunnelHandler = new TunnelHandler(WindowManager, cncnetManager);
-            var privateMessageHandler = new PrivateMessageHandler(cncnetManager, cncnetUserData);
-            
-            var topBar = new TopBar(WindowManager, cncnetManager, privateMessageHandler);
-
-            var optionsWindow = new OptionsWindow(WindowManager, gameCollection, topBar);
-
-            var pmWindow = new PrivateMessagingWindow(WindowManager,
-                cncnetManager, gameCollection, cncnetUserData, privateMessageHandler);
-            privateMessagingPanel = new PrivateMessagingPanel(WindowManager);
-
-            var cncnetGameLobby = new CnCNetGameLobby(WindowManager,
-                "MultiplayerGameLobby", topBar, cncnetManager, tunnelHandler, gameCollection, cncnetUserData, mapLoader, discordHandler, pmWindow);
-            var cncnetGameLoadingLobby = new CnCNetGameLoadingLobby(WindowManager, 
-                topBar, cncnetManager, tunnelHandler, mapLoader.GameModes, gameCollection, discordHandler);
-            var cncnetLobby = new CnCNetLobby(WindowManager, cncnetManager, 
-                cncnetGameLobby, cncnetGameLoadingLobby, topBar, pmWindow, tunnelHandler,
-                gameCollection, cncnetUserData, optionsWindow);
-            var gipw = new GameInProgressWindow(WindowManager);
-
-            var skirmishLobby = new SkirmishLobby(WindowManager, topBar, mapLoader, discordHandler);
-
-            topBar.SetSecondarySwitch(cncnetLobby);
-
-            var mainMenu = new MainMenu(WindowManager, skirmishLobby, lanLobby,
-                topBar, optionsWindow, cncnetLobby, cncnetManager, discordHandler);
             WindowManager.AddAndInitializeControl(mainMenu);
-
-            DarkeningPanel.AddAndInitializeWithControl(WindowManager, skirmishLobby);
-
-            DarkeningPanel.AddAndInitializeWithControl(WindowManager, cncnetGameLoadingLobby);
-
-            DarkeningPanel.AddAndInitializeWithControl(WindowManager, cncnetGameLobby);
-
-            DarkeningPanel.AddAndInitializeWithControl(WindowManager, cncnetLobby);
-
-            DarkeningPanel.AddAndInitializeWithControl(WindowManager, lanLobby);
-
-            DarkeningPanel.AddAndInitializeWithControl(WindowManager, optionsWindow);
-
-            WindowManager.AddAndInitializeControl(privateMessagingPanel);
-            privateMessagingPanel.AddChild(pmWindow);
-
-            topBar.SetTertiarySwitch(pmWindow);
-            topBar.SetOptionsWindow(optionsWindow);
-
-            WindowManager.AddAndInitializeControl(gipw);
-            skirmishLobby.Disable();
-            cncnetLobby.Disable();
-            cncnetGameLobby.Disable();
-            cncnetGameLoadingLobby.Disable();
-            lanLobby.Disable();
-            pmWindow.Disable();
-            optionsWindow.Disable();
-
-            WindowManager.AddAndInitializeControl(topBar);
-            topBar.AddPrimarySwitchable(mainMenu);
-
             mainMenu.PostInit();
 
             if (UserINISettings.Instance.AutomaticCnCNetLogin &&
@@ -176,11 +159,6 @@ namespace DTAClient.DXGUI.Generic
                 if (mapLoadTask.Status == TaskStatus.RanToCompletion)
                     Finish();
             }
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
         }
     }
 }
