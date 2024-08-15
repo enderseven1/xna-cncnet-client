@@ -25,6 +25,10 @@ The translation system supports the following:
 The translation system reads folders from the `Resources/Translations` directory by default. Each folder found in that directory is considered a translation and can contain the main translation INI (contains some translation metadata and the translated values), generic assets (they take priority over what's found in `Resources` folder under the same relative path), theme-specific translation INIs and theme-specific assets (overrides for `Resources/[theme name]`) placed in the folders with the same names as the main theme folders that they are supposed to override.  
 翻译系统默认读取`Resources/Translations`中的文件夹，其中可包含翻译INI文件（元数据和值）、资源（覆盖`Resources`文件夹中的内容）、同名主题特定翻译条目和资源（覆盖`Resources/[theme name]`）。
 
+> **Note 注意**
+> Add the `UseMinecraftTranlationFormat=true` to the `[Settings]` section in the `ClientDefinitions.ini` in [Enderseven1's fork](https://github.com/enderseven1/xna-cncnet-client), It will mimic the `lang\language_code.json` format in Minecraft, and read `Resourses\Translations\language_code.ini` instead of `Resourses\Translations\language_code\Translation.ini`.
+> 在[Enderseven1的版本](https://github.com/enderseven1/xna-cncnet-client)中填写`ClientDefinitions.ini` -> `[Settings]` -> `UseMinecraftTranlationFormat=true`语句，将模仿Minecraft中的`\lang\语言代码.json`格式，读取`Resourses\Translations\语言代码.ini`而非`Resourses\Translations\语言代码\Translation.ini`。
+
 For example:  
 例如：
 
@@ -224,7 +228,7 @@ This will make the `translation.mix` file from current translation folder (say, 
 4. (optional) Look up the game/mod-specific ingame translation files that are specified in `ClientDefinitions.ini`->`[Translations]`->`GameFileX` and/or consult the game/mod author(s) for a list of files for ingame translation. Make and arrange your ingame translation into the files with specified names (first part of the value) and place them in your translation folder.  
 （可选）查找在`ClientDefinitions.ini`->`[Translations]`->`GameFileX`中指定的游戏内翻译文件，可找游戏作者要游戏内翻译用的文件列表，翻译到第一个参数指定的文件中并放在翻译文件夹里。
    - If the game/mod has integrity-checked translation files - contact the game/mod author to include your translation with the game/mod package so the ingame translation won't make your or your users' installations trigger a modified files warning online.  
-   如果翻译文件设定了完整性检查，请找作者收录你的翻译，这样游戏内翻译就chufaxiugaiwenjianjinggao。
+   如果翻译文件设定了完整性检查，请找作者收录你的翻译，这样游戏内翻译就触发修改文件警告。
 
 Happy translating!  
 翻译愉快！
