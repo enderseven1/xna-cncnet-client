@@ -68,7 +68,7 @@ namespace DTAClient.DXGUI.Generic
                 var lblJianKangYouXiZhongGao = new XNALabel(WindowManager);
                 lblJianKangYouXiZhongGao.Name = "lblJianKangYouXiZhongGao";
                 lblJianKangYouXiZhongGao.Text = "抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。" +
-                Environment.NewLine + "适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活。".L10N("Client:ClientCore:JianKangYouXiZhongGao");
+                Environment.NewLine + "适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活。"; // .L10N("Client:ClientCore:JianKangYouXiZhongGao");
                 lblJianKangYouXiZhongGao.FontIndex = 0;
                 Microsoft.Xna.Framework.Vector2 textSize2 = Renderer.GetTextDimensions(lblJianKangYouXiZhongGao.Text, lblJianKangYouXiZhongGao.FontIndex);
                 lblJianKangYouXiZhongGao.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(
@@ -78,7 +78,7 @@ namespace DTAClient.DXGUI.Generic
 
                 var lblJianKangYouXiZhongGaoTitle = new XNALabel(WindowManager);
                 lblJianKangYouXiZhongGaoTitle.Name = "lblJianKangYouXiZhongGao";
-                lblJianKangYouXiZhongGaoTitle.Text = "健康游戏忠告".L10N("Client:ClientCore:JianKangYouXiZhongGaoTitle");
+                lblJianKangYouXiZhongGaoTitle.Text = "健康游戏忠告"; //.L10N("Client:ClientCore:JianKangYouXiZhongGaoTitle");
                 lblJianKangYouXiZhongGaoTitle.FontIndex = 1;
                 Microsoft.Xna.Framework.Vector2 textSize = Renderer.GetTextDimensions(lblJianKangYouXiZhongGaoTitle.Text, lblJianKangYouXiZhongGaoTitle.FontIndex);
                 lblJianKangYouXiZhongGaoTitle.ClientRectangle = new Microsoft.Xna.Framework.Rectangle(
