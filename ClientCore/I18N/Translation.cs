@@ -153,9 +153,17 @@ public class Translation : ICloneable
     public static string GetLanguageName(string localeCode)
     {
         string result = null;
+        string iniPath;
 
-        string iniPath = SafePath.CombineFilePath(
-            ClientConfiguration.Instance.TranslationsFolderPath, localeCode, ClientConfiguration.Instance.TranslationIniName);
+        if (ClientConfiguration.Instance.UseMinecraftTranslationFormat){
+            iniPath = SafePath.CombineFilePath(
+                ClientConfiguration.Instance.TranslationsFolderPath, localeCode, ClientConfiguration.Instance.TranslationIniName);
+        }
+        else
+        {
+            iniPath = SafePath.CombineFilePath(
+                ClientConfiguration.Instance.TranslationsFolderPath, localeCode+".ini");
+        }
 
         if (SafePath.GetFile(iniPath).Exists)
         {
@@ -200,10 +208,23 @@ public class Translation : ICloneable
         if (!Directory.Exists(ClientConfiguration.Instance.TranslationsFolderPath))
             return translations;
 
-        foreach (var localizationFolder in Directory.GetDirectories(ClientConfiguration.Instance.TranslationsFolderPath))
+        if (!ClientConfiguration.Instance.UseMinecraftTranslationFormat){
+            foreach (var localizationFolder in Directory.GetDirectories(ClientConfiguration.Instance.TranslationsFolderPath))
+            {
+                string localizationCode = Path.GetFileName(localizationFolder);
+                translations[localizationCode] = GetLanguageName(localizationCode);
+            }
+        }
+        else
         {
-            string localizationCode = Path.GetFileName(localizationFolder);
-            translations[localizationCode] = GetLanguageName(localizationCode);
+            foreach (var localizationFile in Directory.GetFiles(ClientConfiguration.Instance.TranslationsFolderPath))
+            {
+                if (localizationFile.EndsWith(".ini"))
+                {
+                    string localizationCode = localizationFile.Split('\\').Last().Split('.')[0];
+                    translations[localizationCode] = GetLanguageName(localizationCode);
+                }
+            }
         }
 
         return translations;
