@@ -3,6 +3,8 @@
 This version is compatible with [Starkku's mod base](https://github.com/Starkku/cncnet-client-mod-base), and adds an age verification system and the ability to display "healthy game advice".  
 该版本兼容[Starkku的mod base](https://github.com/Starkku/cncnet-client-mod-base)，并且添加了年龄验证和健康游戏忠告。
 
+中国特色功能：聊天文字脏话和谐。
+
 The age verification system and healthy game advice are enabled by default in the People's Republic of China, and there will be no options for healthy game advice in non-People's Republic of China regions.  
 年龄验证和健康游戏忠告在中国区内自动开启，非中国区则不会显示也不会有健康游戏忠告的选项。
 

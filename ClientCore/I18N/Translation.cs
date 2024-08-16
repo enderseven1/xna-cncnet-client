@@ -225,6 +225,11 @@ public class Translation : ICloneable
                     translations[localizationCode] = GetLanguageName(localizationCode);
                 }
             }
+            foreach (var localizationFolder in Directory.GetDirectories(ClientConfiguration.Instance.TranslationsFolderPath))
+            {
+                string localizationCode = Path.GetFileName(localizationFolder);
+                translations[localizationCode] = GetLanguageName(localizationCode);
+            }
         }
 
         return translations;
