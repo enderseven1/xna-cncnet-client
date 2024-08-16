@@ -1,4 +1,4 @@
-# Build & Publish #
+# Build & Publish 编译发布
 
 The information below describes the steps that the default build script (build.ps1) performs.
 
