@@ -258,11 +258,11 @@ Unicode中不赋值，将它包括在区间里可能会报错。
 > **注意**
 > GB2312编码缺少“啰”“瞭”两个常用字，需要自行补充。
 
-根据需求选择好字库以后，为了方便起见，可以利用程序自动生成`CharacterRegion`，我在此列出两种方法。
+根据需求选择好字库以后，为了方便起见，可以利用程序自动生成`<CharacterRegion>`，有两种方法：
 
 ### 通过Python {#通过Python}
 > 优点：快捷、可以自由处理格式。
-> 缺点：需要编程基础和环境。
+> 缺点：需要编程基础和Python环境。
 
 将字库内容塞进Python里，用for循环生成字符集合。
 
@@ -276,6 +276,8 @@ for i in a: # 遍历字库
 扩展B区（表意文字补充平面）之后的汉字因编码原因会提示**字符串的长度必须正好为一个字符**，解决方法：
 **1.把传入字符改为传入编码。**
 
+> 此方法针对于**需要**扩展区汉字的用户。
+
 ``` python
 # -*- coding:utf-8 -*-
 a='你的字库'
@@ -285,6 +287,8 @@ for i in a:
 ```
 
 **2.把字库转换成列表排序一下，复制到文本编辑器里，删掉后面扩展B区后面的字。**
+
+> 此方法针对于**不需要**扩展区汉字的用户。
 
 ``` python
 # -*- coding:utf-8 -*-
@@ -296,6 +300,9 @@ print(''.join(a)) # 转为字符串输出
 编辑器字体调成微软雅黑，可以看到后面的字很明显风格不一样，因为微软雅黑不支持扩展B区后面的字。如果安装了诸如[遍黑体](https://github.com/Fitzgerald-Porthmouth-Koenigsegg/Plangothic-Project)一类具有大字库的黑体，则会使影响判断，此时可以改用宋体显示，或者利用1、3方法。
 
 **3.直接抹掉扩展B区之后的汉字（扩展B区的起始编码为U+20000）。**
+
+> 此方法针对于**不需要**扩展区汉字的用户。
+
 ``` python
 # -*- coding:utf-8 -*-
 a='你的字库'
@@ -406,9 +413,14 @@ Vscode批量替换来生成所需格式（自然Notepad++也可以）
 ## 编译时长 {#编译时长}
 XNB文件本身用于表音文字是很方便的，拉丁文字、希腊文、西里尔文加起来也不过千百个，但是用于数量如此庞大的汉字时就显得十分鸡肋。
 
-我的电脑配置编译几百字符的xnb不在话下，一两千个字符也只用最多几分钟，但这个似乎是呈指数型增长的，也就是说你不能自然而然的认为编译一千个字符要一分钟，一万个字符就只要十分钟而已。我昨天凌晨四点编译了两个八千字的字库（一粗一细），早上六点起刚好编译完，所以时间是很悬的，一万个字符没个两三小时根本下不来。最好的办法就是你晚上编写好，打开编译，睡一觉就好了。
+我的电脑配置编译几百字符的xnb不在话下，一两千个字符也只用最多几分钟，但这个用时似乎是呈指数型增长的，也就是说你不能自然而然的认为编译一千个字符要一分钟，一万个字符就只要十分钟而已。我昨天凌晨四点编译了两个八千字的字库（一粗一细），早上六点起刚好编译完，所以时间是很悬的，一万个字符没个两三小时根本下不来。最好的办法就是你晚上编写好，打开编译，睡一觉就好了。
 
 你也可以白天编译，你去干别的，总之等着就对了。
+
+> **我的配置如下：**
+> 处理器	12th Gen Intel(R) Core(TM) i3-12100   3.30 GHz
+> 机带 RAM	16.0 GB (15.7 GB 可用)
+> 系统类型	64 位操作系统, 基于 x64 的处理器
 
 ---
 
@@ -419,7 +431,7 @@ XNB文件本身用于表音文字是很方便的，拉丁文字、希腊文、�
 ---
 
 ## 字库的扩展用法 {#字库的扩展用法}
-在[xna-cncnet-client的develop分支](https://github.com/CnCNet/xna-cncnet-client/tree/develop)（俗称新版客户端）中，可以利用客户端的翻译功能，将字库文件放在翻译文件夹下，可以给不同的语言安排不同的字库文件。
+在[xna-cncnet-client的develop分支](https://github.com/CnCNet/xna-cncnet-client/tree/develop)（俗称新版客户端）中，可以利用客户端的翻译功能，将字库文件放在翻译文件夹下，给不同的语言安排不同的字库文件。
 
 ---
 
@@ -493,169 +505,7 @@ XNB文件本身用于表音文字是很方便的，拉丁文字、希腊文、�
       <CharacterRegion><Start>伴</Start><End>伴</End></CharacterRegion>
       <CharacterRegion><Start>扮</Start><End>扮</End></CharacterRegion>
       <CharacterRegion><Start>瓣</Start><End>瓣</End></CharacterRegion>
-      <CharacterRegion><Start>邦</Start><End>邦</End></CharacterRegion>
-      <CharacterRegion><Start>帮</Start><End>帮</End></CharacterRegion>
-      <CharacterRegion><Start>膀</Start><End>膀</End></CharacterRegion>
-      <CharacterRegion><Start>傍</Start><End>傍</End></CharacterRegion>
-      <CharacterRegion><Start>棒</Start><End>棒</End></CharacterRegion>
-      <CharacterRegion><Start>包</Start><End>包</End></CharacterRegion>
-      <CharacterRegion><Start>胞</Start><End>胞</End></CharacterRegion>
-      <CharacterRegion><Start>宝</Start><End>宝</End></CharacterRegion>
-      <CharacterRegion><Start>饱</Start><End>饱</End></CharacterRegion>
-      <CharacterRegion><Start>保</Start><End>保</End></CharacterRegion>
-      <CharacterRegion><Start>堡</Start><End>堡</End></CharacterRegion>
-      <CharacterRegion><Start>报</Start><End>报</End></CharacterRegion>
-      <CharacterRegion><Start>抱</Start><End>抱</End></CharacterRegion>
-      <CharacterRegion><Start>豹</Start><End>豹</End></CharacterRegion>
-      <CharacterRegion><Start>暴</Start><End>暴</End></CharacterRegion>
-      <CharacterRegion><Start>爆</Start><End>爆</End></CharacterRegion>
-      <CharacterRegion><Start>卑</Start><End>卑</End></CharacterRegion>
-      <CharacterRegion><Start>杯</Start><End>杯</End></CharacterRegion>
-      <CharacterRegion><Start>悲</Start><End>悲</End></CharacterRegion>
-      <CharacterRegion><Start>碑</Start><End>碑</End></CharacterRegion>
-      <CharacterRegion><Start>北</Start><End>北</End></CharacterRegion>
-      <CharacterRegion><Start>贝</Start><End>贝</End></CharacterRegion>
-      <CharacterRegion><Start>备</Start><End>备</End></CharacterRegion>
-      <CharacterRegion><Start>背</Start><End>背</End></CharacterRegion>
-      <CharacterRegion><Start>倍</Start><End>倍</End></CharacterRegion>
-      <CharacterRegion><Start>被</Start><End>被</End></CharacterRegion>
-      <CharacterRegion><Start>辈</Start><End>辈</End></CharacterRegion>
-      <CharacterRegion><Start>奔</Start><End>奔</End></CharacterRegion>
-      <CharacterRegion><Start>本</Start><End>本</End></CharacterRegion>
-      <CharacterRegion><Start>崩</Start><End>崩</End></CharacterRegion>
-      <CharacterRegion><Start>逼</Start><End>逼</End></CharacterRegion>
-      <CharacterRegion><Start>鼻</Start><End>鼻</End></CharacterRegion>
-      <CharacterRegion><Start>比</Start><End>比</End></CharacterRegion>
-      <CharacterRegion><Start>彼</Start><End>彼</End></CharacterRegion>
-      <CharacterRegion><Start>笔</Start><End>笔</End></CharacterRegion>
-      <CharacterRegion><Start>币</Start><End>币</End></CharacterRegion>
-      <CharacterRegion><Start>必</Start><End>必</End></CharacterRegion>
-      <CharacterRegion><Start>毕</Start><End>毕</End></CharacterRegion>
-      <CharacterRegion><Start>闭</Start><End>闭</End></CharacterRegion>
-      <CharacterRegion><Start>辟</Start><End>辟</End></CharacterRegion>
-      <CharacterRegion><Start>碧</Start><End>碧</End></CharacterRegion>
-      <CharacterRegion><Start>蔽</Start><End>蔽</End></CharacterRegion>
-      <CharacterRegion><Start>壁</Start><End>壁</End></CharacterRegion>
-      <CharacterRegion><Start>避</Start><End>避</End></CharacterRegion>
-      <CharacterRegion><Start>臂</Start><End>臂</End></CharacterRegion>
-      <CharacterRegion><Start>边</Start><End>边</End></CharacterRegion>
-      <CharacterRegion><Start>编</Start><End>编</End></CharacterRegion>
-      <CharacterRegion><Start>蝙</Start><End>蝙</End></CharacterRegion>
-      <CharacterRegion><Start>鞭</Start><End>鞭</End></CharacterRegion>
-      <CharacterRegion><Start>扁</Start><End>扁</End></CharacterRegion>
-      <CharacterRegion><Start>便</Start><End>便</End></CharacterRegion>
-      <CharacterRegion><Start>变</Start><End>变</End></CharacterRegion>
-      <CharacterRegion><Start>遍</Start><End>遍</End></CharacterRegion>
-      <CharacterRegion><Start>辨</Start><End>辨</End></CharacterRegion>
-      <CharacterRegion><Start>辩</Start><End>辩</End></CharacterRegion>
-      <CharacterRegion><Start>标</Start><End>标</End></CharacterRegion>
-      <CharacterRegion><Start>表</Start><End>表</End></CharacterRegion>
-      <CharacterRegion><Start>别</Start><End>别</End></CharacterRegion>
-      <CharacterRegion><Start>宾</Start><End>宾</End></CharacterRegion>
-      <CharacterRegion><Start>滨</Start><End>滨</End></CharacterRegion>
-      <CharacterRegion><Start>冰</Start><End>冰</End></CharacterRegion>
-      <CharacterRegion><Start>兵</Start><End>兵</End></CharacterRegion>
-      <CharacterRegion><Start>丙</Start><End>丙</End></CharacterRegion>
-      <CharacterRegion><Start>柄</Start><End>柄</End></CharacterRegion>
-      <CharacterRegion><Start>饼</Start><End>饼</End></CharacterRegion>
-      <CharacterRegion><Start>并</Start><End>并</End></CharacterRegion>
-      <CharacterRegion><Start>病</Start><End>病</End></CharacterRegion>
-      <CharacterRegion><Start>拨</Start><End>拨</End></CharacterRegion>
-      <CharacterRegion><Start>波</Start><End>波</End></CharacterRegion>
-      <CharacterRegion><Start>玻</Start><End>玻</End></CharacterRegion>
-      <CharacterRegion><Start>剥</Start><End>剥</End></CharacterRegion>
-      <CharacterRegion><Start>播</Start><End>播</End></CharacterRegion>
-      <CharacterRegion><Start>脖</Start><End>脖</End></CharacterRegion>
-      <CharacterRegion><Start>伯</Start><End>伯</End></CharacterRegion>
-      <CharacterRegion><Start>驳</Start><End>驳</End></CharacterRegion>
-      <CharacterRegion><Start>泊</Start><End>泊</End></CharacterRegion>
-      <CharacterRegion><Start>勃</Start><End>勃</End></CharacterRegion>
-      <CharacterRegion><Start>博</Start><End>博</End></CharacterRegion>
-      <CharacterRegion><Start>搏</Start><End>搏</End></CharacterRegion>
-      <CharacterRegion><Start>膊</Start><End>膊</End></CharacterRegion>
-      <CharacterRegion><Start>薄</Start><End>薄</End></CharacterRegion>
-      <CharacterRegion><Start>卜</Start><End>卜</End></CharacterRegion>
-      <CharacterRegion><Start>补</Start><End>补</End></CharacterRegion>
-      <CharacterRegion><Start>捕</Start><End>捕</End></CharacterRegion>
-      <CharacterRegion><Start>不</Start><End>不</End></CharacterRegion>
-      <CharacterRegion><Start>布</Start><End>布</End></CharacterRegion>
-      <CharacterRegion><Start>步</Start><End>步</End></CharacterRegion>
-      <CharacterRegion><Start>部</Start><End>部</End></CharacterRegion>
-      <CharacterRegion><Start>擦</Start><End>擦</End></CharacterRegion>
-      <CharacterRegion><Start>猜</Start><End>猜</End></CharacterRegion>
-      <CharacterRegion><Start>才</Start><End>才</End></CharacterRegion>
-      <CharacterRegion><Start>材</Start><End>材</End></CharacterRegion>
-      <CharacterRegion><Start>财</Start><End>财</End></CharacterRegion>
-      <CharacterRegion><Start>裁</Start><End>裁</End></CharacterRegion>
-      <CharacterRegion><Start>采</Start><End>采</End></CharacterRegion>
-      <CharacterRegion><Start>彩</Start><End>彩</End></CharacterRegion>
-      <CharacterRegion><Start>踩</Start><End>踩</End></CharacterRegion>
-      <CharacterRegion><Start>菜</Start><End>菜</End></CharacterRegion>
-      <CharacterRegion><Start>蔡</Start><End>蔡</End></CharacterRegion>
-      <CharacterRegion><Start>参</Start><End>参</End></CharacterRegion>
-      <CharacterRegion><Start>餐</Start><End>餐</End></CharacterRegion>
-      <CharacterRegion><Start>残</Start><End>残</End></CharacterRegion>
-      <CharacterRegion><Start>蚕</Start><End>蚕</End></CharacterRegion>
-      <CharacterRegion><Start>惨</Start><End>惨</End></CharacterRegion>
-      <CharacterRegion><Start>灿</Start><End>灿</End></CharacterRegion>
-      <CharacterRegion><Start>仓</Start><End>仓</End></CharacterRegion>
-      <CharacterRegion><Start>苍</Start><End>苍</End></CharacterRegion>
-      <CharacterRegion><Start>舱</Start><End>舱</End></CharacterRegion>
-      <CharacterRegion><Start>藏</Start><End>藏</End></CharacterRegion>
-      <CharacterRegion><Start>操</Start><End>操</End></CharacterRegion>
-      <CharacterRegion><Start>曹</Start><End>曹</End></CharacterRegion>
-      <CharacterRegion><Start>槽</Start><End>槽</End></CharacterRegion>
-      <CharacterRegion><Start>草</Start><End>草</End></CharacterRegion>
-      <CharacterRegion><Start>册</Start><End>册</End></CharacterRegion>
-      <CharacterRegion><Start>侧</Start><End>侧</End></CharacterRegion>
-      <CharacterRegion><Start>测</Start><End>测</End></CharacterRegion>
-      <CharacterRegion><Start>策</Start><End>策</End></CharacterRegion>
-      <CharacterRegion><Start>层</Start><End>层</End></CharacterRegion>
-      <CharacterRegion><Start>叉</Start><End>叉</End></CharacterRegion>
-      <CharacterRegion><Start>插</Start><End>插</End></CharacterRegion>
-      <CharacterRegion><Start>查</Start><End>查</End></CharacterRegion>
-      <CharacterRegion><Start>茶</Start><End>茶</End></CharacterRegion>
-      <CharacterRegion><Start>察</Start><End>察</End></CharacterRegion>
-      <CharacterRegion><Start>差</Start><End>差</End></CharacterRegion>
-      <CharacterRegion><Start>拆</Start><End>拆</End></CharacterRegion>
-      <CharacterRegion><Start>柴</Start><End>柴</End></CharacterRegion>
-      <CharacterRegion><Start>缠</Start><End>缠</End></CharacterRegion>
-      <CharacterRegion><Start>产</Start><End>产</End></CharacterRegion>
-      <CharacterRegion><Start>阐</Start><End>阐</End></CharacterRegion>
-      <CharacterRegion><Start>颤</Start><End>颤</End></CharacterRegion>
-      <CharacterRegion><Start>昌</Start><End>昌</End></CharacterRegion>
-      <CharacterRegion><Start>长</Start><End>长</End></CharacterRegion>
-      <CharacterRegion><Start>肠</Start><End>肠</End></CharacterRegion>
-      <CharacterRegion><Start>尝</Start><End>尝</End></CharacterRegion>
-      <CharacterRegion><Start>偿</Start><End>偿</End></CharacterRegion>
-      <CharacterRegion><Start>常</Start><End>常</End></CharacterRegion>
-      <CharacterRegion><Start>厂</Start><End>厂</End></CharacterRegion>
-      <CharacterRegion><Start>场</Start><End>场</End></CharacterRegion>
-      <CharacterRegion><Start>畅</Start><End>畅</End></CharacterRegion>
-      <CharacterRegion><Start>倡</Start><End>倡</End></CharacterRegion>
-      <CharacterRegion><Start>唱</Start><End>唱</End></CharacterRegion>
-      <CharacterRegion><Start>抄</Start><End>抄</End></CharacterRegion>
-      <CharacterRegion><Start>超</Start><End>超</End></CharacterRegion>
-      <CharacterRegion><Start>巢</Start><End>巢</End></CharacterRegion>
-      <CharacterRegion><Start>朝</Start><End>朝</End></CharacterRegion>
-      <CharacterRegion><Start>潮</Start><End>潮</End></CharacterRegion>
-      <CharacterRegion><Start>吵</Start><End>吵</End></CharacterRegion>
-      <CharacterRegion><Start>炒</Start><End>炒</End></CharacterRegion>
-      <CharacterRegion><Start>车</Start><End>车</End></CharacterRegion>
-      <CharacterRegion><Start>扯</Start><End>扯</End></CharacterRegion>
-      <CharacterRegion><Start>彻</Start><End>彻</End></CharacterRegion>
-      <CharacterRegion><Start>撤</Start><End>撤</End></CharacterRegion>
-      <CharacterRegion><Start>尘</Start><End>尘</End></CharacterRegion>
-      <CharacterRegion><Start>臣</Start><End>臣</End></CharacterRegion>
-      <CharacterRegion><Start>沉</Start><End>沉</End></CharacterRegion>
-      <CharacterRegion><Start>陈</Start><End>陈</End></CharacterRegion>
-      <CharacterRegion><Start>闯</Start><End>闯</End></CharacterRegion>
-      <CharacterRegion><Start>衬</Start><End>衬</End></CharacterRegion>
-      <CharacterRegion><Start>称</Start><End>称</End></CharacterRegion>
-      <CharacterRegion><Start>趁</Start><End>趁</End></CharacterRegion>
-      <CharacterRegion><Start>撑</Start><End>撑</End></CharacterRegion>
-      <CharacterRegion><Start>成</Start><End>成</End></CharacterRegion>
-      <CharacterRegion><Start>呈</Start><End>呈</End></CharacterRegion>
+
       <!-- 此处已省略部分内容... -->
       <CharacterRegion><Start>揍</Start><End>揍</End></CharacterRegion>
       <CharacterRegion><Start>卒</Start><End>卒</End></CharacterRegion>
