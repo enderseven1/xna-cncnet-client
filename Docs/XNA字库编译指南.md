@@ -1,6 +1,6 @@
 # DTA客户端字库编译指南
 ## 元数据
-- Version: 1.0
+- Version: 1.1
 - Author: Shimada Mizuki
 - Create Date: 2024/8/16
 - Last Update: 2024/8/17
