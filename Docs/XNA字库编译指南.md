@@ -381,7 +381,8 @@ Vscode批量替换来生成所需格式（自然Notepad++也可以）
 1. 点击`Add Content`。
 2. 选择`spritefont files`。
 3. 找到刚才编写的`SpriteFont0.spritefont`，添加进去。
-3. 点击`Project Settings`，在`Output Directory`里填写输出文件夹。
+4. 点击`Project Settings`，在`Output Directory`里填写输出文件夹。
+5. 上面的`Compressed`是压缩的意思，如果你的字库比较大可以选择开启此选项，开启后原本几MB的字库会压缩到几百K，但是对编译速度的影响未知。
 
 ![第一步至第四步](Images/ab2c131b-104b-43ec-975b-46ec7573613a.png)
 
