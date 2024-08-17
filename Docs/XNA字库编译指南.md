@@ -82,7 +82,7 @@ DTA客户端的字库文件通常存放在客户端的`Resources`文件夹中，
 
 将这五个软件各安装一遍，再下载[XNAContentComplier](https://github.com/mattleibow/XNA-4.0-Content-Compiler/releases)。
 
-![下载得到的是这些文件](images/2c7b094d-bf10-4942-8620-f1522acdc6ce.png)
+![下载得到的是这些文件](Images/2c7b094d-bf10-4942-8620-f1522acdc6ce.png)
 
 ### 辅助工具 {#辅助工具}
 - 你需要文本编辑器编写描述文件，可以是自带的记事本，不过为了<font style=color:grey>~~看起来高级~~</font>便于观察，推荐使用[Visual Studio Code](https://code.visualstudio.com/)。
@@ -152,7 +152,7 @@ DTA客户端的字库文件通常存放在客户端的`Resources`文件夹中，
 2. 把十进制数输入到DEC里，HEX里得到它的十六进制。
 3. 把十六进制数输入到HEX里，DEC得到十进制。
 
-![是这样算的](images/5f0f6296-c094-496c-8dcd-87f7e1414633.png)
+![是这样算的](Images/5f0f6296-c094-496c-8dcd-87f7e1414633.png)
 
 为了方便（不用计算）可以写成如下形式（也就是在十六进制数前面加个x），其实就是html和xml的基本格式。
 ``` xml
@@ -170,7 +170,7 @@ DTA客户端的字库文件通常存放在客户端的`Resources`文件夹中，
 
 ## 选择字体 {#选择字体}
 选择字体虽然说起来很简单，但是因为DTA客户端的局限性，很多字体都不能用于编译字库。编译字库最好不要选择微软雅黑或艺术字之类的字体，不然会像下面这样**糊成一坨**：
-![虽然能看清是啥，但是半透明很难受啊喂](images/11f875a7-69ac-4048-b53e-27e02581e56a.png)
+![虽然能看清是啥，但是半透明很难受啊喂](Images/11f875a7-69ac-4048-b53e-27e02581e56a.png)
 
 建议使用的字体类型（要设置的大小）：
 - 宋体（11）
@@ -189,16 +189,16 @@ DTA客户端的字库文件通常存放在客户端的`Resources`文件夹中，
 有一些字体不支持Bold样式或者Bold样式特别炸裂，需要自行在FontCreator中处理：
 - 对于像素字体，可以选择小一半的px，比如8px，然后调整下描述文件里的Size。
 - 打开字体项目。
-![打开项目](images/bf47c5a0-49bf-4472-b04c-330b967d54a8.png)
+![打开项目](Images/bf47c5a0-49bf-4472-b04c-330b967d54a8.png)
 - 打开字形变换器。选择全部→效果`Effects`→加粗`Bold`。水平和垂直一般为字体的笔画宽度的一半（点阵则为一格的一半）。下面的两个复选框不要勾选。
-![打开字形变换器](images/t465h748e5834f7h78ty8945768495475u.png)
-![加粗](images/75b36137-6da9-4aa0-af5f-97aa77096f47.png)
+![打开字形变换器](Images/t465h748e5834f7h78ty8945768495475u.png)
+![加粗](Images/75b36137-6da9-4aa0-af5f-97aa77096f47.png)
 - 修改一下字体信息，比如在每个语言的名字上加个“粗”字。
-![改名](images/764587467t4586t485t6457truyer8y.png)
-![加个粗字](images/94aa6a6a-3d82-4618-9e26-05a875af8bfe.png)
-![加个粗字2](images/50440baf-e7dc-4398-b943-c9aecced3e49.png)
+![改名](Images/764587467t4586t485t6457truyer8y.png)
+![加个粗字](Images/94aa6a6a-3d82-4618-9e26-05a875af8bfe.png)
+![加个粗字2](Images/50440baf-e7dc-4398-b943-c9aecced3e49.png)
 - 导出，然后安装，重启XNAContentComplier，修改粗体spritefont里的字体名（`<FontName>`）为你刚才改的。
-![导出](images/8756udx75375d73h.png)
+![导出](Images/8756udx75375d73h.png)
 
 当然，如果搞不好会更炸裂。通过这种方式生成的粗体一般都没有间距，需要在`<Spacing>`和`</Spacing>`中设置1/2来保持间距，不然会糊成一坨。
 
@@ -235,7 +235,7 @@ Unicode中不赋值，将它包括在区间里可能会报错。
 <CharacterRegion><Start>&#x38E;</Start><End>&#x52F;</End></CharacterRegion>
 ```
 
-![希腊字母中的红叉字符](images/7a2f000e-11b2-4e5f-8c5a-941d882ed52d.png)
+![希腊字母中的红叉字符](Images/7a2f000e-11b2-4e5f-8c5a-941d882ed52d.png)
 
 添加汉字到描述文件中很简单，只需要找到汉字的编码区间（U+4E00~U+9FFF）：
 
@@ -292,7 +292,7 @@ a=list('你的字库') # 把字库转为列表
 a.sort() # 排序一下，编码大（B区之后）的在后面
 print(''.join(a)) # 转为字符串输出
 ```
-![找到扩展区汉字](images/fab9457f-87ea-453c-be4c-2668f77b0f23.png)
+![找到扩展区汉字](Images/fab9457f-87ea-453c-be4c-2668f77b0f23.png)
 编辑器字体调成微软雅黑，可以看到后面的字很明显风格不一样，因为微软雅黑不支持扩展B区后面的字。如果安装了诸如[遍黑体](https://github.com/Fitzgerald-Porthmouth-Koenigsegg/Plangothic-Project)一类具有大字库的黑体，则会使影响判断，此时可以改用宋体显示，或者利用1、3方法。
 
 **3.直接抹掉扩展B区之后的汉字（扩展B区的起始编码为U+20000）。**
@@ -321,9 +321,9 @@ for i in a:
 > 缺点：操作不是很方便。
 
 Excel批量填充，中文编码填充得到格式。
-![Excel写入](images/4f12208d479f80ee41df5312dfde1684388b08ec.png)
+![Excel写入](Images/4f12208d479f80ee41df5312dfde1684388b08ec.png)
 Excel写入
-![Vscode批量替换来生成所需格式（自然Notepad++也可以）](images/e8a8f90836f785eb9a64714b55be1fc9e3d22115.png)
+![Vscode批量替换来生成所需格式（自然Notepad++也可以）](Images/e8a8f90836f785eb9a64714b55be1fc9e3d22115.png)
 Vscode批量替换来生成所需格式（自然Notepad++也可以）
 
 ### 处理编写结果 {#处理编写结果}
@@ -373,11 +373,11 @@ Vscode批量替换来生成所需格式（自然Notepad++也可以）
 3. 找到刚才编写的`SpriteFont0.spritefont`，添加进去。
 3. 点击`Project Settings`，在`Output Directory`里填写输出文件夹。
 
-![第一步至第四步](images/ab2c131b-104b-43ec-975b-46ec7573613a.png)
+![第一步至第四步](Images/ab2c131b-104b-43ec-975b-46ec7573613a.png)
 
 ### 调试字库 {#调试字库}
 如果不调试，直接编译，一天过去了，万一结果是这样……
-![非常好屏显，使我的晶状体旋转](images/be68663c-371c-45f0-b2b7-9763cc05563d.png)
+![非常好屏显，使我的晶状体旋转](Images/be68663c-371c-45f0-b2b7-9763cc05563d.png)
 炸裂（俗称绮丽）也没关系……毕竟亲生的……
 
 所以编写好描述文件以后，需要先调试一下，确保编译的效果没问题，不然生成个两三天看到生成的这个鸟样心态要炸。最简单的步骤为：
@@ -387,7 +387,7 @@ Vscode批量替换来生成所需格式（自然Notepad++也可以）
 按上面的Build Content Project，右下角出现加载条且没有弹出异常就说明字库开始编译了。
 编译完的xnb跟你的spritefont同名，也就是说我放SpriteFont0.spritefont编译出的就是SpriteFont0.xnb。
 
-![第五步](images/d249d8aa-4618-488b-b181-0f01420b3397.png)
+![第五步](Images/d249d8aa-4618-488b-b181-0f01420b3397.png)
 
 把编译出来的xnb覆盖到你的客户端里即可。
 
