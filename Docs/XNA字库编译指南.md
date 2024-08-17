@@ -57,7 +57,7 @@ DTA客户端的字库文件通常存放在客户端的`Resources`文件夹中，
   5. `Resources\SpriteFont4.xnb`
   6. `Resources\SpriteFont5.xnb`
 
-其中SpriteFont后面的数字表示程序文本控件调用的FontIndex，FontIndex一般用于选择字体样式，如0/1/2/3分别表示正常、粗体、斜体、粗斜体。文本控件设置FOntIndex=1表示调用SpriteFont1的字库。
+其中SpriteFont后面的数字表示程序文本控件调用的FontIndex，FontIndex一般用于选择字体样式，如0/1/2/3分别表示正常、粗体、斜体、粗斜体。文本控件设置`FontIndex=1`表示调用`SpriteFont1.xnb`。
 
 对应下来就是：
   1. `Resources\SpriteFont0.xnb` 正常 `FontIndex=0`
