@@ -118,7 +118,7 @@ DTA客户端的字库文件通常存放在客户端的`Resources`文件夹中，
 ```
 
 > **以下内容改编自微软的[Spritefont基本格式](https://learn.microsoft.com/en-us/previous-versions/windows/xna/bb447759(v=xnagamestudio.42))。**
-各项参数介绍：
+> 各项参数介绍：
 > |标签名|参数类型|描述|
 > |---|---|---|
 > |`<FontName>`|文本|**字体名称**：你要用什么字体编译（注：知道字体不知道字体名字的可以打开word查看，比如说一个字体名为`Fusion Pixel 10px Monospaced zh_hans`，你以为同上，实际上它叫`Fusion Pixel 10px Monospaced zh`，少了`_hans`）。|
