@@ -567,6 +567,8 @@ XNB文件本身用于表音文字是很方便的，拉丁文字、希腊文、�
 - 邮箱：shimadamizuki1@outlook.com
 - 官方MOD群：559496825
 
+---
+
 ## 鸣谢名单 {#鸣谢名单}
 - Rampastring
 - 豺禄
