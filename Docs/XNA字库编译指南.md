@@ -5,7 +5,7 @@
 - Create Date: 2024/8/16
 - Last Update: 2024/8/21
 
-由于Github的Markdown格式和VSCode的Markdown格式有出入，所以在Github是显示可能会出错。
+由于Github的Markdown格式和VSCode的Markdown格式有出入，所以Github显示可能会出错。
 
 ---
 
