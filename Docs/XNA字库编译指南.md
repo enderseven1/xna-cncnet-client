@@ -327,7 +327,7 @@ for i in a:
 > ``` python
 > # -*- coding:utf-8 -*-
 > a = '你的字库'
-> b = open('文件路径', 'w+', encoding='utf-8')
+> b = open('文件路径', 'w+', encoding='utf-8') # 这里的路径不一定非要已存在的文件，w+模式会自动创建新文件
 > for i in a: # 遍历字库
 >     b.write('      <CharacterRegion><Start>'+i+'</Start><End>'+i+'</End></CharacterRegion>') # 将输出内容写入文件
 > ```
