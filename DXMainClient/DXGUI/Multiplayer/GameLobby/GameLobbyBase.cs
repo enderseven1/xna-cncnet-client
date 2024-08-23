@@ -562,7 +562,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     rankItem.Texture = RankTextures[GetDefaultMapRankIndex(gameModeMap) + 1];
 
                 XNAListBoxItem mapNameItem = new XNAListBoxItem();
-                var mapNameText = "(" + gameModeMap.Map.MaxPlayers + ") " + gameModeMap.Map.Name;
+                var mapNameText = "(" + gameModeMap.Map.MaxPlayers.ToString() + ") " + gameModeMap.Map.Name;
                 if (isFavoriteMapsSelected)
                     mapNameText += $" - {gameModeMap.GameMode.UIName}";
 
