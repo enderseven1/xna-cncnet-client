@@ -1,9 +1,9 @@
 # DTA客户端字库编译指南
 ## 元数据
-- Version: 1.3
+- Version: 1.4
 - Author: Shimada Mizuki
 - Create Date: 2024/8/16
-- Last Update: 2024/8/21
+- Last Update: 2024/8/25
 
 由于Github的Markdown格式和VSCode的Markdown格式有出入，所以Github显示可能会出错。
 
@@ -252,7 +252,11 @@ Unicode中不赋值，将它包括在区间里可能会报错。
 <CharacterRegion><Start>&#x4E00;</Start><End>&#x9FFF;</End></CharacterRegion>
 ```
 
-但是这样下来编译的时间太长了，毕竟这个编码区间有将近三万字，哪怕不带扩展A区也有两万一千个字了，所以可以找一个合适的字库或编码：
+但是这样下来编译的时间太长了，而且你也不一定能等到编译出来的那个时候。甚至还会报如下错误：
+
+![太多了我草](Images/433ffe15-7573-4474-a797-18e3bfebc00a.png)
+
+毕竟这个编码区间有将近三万字，哪怕不带扩展A区也有两万一千个字了，所以可以找一个合适的字库或编码：
 - 方正简繁字表（简繁，9664个字）
 - 义务教育常用字表（简体字，3500个字）
 - 通用规范汉字表（简体字，8105个字）
