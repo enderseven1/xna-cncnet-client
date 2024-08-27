@@ -404,7 +404,14 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 return;
             }
 
+            if (intValue == 0)
+            {
+                XNAMessageBox.Show(WindowManager, "Error".L10N("Client:Main:FSRError"), "Don't set FrameSendRate to 0.".L10N("Client:Main:Dontsetzero"));
+                return;
+            }
+
             FrameSendRate = intValue;
+
             AddNotice(string.Format("FrameSendRate has been changed to {0}".L10N("Client:Main:FrameSendRateChanged"), intValue));
 
             OnGameOptionChanged();

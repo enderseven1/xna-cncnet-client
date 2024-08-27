@@ -562,7 +562,15 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                     rankItem.Texture = RankTextures[GetDefaultMapRankIndex(gameModeMap) + 1];
 
                 XNAListBoxItem mapNameItem = new XNAListBoxItem();
-                var mapNameText = "(" + gameModeMap.Map.MaxPlayers.ToString() + ") " + gameModeMap.Map.Name;
+                var mapNameText = "";
+                if (gameModeMap.Map.MinPlayers < 2 || gameModeMap.Map.MinPlayers == gameModeMap.Map.MaxPlayers)
+                {
+                    mapNameText = "(" + gameModeMap.Map.MaxPlayers.ToString() + ") " + gameModeMap.Map.Name;
+                }
+                else if(gameModeMap.Map.MinPlayers != gameModeMap.Map.MaxPlayers)
+                {
+                    mapNameText = "(" + gameModeMap.Map.MinPlayers.ToString() + "-" + gameModeMap.Map.MaxPlayers.ToString() + ") " + gameModeMap.Map.Name;
+                }
                 if (isFavoriteMapsSelected)
                     mapNameText += $" - {gameModeMap.GameMode.UIName}";
 

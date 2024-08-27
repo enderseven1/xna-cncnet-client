@@ -652,12 +652,15 @@ namespace DTAClient.DXGUI.Generic
                 {
                     if (age < 18)
                     {
-                        if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 8)
+                        if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 20)
                         {
-                            fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                        "防沉迷系统提示", "根据监管部门要求，每日22时后至次日8时前不得向未成年人提供服务。");
-                            fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
-                            fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
+                            if ((int)DateTime.Now.DayOfWeek != 5 && (int)DateTime.Now.DayOfWeek != 6 && (int)DateTime.Now.DayOfWeek != 0)
+                            {
+                                fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
+                            "防沉迷系统提示", "根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务。");
+                                fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
+                                fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
+                            }
                         }
                     }
                     else
@@ -980,12 +983,15 @@ namespace DTAClient.DXGUI.Generic
                                 Logger.Log("Strange! Who can play games before they learn to sing, dance or rap?");
                                 throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
                             }
-                            else if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 8)
+                            if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 20)
                             {
-                                fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                        "防沉迷系统提示", "根据监管部门要求，每日22时后至次日8时前不得向未成年人提供服务。");
-                                fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
-                                fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
+                                if ((int)DateTime.Now.DayOfWeek != 5 && (int)DateTime.Now.DayOfWeek != 6 && (int)DateTime.Now.DayOfWeek != 0)
+                                {
+                                    fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
+                                "防沉迷系统提示", "根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务。");
+                                    fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
+                                    fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
+                                }
                             }
                         }
                         else if (年龄 > 116)
