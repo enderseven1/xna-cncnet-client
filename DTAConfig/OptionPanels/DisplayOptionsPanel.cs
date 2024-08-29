@@ -346,10 +346,10 @@ namespace DTAConfig.OptionPanels
             AddChild(ddDetailLevel);
             AddChild(lblIngameResolution);
             AddChild(ddIngameResolution);
-            if (System.Threading.Thread.CurrentThread.CurrentCulture.Name == "zh-CN")
+            /*if (System.Threading.Thread.CurrentThread.CurrentCulture.Name == "zh-CN")
             {
                 AddChild(chkChineseNotice);
-            }
+            }*/
         }
 
         /// <summary>
