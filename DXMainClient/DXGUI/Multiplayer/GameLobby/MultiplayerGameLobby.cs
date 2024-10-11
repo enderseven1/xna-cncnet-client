@@ -15,6 +15,12 @@ using System.Text;
 using DTAClient.Domain;
 using Microsoft.Xna.Framework.Graphics;
 using ClientCore.Extensions;
+using System.Collections;
+using System.Net.NetworkInformation;
+using System.Numerics;
+using System.Resources;
+using ClientCore.Settings;
+using System.Globalization;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
@@ -756,9 +762,10 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
         /// </summary>
         protected override void BtnLaunchGame_LeftClick(object sender, EventArgs e)
         {
+
             if (GameModeMap == null)
             {
-                AddNotice("你还未选择地图，不能开始游戏。");
+                AddNotice("You can't launch game without a valid map.".L10N("Client:Main:AntiChenmiDescription"));
                 return;
             }
 
@@ -896,9 +903,19 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
                 
             }
 
+            if (ClientConfiguration.Instance.AgeVerify && UserINISettings.Instance.Ages.Value < 18 &&
+                    !(DateTime.Now.Hour == 20 && ((int)DateTime.Now.DayOfWeek == 5 || (int)DateTime.Now.DayOfWeek == 6 || (int)DateTime.Now.DayOfWeek == 0))) // 必须在八点且五六日
+            {
+                XNAMessageBox.Show(WindowManager, "防沉迷系统提示".L10N("Client:Main:AntiChenmiTips"), "根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务。".L10N("Client:Main:AntiChenmiDescription"));
+                AgeVerifyNotification();
+                return;
+            }
+
             HostLaunchGame();
         }
 
+        protected virtual void AgeVerifyNotification() =>
+            AddNotice("根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务，无法启动游戏。请注意合理安排时间。".L10N("Client:Main:AntiChenmiDescription2"));
         protected virtual void LockGameNotification() =>
             AddNotice("You need to lock the game room before launching the game.".L10N("Client:Main:LockGameNotification"));
 

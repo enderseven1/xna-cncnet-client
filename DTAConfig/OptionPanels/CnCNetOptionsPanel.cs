@@ -94,7 +94,7 @@ namespace DTAConfig.OptionPanels
             chkDisablePrivateMessagePopup.Name = nameof(chkDisablePrivateMessagePopup);
             chkDisablePrivateMessagePopup.ClientRectangle = new Rectangle(
                 chkNotifyOnUserListChange.X,
-                chkNotifyOnUserListChange.Bottom + 8, 0, 0);
+                chkNotifyOnUserListChange.Bottom + 12, 0, 0);
             chkDisablePrivateMessagePopup.Text = "Disable Popups from Private Messages".L10N("Client:DTAConfig:DisablePMPopup");
 
             AddChild(chkDisablePrivateMessagePopup);

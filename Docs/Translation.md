@@ -48,6 +48,10 @@ For example:
       * ...
     - uk 地区代码
       * ...
+    - zh-Hans
+      * ...
+    - zh-Hant
+      * ...
   * someAsset.png 全局图片资源
   * ...
 ```
@@ -58,8 +62,8 @@ The translation folder name is used to match it to the system locale code (as de
 翻译文件夹以BCP-47的地区代码命名，如[Windows地区编码](https://learn.microsoft.com/ru-ru/openspecs/windows_protocols/ms-lcid/a9eac961-e77d-41a6-90a5-ce1a8b0cdb9c)，客户端以此选择语言并获取语言名称。
 
 > **Note 注意**
-> Unless you're aiming for making a translation for a specific country (e.g. `en-US` and `en-GB`), it's advised to use simply a [language code](http://www.loc.gov/standards/iso639-2/php/code_list.php) (for example, `ru`, `de`, `en` etc.)
-> 非特定地区翻译（例如`en-US`和`en-GB`）时仅需用[简易代码](http://www.loc.gov/standards/iso639-2/php/code_list.php)，如`ru`、`de`、`en`等）。
+> > Unless you're aiming for making a translation for a specific country (e.g. `en-US` and `en-GB`), it's advised to use simply a [language code](http://www.loc.gov/standards/iso639-2/php/code_list.php) (for example, `ru`, `de`, `en`, `zh-Hans`, `zh-Hant` etc.)
+> 非特定地区翻译（例如`en-US`和`en-GB`）时仅需用[简易代码](http://www.loc.gov/standards/iso639-2/php/code_list.php)，如`ru`、`de`、`en`、`zh-Hans`、`zh-Hant`等）。
 
 The folder name doesn't explicitly need to match the existing locale code. However, in that case you would want to provide an explicit name in the translation INI, and the translation won't be automatically picked in any case.  
 文件夹名称可以不是地区代码，但是你需要在INI中提供语言名称，且客户端不会自动分配此语言。

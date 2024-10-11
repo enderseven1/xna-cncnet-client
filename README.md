@@ -1,15 +1,18 @@
 # CnCNet Client - CnCNet客户端
 
 This version is compatible with [Starkku's mod base](https://github.com/Starkku/cncnet-client-mod-base), and adds an age verification system and the ability to display "healthy game advice".  
-该版本兼容[Starkku的mod base](https://github.com/Starkku/cncnet-client-mod-base)，并且添加了年龄验证和健康游戏忠告。
-
-中国特色功能：聊天文字脏话和谐。
+该版本兼容[Starkku的mod base](https://github.com/Starkku/cncnet-client-mod-base)，并且添加了中国特色功能：防沉迷、脏话屏蔽、健康游戏忠告。
 
 The age verification system and healthy game advice are enabled by default in the People's Republic of China, and there will be no options for healthy game advice in non-People's Republic of China regions.  
-年龄验证和健康游戏忠告在中国区内自动开启，非中国区则不会显示也不会有健康游戏忠告的选项。
+防沉迷、健康游戏忠告和脏话屏蔽在中国区内自动开启，非中国区则不会显示也不会有显示健康游戏忠告的选项。
 
 The flag `AgeVerify=` in `ClientDefinitions.ini` controls showing age verification.
 `ClientDefinitions.ini`里的`AgeVerify=`语句决定是否启用年龄验证。
+
+The flag `CrabsInRivers=` in `ClientDefinitions.ini` controls showing age verification.
+`ClientDefinitions.ini`里的`CrabsInRivers=`语句决定是否启用脏话屏蔽。
+
+合并了一部分pr。
 
 The MonoGame / XNA CnCNet client, a platform for playing classic Command & Conquer games and their mods both online and offline. Supports setting up and launching both singleplayer and multiplayer games with [a CnCNet game spawner](https://github.com/CnCNet/ts-patches). Includes an IRC-based chat client with advanced features like private messaging, a friend list, a configurable game lobby, flexible and moddable UI graphics, and extras like game setting configuration and keeping track of match statistics. And much more!  
 MonoGame/XNA CnCNet客户端是游玩经典命令与征服游戏及其MOD的平台，支持使用 [CnCNet游戏生成器](https://github.com/CnCNet/ts-patches)设置和启动单人游戏和多人游戏。包括基于IRC的聊天客户端，具有高级功能，如私信、好友列表、可配置的游戏大厅、灵活可修改的 UI 图形，以及游戏设置配置和跟踪比赛统计数据等附加功能。还有更多！
@@ -27,7 +30,7 @@ The primary targets of the client project are
 * [CnCNet Yuri's Revenge 尤里的复仇](https://cncnet.org/yuris-revenge)
 
 However, there is no limitation in the client that would prevent incorporating it into other projects. Any game or mod project that utilizes the CnCNet spawner for Tiberian Sun and Red Alert 2 can be supported. Several other projects also use the client or an unofficial fork of it, including [Tiberian Sun Client](https://www.moddb.com/mods/tiberian-sun-client), [Project Phantom](https://www.moddb.com/mods/project-phantom), [YR Red-Resurrection](https://www.moddb.com/mods/yr-red-resurrection), [The Second Tiberium War](https://www.moddb.com/mods/the-second-tiberium-war) and [CnC: Final War](https://www.moddb.com/mods/cncfinalwar).  
-其他项目也可以使用本客户端，也支持任何使用该客户端的游戏或mod。其他几个项目也使用客户端或其第三方分支，包括[泰伯利亚之日](https://www.moddb.com/mods/tiberian-sun-client), [幽灵计划](https://www.moddb.com/mods/project-phantom), [红色复活](https://www.moddb.com/mods/yr-red-resurrection), [第二次泰伯利亚战争](https://www.moddb.com/mods/the-second-tiberium-war) and [](https://www.moddb.com/mods/cncfinalwar).  
+其他项目也可以使用本客户端，也支持任何使用该客户端的游戏或mod。其他几个项目也使用客户端或其第三方分支，包括[泰伯利亚之日](https://www.moddb.com/mods/tiberian-sun-client), [幽灵计划](https://www.moddb.com/mods/project-phantom), [红色复活](https://www.moddb.com/mods/yr-red-resurrection), [第二次泰伯利亚战争](https://www.moddb.com/mods/the-second-tiberium-war) and [CnC: Final War](https://www.moddb.com/mods/cncfinalwar).  
 
 ## Development requirements 开发要求
 
@@ -47,22 +50,29 @@ To debug WindowsXNA builds the .NET SDK 8.0 x86 is additionally required.
 When using the included build scripts PowerShell 7.2 or newer is required.
 编译**任何**平台的版本都要Visual Studio 2022 17.8及以上版本或.NET SDK 8.0.200。Visual Studio Code、MonoDevelop或Visual Studio for Mac的现代版本也可以使用，但不受官方支持。
 若要调试WindowsXNA生成，还需要.NET SDK 8.0 x86。
-使用包含的生成脚本时，需要PowerShell 7.2及以上版本。[^install-powershell]
+使用包含的生成脚本时，需要PowerShell 7.2及以上版本。
+[^install-powershell]
 
 ## Compiling and debugging 编译调试
 
 * 懒得翻译了，直接点`Scripts\Build**.bat (develop)` 或 `BuildScripts\Build**.bat (master/modified-client)`。
 * Compiling itself is simple: assuming you have the .NET 8.0 SDK installed, you can just open the solution with Visual Studio and compile it right away.
 * When built as a debug build, the client executable expects to reside in the same directory with the target project's main game executable. Resources should exist in a "Resources" sub-directory in the same directory. The repository contains sample resources and post-build commands for copying them so that you can immediately run the client in debug mode by just hitting the Debug button in Visual Studio.
-* When built in release mode, the client executables expect to reside in the `Resources` sub-directory itself for .NET 4.8, named `clientdx.exe`, `clientogl.exe` and `clientxna.exe`. For .NET 8.0, those executables will reside in `Resources\BinariesNET8\{Windows, OpenGL, UniversalGL, XNA}` folders, named `client{dx, ogl, ogl, xna}.dll`, respectively. Note that `client{dx, ogl, ogl, xna}.runtimeconfig.json` files are required for the corresponding dlls.
-* When built on an OS other than Windows, only the Universal OpenGL build is available.
+* When built in release mode, the client executables expect to reside in the `Resources` sub-directory itself for .NET 4.8, named `clientdx.exe`, `clientogl.exe` and `clientxna.exe`. Each `.exe` file or `.dll` file expects a `.pdb` file for diagnostics purpose. It's advised not to delete these `.pdb` files. Keep all `.pdb` files even for end users.
 * The `Scripts` directory has automated build scripts that build the client for all platforms and copy the output files to a folder named `Compiled` in the project root. You can then copy the contents of this `Compiled` directory into the `Resources` sub-directory of any target project.
+
+<details>
+  <summary>.NET 8 builds</summary>
+
+* For .NET 8, When built in release mode, the client executables expect to reside in `Resources/BinariesNET8/{Windows, OpenGL, UniversalGL, XNA}` folders, named `client{dx, ogl, ogl, xna}.dll`, respectively. Note that `client{dx, ogl, ogl, xna}.runtimeconfig.json` files are required for the corresponding .NET 8 dlls.
+* When built on an OS other than Windows, only the Universal OpenGL build is available.
+</details>
 
 <details>
   <summary>Development workarounds</summary>
 
-* If you switch among different solution configurations in Visual Studio (e.g. switch to `TSUniversalGLRelease` from `AresWindowsDXDebug`), especially switching between .NET 4.8 and .NET 8.0 variants, it is recommended to restart Visual Studio after switching configurations to prevent unexpected error messages. If restarting Visual Studio do not work as intended, try deleting all `obj` folders in each project. Due to the same reason, it is advised to close Visual Studio when building the client using the scripts in `Scripts` folder.
-* Some dependencies are stored in `References` folder instead of the official NuGet source. This folder is also useful if you are working on modifying a dependency and debugging in your local machine without publishing the modification to NuGet. However, if you have replaced the `.(s)nupkg` files of a package, without altering the package version, be sure to remove the corresponding package from `%USERPROFILE%\.nuget\packages` folder to purge the old version. 
+* If you switch among different solution configurations in Visual Studio (e.g. switch to `TSUniversalGLRelease` from `AresWindowsDXDebug`), especially switching between .NET 4.8 and .NET 8.0 variants, it is recommended to restart Visual Studio after switching configurations to prevent unexpected error messages. If restarting Visual Studio do not work as intended, try deleting all `obj` folders in each project. Due to the same reason, it is highly advised to close Visual Studio when building the client using the scripts in `Scripts` folder.
+* Some dependencies are stored in `References` folder instead of the official NuGet source. This folder is also useful if you are working on modifying a dependency and debugging in your local machine without publishing the modification to NuGet. However, if you have replaced the `.(s)nupkg` files of a package, without altering the package version, be sure to remove the corresponding package from `%USERPROFILE%\.nuget\packages` folder (Windows) to purge the old version. 
 </details>
 
 ## End-user usage
@@ -114,7 +124,7 @@ See [dta-mg-client-launcher](https://github.com/CnCNet/dta-mg-client-launcher).
 
 ## Branches 分支
 
-Currently the official repositories are only two major active branches. `develop` is where development happens, and while things should be fairly stable, occasionally there can also be bugs. If you want stability and reliability, the `master` branch is recommended.  
+Currently there are only two major active branches. `develop` is where development happens, and while things should be fairly stable, occasionally there can also be bugs. If you want stability and reliability, the `master` branch is recommended.  
 目前官方只有两个主要的活跃分支，`develop`是开发区，较为稳定，但会偶尔出错。建议使用更稳定的`master`分支。本仓库的`master`分支为`modified-client`。
 
 ## Screenshots 截屏

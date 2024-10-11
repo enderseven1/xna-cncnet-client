@@ -650,23 +650,12 @@ namespace DTAClient.DXGUI.Generic
             {
                 if (HandleNameConfirmation(tbxName, firstLabel, btnYes))
                 {
-                    if (age < 18)
+                    if ((age < 18) && (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 20) && ((int)DateTime.Now.DayOfWeek != 5 && (int)DateTime.Now.DayOfWeek != 6 && (int)DateTime.Now.DayOfWeek != 0))
                     {
-                        if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 20)
-                        {
-                            if ((int)DateTime.Now.DayOfWeek != 5 && (int)DateTime.Now.DayOfWeek != 6 && (int)DateTime.Now.DayOfWeek != 0)
-                            {
-                                fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                            "防沉迷系统提示", "根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务。");
-                                fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
-                                fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        CheckRequiredFiles();
-                        CheckForbiddenFiles();
+                        fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
+                            "防沉迷系统提示".L10N("Client:Main:AntiChenmiTips"), "根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务。".L10N("Client:Main:AntiChenmiDescription"));
+                        fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
+                        fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
                     }
                     darkeningFirstRunPanel.Disable();
                 }
@@ -705,12 +694,10 @@ namespace DTAClient.DXGUI.Generic
                                         DateTimeStyles.None,
                                         out DateTime parsedDate))
             {
-                Console.WriteLine("成功解析日期");
                 return true; // 成功解析日期
             }
             else
             {
-                Console.WriteLine("解析失败");
                 return false; // 解析失败
             }
         }
@@ -827,16 +814,11 @@ namespace DTAClient.DXGUI.Generic
         {
             if (customComponentDialogQueued)
                 Updater_OnCustomComponentsOutdated();
-
-            CheckRequiredFiles();
-            CheckForbiddenFiles();
         }
 
         private void FirstRunMessageBox_YesClicked(XNAMessageBox messageBox)
         {
             optionsWindow.Open();
-            CheckRequiredFiles();
-            CheckForbiddenFiles();
         }
 
         private void SharedUILogic_GameProcessStarted() => MusicOff();
@@ -950,72 +932,70 @@ namespace DTAClient.DXGUI.Generic
                 }
             }
 
+            // 非首次启动时验证
             if (!UserINISettings.Instance.IsFirstRun && ClientConfiguration.Instance.AgeVerify)
             {
-                string 生日 = UserINISettings.Instance.Birthday.Value;
-                Logger.Log("Parsing birthday: " + 生日);
-                if (生日 == "00000101")
+                string Birthday = UserINISettings.Instance.Birthday.Value;
+                Logger.Log("Parsing birthday: " + Birthday);
+                Logger.Log("Null Date.");
+                if (Birthday == "")
                 {
                     ShowFirstRunMessageBox();
-                }else
+                }
+                else
                 {
-                // 尝试解析生日字符串为 DateTime 对象
-                if (DateTime.TryParseExact(生日, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime birthDate))
-                {
-                    // 计算年龄
-                    int 年龄 = DateTime.Now.Year - birthDate.Year;
-                    if (birthDate > DateTime.Now.AddYears(-年龄)) 年龄--;
-                    Logger.Log("Your age is: " + 年龄.ToString());
-                        if (年龄 < 18)
+                    // 尝试解析生日字符串为 DateTime 对象
+                    if (DateTime.TryParseExact(Birthday, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime birthDate))
+                    {
+                        // 计算年龄
+                        int Ages = DateTime.Now.Year - birthDate.Year;
+                        if (birthDate > DateTime.Now.AddYears(-Ages))
                         {
-                            if (年龄 < 0)
-                            {
-                                Logger.Log("Strange! Who can play games before they are even born?");
-                                throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
-                            }
-                            else if (年龄 == 0)
-                            {
-                                Logger.Log("Strange! Who is born to play the game?");
-                                throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
-                            }
-                            else if (年龄 <= 3)
-                            {
-                                Logger.Log("Strange! Who can play games before they learn to sing, dance or rap?");
-                                throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
-                            }
-                            if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 20)
-                            {
-                                if ((int)DateTime.Now.DayOfWeek != 5 && (int)DateTime.Now.DayOfWeek != 6 && (int)DateTime.Now.DayOfWeek != 0)
-                                {
-                                    fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                                "防沉迷系统提示", "根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务。");
-                                    fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
-                                    fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
-                                }
-                            }
+                            Ages--;
                         }
-                        else if (年龄 > 116)
+                        Logger.Log("Your age is: " + Ages.ToString());
+                        if (Ages < 0)
+                        {
+                            Logger.Log("Strange! Who can play games before they are even born?");
+                            throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
+                        }
+                        else if (Ages == 0)
+                        {
+                            Logger.Log("Strange! Who is born to play the game?");
+                            throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
+                        }
+                        else if (Ages <= 3)
+                        {
+                            Logger.Log("Strange! Who can play games before they learn to singing, dancing, rapping or playing basketball?");
+                            throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
+                        }
+                        else if ((Ages < 18) && !(DateTime.Now.Hour == 20 && ((int)DateTime.Now.DayOfWeek == 5 || (int)DateTime.Now.DayOfWeek == 6 || (int)DateTime.Now.DayOfWeek == 0))) // 不在五六日
+                        {
+                            fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
+                                "防沉迷系统提示".L10N("Client:Main:AntiChenmiTips"), "根据监管部门要求，非周五、六、日晚八时至九时不得向未成年人提供服务。".L10N("Client:Main:AntiChenmiDescription"));
+                            fangChenmiBox.YesClickedAction += BtnExit_LeftClick;
+                            fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
+                        }
+                        else if (Ages > 116)
                         {
                             Logger.Log("You've lived so long! You can already go for the Guinness Book of World Records!");
                             throw new AgeVerifyException("获取您的年龄失败，请稍后重试。");
                         }
-                        else
-                        {
-                            CheckRequiredFiles();
-                            CheckForbiddenFiles();
-                        }
+                        UserINISettings.Instance.Ages.Value = Ages;
                     }
                     else
                     {
-                        Logger.Log("Parsing birthday failed: " + 生日);
+                        Logger.Log("Parsing birthday failed: " + Birthday);
                         fangChenmiBox = XNAMessageBox.ShowYesNoDialog(WindowManager,
-                        "防沉迷系统提示", "获取您的年龄失败，您可以重新输入生日信息，\n也可以稍后再次尝试。");
+                        "防沉迷系统提示".L10N("Client:Main:AntiChenmiTips"), "获取您的年龄失败，您可以重新输入生日信息，\n也可以稍后再次尝试。".L10N("Client:Main:GetBirthdayFailed"));
                         fangChenmiBox.YesClickedAction += FangChenMi_LeftClick;
                         fangChenmiBox.NoClickedAction += BtnExit_LeftClick;
                     }
                 }
             }
             CheckIfFirstRun();
+            CheckRequiredFiles();
+            CheckForbiddenFiles();
         }
 
         private void SwitchMainMenuMusicFormat()

@@ -13,6 +13,7 @@ namespace ClientCore
 
         public const string VIDEO = "Video";
         public const string MULTIPLAYER = "MultiPlayer";
+        public const string INTRO_SETTINGS = "Intro";
         public const string OPTIONS = "Options";
         public const string AUDIO = "Audio";
         public const string COMPATIBILITY = "Compatibility";
@@ -73,6 +74,8 @@ namespace ClientCore
             DisplayToggleableExtraTextures = new BoolSetting(iniFile, VIDEO, "DisplayToggleableExtraTextures", true);
             EnableChineseNotice = new BoolSetting(iniFile, OPTIONS, "EnableChineseNotice", true);
 
+            PlayIntroSetting = new BoolSetting(iniFile, INTRO_SETTINGS, "Play", false);
+
             ScoreVolume = new DoubleSetting(iniFile, AUDIO, "ScoreVolume", 0.7);
             SoundVolume = new DoubleSetting(iniFile, AUDIO, "SoundVolume", 0.7);
             VoiceVolume = new DoubleSetting(iniFile, AUDIO, "VoiceVolume", 0.7);
@@ -121,7 +124,8 @@ namespace ClientCore
             GenerateTranslationStub = new BoolSetting(iniFile, OPTIONS, nameof(GenerateTranslationStub), false);
             GenerateOnlyNewValuesInTranslationStub = new BoolSetting(iniFile, OPTIONS, nameof(GenerateOnlyNewValuesInTranslationStub), false);
 
-            Birthday = new StringSetting(iniFile, USERS, "Birthday", "00000101");
+            Birthday = new StringSetting(iniFile, USERS, "Birthday", "");
+            Ages = new IntSetting(iniFile, USERS, "Ages", 0);
 
             CampaignDefaultGameSpeed = new IntSetting(iniFile, PHOBOS, "CampaignDefaultGameSpeed", 5);
 
@@ -164,6 +168,12 @@ namespace ClientCore
         public IntSetting ClientFPS { get; private set; }
         public BoolSetting DisplayToggleableExtraTextures { get; private set; }
         public BoolSetting EnableChineseNotice { get; private set; }
+
+        /*********/
+        /* INTRO */
+        /*********/
+
+        public BoolSetting PlayIntroSetting { get; private set; }
 
         /*********/
         /* AUDIO */
@@ -261,6 +271,8 @@ namespace ClientCore
 
         public StringSetting Birthday { get; private set; }
 
+        public IntSetting Ages { get; private set; }
+
         public BoolSetting GenerateTranslationStub { get; private set; }
 
         public BoolSetting GenerateOnlyNewValuesInTranslationStub { get; private set; }
@@ -326,6 +338,9 @@ namespace ClientCore
             ForceLowestDetailLevel.SetDefaultIfNonexistent();
             DoubleTapInterval.SetDefaultIfNonexistent();
             ScrollDelay.SetDefaultIfNonexistent();
+#if YR || ARES
+            PlayIntroSetting.SetDefaultIfNonexistent();
+#endif
         }
 
         public void SaveSettings()
