@@ -1,4 +1,6 @@
-# CnCNet Client - CnCNet客户端
+# CnCNet Client of WD - CnCNet客户端（曙光之战版）
+
+
 
 This version is compatible with [Starkku's mod base](https://github.com/Starkku/cncnet-client-mod-base), and adds an age verification system and the ability to display "healthy game advice".  
 该版本兼容[Starkku的mod base](https://github.com/Starkku/cncnet-client-mod-base)，并且添加了年龄验证和健康游戏忠告。
@@ -21,10 +23,7 @@ You can find the [dedicated project development chat](https://discord.gg/M5gGdBY
 
 The primary targets of the client project are  
 该项目主要服务于：
-* [Dawn of the Tiberium Age 泰伯利亚时代黎明](https://www.moddb.com/mods/the-dawn-of-the-tiberium-age)
-* [Twisted Insurrection 扭曲的暴动](https://www.moddb.com/mods/twisted-insurrection)
-* [Mental Omega 心灵终结](https://www.moddb.com/mods/mental-omega)
-* [CnCNet Yuri's Revenge 尤里的复仇](https://cncnet.org/yuris-revenge)
+* [War of Dawn 曙光之战]([https://bbs.ra2diy.com/forum.php?mod=viewthread&tid=19864])
 
 However, there is no limitation in the client that would prevent incorporating it into other projects. Any game or mod project that utilizes the CnCNet spawner for Tiberian Sun and Red Alert 2 can be supported. Several other projects also use the client or an unofficial fork of it, including [Tiberian Sun Client](https://www.moddb.com/mods/tiberian-sun-client), [Project Phantom](https://www.moddb.com/mods/project-phantom), [YR Red-Resurrection](https://www.moddb.com/mods/yr-red-resurrection), [The Second Tiberium War](https://www.moddb.com/mods/the-second-tiberium-war) and [CnC: Final War](https://www.moddb.com/mods/cncfinalwar).  
 其他项目也可以使用本客户端，也支持任何使用该客户端的游戏或mod。其他几个项目也使用客户端或其第三方分支，包括[泰伯利亚之日](https://www.moddb.com/mods/tiberian-sun-client), [幽灵计划](https://www.moddb.com/mods/project-phantom), [红色复活](https://www.moddb.com/mods/yr-red-resurrection), [第二次泰伯利亚战争](https://www.moddb.com/mods/the-second-tiberium-war) and [](https://www.moddb.com/mods/cncfinalwar).  
